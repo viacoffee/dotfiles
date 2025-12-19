@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")" || exit
+
+# category, sub_category, success, and error are defined in helpers
+source "includes/helpers.sh"
+source "includes/remove_bloat.sh"
+source "includes/settings.sh"
+
+###
+category "System"
+###
+
+sub_category "updating system"
+sudo pacman -Syu
+
+sub_category "install packages"
+cat <<EOD | xargs sudo pacman -S --noconfirm --needed
+  stow
+  firefox
+  tldr
+  lsd
+  prettyping
+  ttf-space-mono-nerd
+  meson
+  cmake
+  cpio
+EOD
+
+# install term
+omarchy-install-terminal alacritty
+
+sub_category "configuring packages"
+# TODO-david
+#hyprpm update
+#hyprpm add https://github.com/zakk4223/hyprWorkspaceLayouts
+#hyprpm enable hyprWorkspaceLayouts
+
+sub_category "create symlinks"
+# symlinks for vi/vim
+sudo ln -sf /usr/bin/nvim /usr/bin/vi
+sudo ln -sf /usr/bin/nvim /usr/bin/vim
+
+# set firefox as default browser
+sub_category "set browser"
+xdg-settings set default-web-browser firefox.desktop
+
+# download tldr entries
+sub_category "downloading tldr entries"
+tldr -u
+
+###
+category "Dotfiles"
+###
+sub_category "bash"
+rm ~/.bashrc 2>/dev/null
+rm ~/.profile 2>/dev/null
+stow --no-folding shell
+
+sub_category "alacritty"
+rm -rf ~/.config/alacritty
+stow alacritty
+
+sub_category "waybar"
+rm -rf ~/.config/waybar 2>/dev/null
+stow waybar
+
+sub_category "hyprland"
+rm ~/.config/hypr/hypridle.conf 2>/dev/null
+rm ~/.config/hypr/input.conf 2>/dev/null
+rm ~/.config/hypr/bindings.conf 2>/dev/null
+rm -rf ~/.config/hypr/bindings 2>/dev/null
+rm ~/.config/hypr/hyprland.conf 2>/dev/null
+rm ~/.config/hypr/looknfeel.conf 2>/dev/null
+rm ~/.config/hypr/autostart.conf 2>/dev/null
+stow --no-folding hypr
+hyprctl reload # reload hyprland
+
+sub_category "lsd"
+rm -rf ~/.config/lsd 2>/dev/null
+stow lsd
+
+sub_category "vim"
+rm -rf ~/.config/nvim ~/.local/share/nvim 2>/dev/null
+stow nvim
+
+###
+category "Development Environment"
+###
+
+###
+# Changes to configs, keybinds, and style
+# doing this last since we delete a lot of the default files above
+category "Omarchy"
+###
+sub_category "remove bloat"
+remove_all # includes/remove_bloat.sh function
+
+if [[ ! "$(~/.local/share/omarchy/bin/omarchy-theme-list)" =~ "$THEME_NAME" ]]; then
+    sub_category "install theme"
+fi
+
+if [ "$(~/.local/share/omarchy/bin/omarchy-theme-current)" != "$THEME_NAME" ]; then
+    sub_category "set theme"
+    ~/.local/share/omarchy/bin/omarchy-theme-set "$THEME_NAME"
+fi
+
+if [ "$(~/.local/share/omarchy/bin/omarchy-font-current)" != "$FONT_NAME" ]; then
+    sub_category "set font"
+    ~/.local/share/omarchy/bin/omarchy-font-set "$FONT_NAME"
+fi
+
+gum style --foreground=32 --bold --padding "1 2" "//Dotfiles complete!"
