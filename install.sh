@@ -25,6 +25,7 @@ cat <<EOD | xargs sudo pacman -S --noconfirm --needed
   meson
   cmake
   cpio
+  ripgrep
 EOD
 
 # install term
