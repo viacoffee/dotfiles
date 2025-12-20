@@ -10,8 +10,8 @@ italic = { family = "SpaceMono Nerd Font Mono" }
 size = 10
 
 [window]
-padding.x = 14
-padding.y = 14
+padding.x = 10
+padding.y = 10
 decorations = "None"
 
 [keyboard]
