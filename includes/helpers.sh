@@ -14,3 +14,7 @@ success() {
 error() {
     gum style --trim --foreground=1 "Error: $1..."
 }
+
+rmvoid() {
+    rm -rf $1 2>/dev/null
+}

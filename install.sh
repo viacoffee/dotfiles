@@ -54,8 +54,8 @@ tldr -u
 category "Dotfiles"
 ###
 sub_category "bash"
-rm ~/.bashrc 2>/dev/null
-rm ~/.profile 2>/dev/null
+rmvoid ~/.bashrc
+rmvoid ~/.profile
 stow --no-folding shell
 
 sub_category "alacritty"
@@ -67,13 +67,13 @@ rm -rf ~/.config/waybar 2>/dev/null
 stow waybar
 
 sub_category "hyprland"
-rm ~/.config/hypr/hypridle.conf 2>/dev/null
-rm ~/.config/hypr/input.conf 2>/dev/null
-rm ~/.config/hypr/bindings.conf 2>/dev/null
+rmvoid ~/.config/hypr/hypridle.conf
+rmvoid ~/.config/hypr/input.conf
+rmvoid ~/.config/hypr/bindings.conf
 rm -rf ~/.config/hypr/bindings 2>/dev/null
-rm ~/.config/hypr/hyprland.conf 2>/dev/null
-rm ~/.config/hypr/looknfeel.conf 2>/dev/null
-rm ~/.config/hypr/autostart.conf 2>/dev/null
+rmvoid ~/.config/hypr/hyprland.conf
+rmvoid ~/.config/hypr/looknfeel.conf
+rmvoid ~/.config/hypr/autostart.conf
 stow --no-folding hypr
 hyprctl reload # reload hyprland
 
@@ -86,7 +86,7 @@ rm -rf ~/.config/nvim ~/.local/share/nvim 2>/dev/null
 stow nvim
 
 sub_category "starship"
-rm ~/.config/starship.toml 2>/dev/null
+rmvoid ~/.config/starship.toml
 stow --no-folding starship
 
 ###
