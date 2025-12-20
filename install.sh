@@ -99,16 +99,17 @@ remove_all # includes/remove_bloat.sh function
 
 if [[ ! "$(~/.local/share/omarchy/bin/omarchy-theme-list)" =~ "$THEME_NAME" ]]; then
     sub_category "install theme"
+    omarchy-theme-install "$THEME_URL"
 fi
 
 if [ "$(~/.local/share/omarchy/bin/omarchy-theme-current)" != "$THEME_NAME" ]; then
     sub_category "set theme"
-    ~/.local/share/omarchy/bin/omarchy-theme-set "$THEME_NAME"
+    omarchy-theme-set "$THEME_NAME"
 fi
 
 if [ "$(~/.local/share/omarchy/bin/omarchy-font-current)" != "$FONT_NAME" ]; then
     sub_category "set font"
-    ~/.local/share/omarchy/bin/omarchy-font-set "$FONT_NAME"
+    omarchy-font-set "$FONT_NAME"
 fi
 
 gum style --foreground=32 --bold --padding "1 2" "//Dotfiles complete!"
