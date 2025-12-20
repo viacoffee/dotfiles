@@ -86,6 +86,7 @@ rm -rf ~/.config/nvim ~/.local/share/nvim 2>/dev/null
 stow nvim
 
 sub_category "starship"
+rm ~/.config/starship.toml 2>/dev/null
 stow --no-folding starship
 
 ###
