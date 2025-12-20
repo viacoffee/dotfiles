@@ -26,3 +26,9 @@ keymap.set("n", "<leader>f", ":Telescope find_files hidden=true<CR>")
 vim.api.nvim_create_user_command('FTermToggle', require('FTerm').toggle, { bang = true })
 keymap.set("n", "<A-t>", "<CMD>FTermToggle<CR>")
 keymap.set("t", "<A-t>", "<CMD>FTermToggle<CR>")
+
+-- Indent handling
+keymap.set('v', '<', '<gv', opts)
+keymap.set('v', '>', '>gv', opts)
+keymap.set('n', '<', '<<', opts)
+keymap.set('n', '>', '>>', opts)
