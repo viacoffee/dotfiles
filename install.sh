@@ -85,6 +85,9 @@ sub_category "vim"
 rm -rf ~/.config/nvim ~/.local/share/nvim 2>/dev/null
 stow nvim
 
+sub_category "starship"
+stow --no-folding starship
+
 ###
 category "Development Environment"
 ###
