@@ -3,7 +3,7 @@ return {
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {
         defaults = {
-            file_ignore_patterns = { ".git" },
+            file_ignore_patterns = { ".git", "__pycache__", ".db" },
             layout_strategy = 'horizontal',
             layout_config = {
                 horizontal = {
