@@ -1,3 +1,5 @@
+. "$HOME/.local/share/../bin/env"
+
 # Stats
 alias top="btop"
 alias htop="btop"

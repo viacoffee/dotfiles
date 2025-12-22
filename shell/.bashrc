@@ -5,7 +5,8 @@
 # (don't mess with these directly, just overwrite them here!)
 source ~/.local/share/omarchy/default/bash/rc
 
+source ~/.profile
+. "$HOME/.local/share/../bin/env"
+
 # Git completions
 source ~/.bash/git-completion.sh
-
-source ~/.profile
