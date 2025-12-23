@@ -41,3 +41,5 @@ vim.opt.encoding = "UTF-8"                        -- Set encoding
 -- Splits
 vim.opt.splitbelow = true                         -- Horizontal splits go below
 vim.opt.splitright = true                         -- Vertical splits go right
+-- Clipboard
+vim.api.nvim_set_option("clipboard", "unnamedplus")
