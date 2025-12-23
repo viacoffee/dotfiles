@@ -92,6 +92,11 @@ stow --no-folding starship
 ###
 category "Development Environment"
 ###
+cat <<EOD | xargs omarchy-install-dev-env
+    ruby
+    python
+    node
+EOD
 
 ###
 # Changes to configs, keybinds, and style
