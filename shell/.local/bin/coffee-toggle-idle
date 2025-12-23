@@ -9,4 +9,4 @@ else
 fi
 
 # Trigger waybar update
-pkill -RTMIN+9 waybar
+pkill -RTMIN+10 waybar

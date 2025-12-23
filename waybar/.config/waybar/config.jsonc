@@ -137,7 +137,7 @@
   "custom/idle-indicator": {
     "on-click": "coffee-toggle-idle",
     "exec": "~/.config/waybar/indicators/idle.sh",
-    "signal": 9,
+    "signal": 10,
     "return-type": "json"
   },
   "tray": {
