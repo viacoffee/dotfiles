@@ -31,11 +31,7 @@ EOD
 # install term
 omarchy-install-terminal alacritty
 
-sub_category "configuring packages"
-# TODO-david
-#hyprpm update
-#hyprpm add https://github.com/zakk4223/hyprWorkspaceLayouts
-#hyprpm enable hyprWorkspaceLayouts
+#sub_category "configuring packages"
 
 sub_category "create symlinks"
 # symlinks for vi/vim
