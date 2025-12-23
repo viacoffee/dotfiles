@@ -81,3 +81,12 @@ tooltip {
 #custom-screenrecording-indicator.active {
   color: #a55555;
 }
+
+#custom-idle-indicator {
+  margin-left: 8.75px;
+  font-size: 10px;
+}
+
+#custom-idle-indicator.active {
+  color: #ffcc00;
+}
