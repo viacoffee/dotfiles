@@ -1,12 +1,12 @@
 #!/bin/bash
 name="${1:-}"
 
-# Guard against missing naem
+# Guard against missing name
 if [[ -z "$name" ]]; then
     exit 1
 fi
 
-# Include service_helper.sh for the identify_service function
+# Include service_helper.sh for the set_service_vars function
 . "$( dirname "${BASH_SOURCE[0]}" )/includes/service_helper.sh"
 if ! set_service_vars "$name"; then
     notify-send "unknown service $name"
