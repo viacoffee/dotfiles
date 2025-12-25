@@ -1,0 +1,34 @@
+#!/bin/bash
+
+name="${1:-}"
+
+# Guard against missing naem
+if [[ -z "$name" ]]; then
+    exit 1
+fi
+
+# Include service_helper.sh for the identify_service function
+. "$( dirname "${BASH_SOURCE[0]}" )/includes/service_helper.sh"
+if ! set_service_vars "$name"; then
+    notify-send "unknown service $name"
+    exit 1
+fi
+
+# Check if the service is even running before killing
+if pgrep -x $pidname >/dev/null; then
+    # kill it
+    systemctl stop "${service}"
+    # notify and exit on error
+    if [ $? -ne 0 ]; then
+        notify-send -u critical "$name($service) failed to stop"
+        exit 1
+    fi
+    notify-send "$name has been stopped"
+
+    # Trigger waybar update if we have a signal
+    if [[ -n "$signal" ]]; then
+        pkill $signal waybar
+    fi
+else
+    notify-send "$name is not running"
+fi
