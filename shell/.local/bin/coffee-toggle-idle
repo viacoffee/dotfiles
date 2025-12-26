@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Include general helpers
+. "$( dirname "${BASH_SOURCE[0]}" )/includes/helpers.sh"
+
 if pgrep -x hypridle >/dev/null; then
     pkill -x hypridle
     notify-send "Stop locking computer when idle"
@@ -9,4 +12,4 @@ else
 fi
 
 # Trigger waybar update
-pkill -RTMIN+10 waybar
+signal_waybar "10"

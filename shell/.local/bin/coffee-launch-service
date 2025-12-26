@@ -1,13 +1,16 @@
 #!/bin/bash
-name="${1:-}"
 
+# Include general helpers
+. "$( dirname "${BASH_SOURCE[0]}" )/includes/helpers.sh"
+# Include service_helpers.sh for the set_service_vars function
+. "$( dirname "${BASH_SOURCE[0]}" )/includes/service_helpers.sh"
+
+name="${1:-}"
 # Guard against missing name
 if [[ -z "$name" ]]; then
     exit 0
 fi
 
-# Include service_helper.sh for the set_service_vars function
-. "$( dirname "${BASH_SOURCE[0]}" )/includes/service_helper.sh"
 if ! set_service_vars "$name"; then
     notify-send "unknown service $name"
     exit 0
@@ -24,10 +27,8 @@ if ! pgrep -x $pidname >/dev/null; then
     fi
     notify-send "$name has been started"
 
-    # Trigger waybar update if we have a signal
-    if [[ -n "$signal" ]]; then
-        pkill $signal waybar
-    fi
+    # Trigger waybar update
+    signal_waybar $signal
 else
     notify-send "$name is already running"
 fi
