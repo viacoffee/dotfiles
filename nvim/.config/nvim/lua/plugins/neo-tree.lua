@@ -18,7 +18,8 @@ return {
                     "package-lock.json",
                     ".changeset",
                     ".prettierrc.json",
-                    ".git/"
+                    ".git/",
+                    "**/__pycache__",
                 },
                 never_show = {},
             },
