@@ -39,7 +39,7 @@ service_action() {
         fi
     
         if ! systemctl start "$service"; then
-            notify_err -u critical "$name ($service) failed to start"
+            notify_err "$name ($service) failed to start"
             return 1
         fi
     
@@ -54,7 +54,7 @@ service_action() {
         fi
     
         if ! systemctl stop "$service"; then
-            notify_err -u critical "$name ($service) failed to stop"
+            notify_err "$name ($service) failed to stop"
             return 1
         fi
     
