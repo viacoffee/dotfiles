@@ -16,6 +16,8 @@ alias lr="lsd -R"
 alias lra="lsd -RA"
 alias lt="lsd --tree"
 
+alias notes="notes_md"
+
 # Make a directory and then cd to it
 function mkcd() {
   mkdir -p $1 && cd $1
