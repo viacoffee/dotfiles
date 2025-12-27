@@ -34,31 +34,31 @@ service_action() {
 
     do_start() {
         if is_running; then
-            notify-send "$name is already running"
+            notify "$name is already running"
             return 0
         fi
     
         if ! systemctl start "$service"; then
-            notify-send -u critical "$name ($service) failed to start"
+            notify_err -u critical "$name ($service) failed to start"
             return 1
         fi
     
-        notify-send "$name has been started"
+        notify "$name has been started"
         signal_waybar "$signal"
     }
     
     do_stop() {
         if ! is_running; then
-            notify-send "$name is not running"
+            notify "$name is not running"
             return 0
         fi
     
         if ! systemctl stop "$service"; then
-            notify-send -u critical "$name ($service) failed to stop"
+            notify_err -u critical "$name ($service) failed to stop"
             return 1
         fi
     
-        notify-send "$name has been stopped"
+        notify "$name has been stopped"
         signal_waybar "$signal"
     }
     
@@ -79,7 +79,7 @@ service_action() {
             fi
             ;;
         *)
-            notify-send "Invalid action: $action"
+            notify "Invalid action: $action"
             return 1
             ;;
     esac
