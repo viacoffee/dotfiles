@@ -1,0 +1,87 @@
+#!/bin/bash
+
+export PATH="$HOME/.local/share/omarchy/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+
+BACK_TO_EXIT=false
+
+back_to() {
+    local parent_menu="$1"
+
+    if [[ "$BACK_TO_EXIT" == true ]]; then
+        exit 0
+    elif [[ -n "$parent_menu" ]]; then
+        "$parent_menu"
+    else
+        show_main_menu
+    fi
+}
+
+menu() {
+    local prompt="$1"
+    local options="$2"
+    local extra="$3"
+    local preselect="$4"
+
+    read -r -a args <<<"$extra"
+
+    if [[ -n "$preselect" ]]; then
+        local index
+        index=$(echo -e "$options" | grep -nxF "$preselect" | cut -d: -f1)
+        if [[ -n "$index" ]]; then
+            args+=("-c" "$index")
+        fi
+    fi
+
+    echo -e "$options" | omarchy-launch-walker --dmenu --width 295 --minheight 1 --maxheight 630 -p "$prompt…" "${args[@]}" 2>/dev/null
+}
+
+terminal() {
+  xdg-terminal-exec --app-id=org.omarchy.terminal "$@"
+}
+
+present_terminal() {
+  omarchy-launch-floating-terminal-with-presentation $1
+}
+
+open_in_editor() {
+    notify-send "Editing config file" "$1"
+    omarchy-launch-editor "$1"
+}
+
+show_services_menu() {
+    case $(menu "Services" "PostgreSQL") in
+        *PostgreSQL*) coffee-service toggle postgres ;;
+        *) back_to show_main_menu ;;
+    esac
+}
+
+show_dotfile_menu() {
+    case $(menu ".dotfiles" "All\nHyprland\nNeovim\nWaybar\nShell") in
+        *All*) open_in_editor ~/.dotfiles ;;
+        *Hyprland*) open_in_editor ~/.dotfiles/hypr/.config/hypr ;;
+        *Neovim*) open_in_editor ~/.dotfiles/nvim/.config/nvim ;;
+        *Waybar*) open_in_editor ~/.dotfiles/waybar/.config/waybar ;;
+        *Shell*) open_in_editor ~/.dotfiles/shell ;;
+        *) back_to show_main_menu ;;
+    esac
+}
+
+show_main_menu() {
+    go_to_menu "$(menu "Go" "Services\nDocker\n.dotfiles")"
+}
+
+go_to_menu() {
+    case "${1,,}" in
+        *services*) show_services_menu ;;
+        *docker*) show_docker_menu ;;
+        *\.dotfiles*) show_dotfile_menu ;;
+    esac
+}
+
+if [[ -n "$1" ]]; then
+  BACK_TO_EXIT=true
+  go_to_menu "$1"
+else
+  show_main_menu
+fi
