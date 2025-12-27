@@ -5,7 +5,7 @@ return {
         config = function()
             require('lualine').setup({
                 options= {
-                    theme = 'tomorrow_night'
+                    theme = 'nordic'
                 },
                 sections = {
                     lualine_a = {'mode'},

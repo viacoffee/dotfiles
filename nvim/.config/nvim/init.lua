@@ -17,7 +17,11 @@ require("config.options")
 require("config.keymaps")
 
 -- Theme
-vim.cmd("colorscheme onedark")
+vim.cmd.colorscheme('nordic')
+
+-- Indent highlights
+vim.cmd.highlight('IndentLine guifg=#3b4252')
+vim.cmd.highlight('IndentLineCurrent guifg=#c0c8d8')
 
 -- Create undo directory if it doesn't exist
 local undodir = vim.fn.expand("~/.vim/undodir")
