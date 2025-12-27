@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Include general helpers
+. "$( dirname "${BASH_SOURCE[0]}" )/includes/helpers.sh"
+# Include service_helpers.sh for the service_action function
+. "$( dirname "${BASH_SOURCE[0]}" )/includes/service_helpers.sh"
+
+name="${1:-}"
+# Guard against missing name
+if [[ -z "$name" ]]; then
+    exit 0
+fi
+
+service_action "start" "$name"
