@@ -7,8 +7,5 @@ source "$INSTALL_DIR/lib/helpers.sh"
 # Install desktop packages
 install_packages_from_file "$INSTALL_DIR/desktop.packages"
 
-# Install extra packages
-install_packages_from_file "$INSTALL_DIR/extra.packages"
-
 # Rebuild font cache
 fc-cache -fv >/dev/null

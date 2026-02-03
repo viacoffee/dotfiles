@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export PATH="$HOME/.local/share/omarchy/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
+# Set to true when going directly to a submenu, so we can exit directly
 BACK_TO_EXIT=false
 
 back_to() {
@@ -33,15 +33,15 @@ menu() {
     fi
   fi
 
-  echo -e "$options" | omarchy-launch-walker --dmenu --width 295 --minheight 1 --maxheight 630 -p "$prompt…" "${args[@]}" 2>/dev/null
+  echo -e "$options" | coffee-launch-walker --dmenu --width 295 --minheight 1 --maxheight 630 -p "$prompt…" "${args[@]}" 2>/dev/null
 }
 
 terminal() {
-  xdg-terminal-exec --app-id=org.omarchy.terminal "$@"
+  xdg-terminal-exec --app-id=org.coffee.terminal "$@"
 }
 
-present_terminal() {
-  omarchy-launch-floating-terminal-with-presentation $1
+float_terminal() {
+  coffee-launch-floating-terminal $1
 }
 
 open_in_editor() {
@@ -49,33 +49,42 @@ open_in_editor() {
   omarchy-launch-editor "$1"
 }
 
-show_services_menu() {
-  case $(menu "Services" "PostgreSQL") in
-    *PostgreSQL*) coffee-service toggle postgres ;;
-    *) back_to show_main_menu ;;
+install() {
+  present_terminal "echo 'Installing $1...'; sudo pacman -S --noconfirm $2"
+}
+
+aur_install() {
+  present_terminal "echo 'Installing $1 from AUR...'; yay -S --noconfirm $2"
+}
+
+show_capture_menu() {
+  case $(menu "Capture" "  Screenshot\n  Screenrecord") in
+  *Screenshot*) show_screenshot_menu ;;
+  *Screenrecord*) show_screenrecord_menu ;;
+  *) show_trigger_menu ;;
   esac
 }
 
-show_dotfile_menu() {
-  case $(menu ".dotfiles" "All\nHyprland\nNeovim\nWaybar\nShell") in
-    *All*) open_in_editor ~/.dotfiles ;;
-    *Hyprland*) open_in_editor ~/.dotfiles/hypr/.config/hypr ;;
-    *Neovim*) open_in_editor ~/.dotfiles/nvim/.config/nvim ;;
-    *Waybar*) open_in_editor ~/.dotfiles/waybar/.config/waybar ;;
-    *Shell*) open_in_editor ~/.dotfiles/shell ;;
-    *) back_to show_main_menu ;;
+show_system_menu() {
+  case $(menu "System" "  Lock\n󱄄  Screensaver\n󰜉  Restart\n󰐥  Shutdown") in
+  *Lock*) coffee-lock-screen ;;
+  *Restart*) coffee-cmd-reboot ;;
+  *Shutdown*) coffee-cmd-shutdown ;;
+  *) back_to show_main_menu ;;
   esac
 }
 
 show_main_menu() {
-  go_to_menu "$(menu "Go" "Services\nDocker\n.dotfiles")"
+  go_to_menu "$(menu "Go" "󰀻  Apps\n  Setup\n󰉉  Install\n󰭌  Remove\n  Update\n  System")"
 }
 
 go_to_menu() {
   case "${1,,}" in
-    *services*) show_services_menu ;;
-    *docker*) show_docker_menu ;;
-    *\.dotfiles*) show_dotfile_menu ;;
+  *apps*) walker -p "Launch..." ;;
+  *setup*) show_setup_menu ;;
+  *install*) show_install_menu ;;
+  *remove*) show_remove_menu ;;
+  *system*) show_system_menu ;;
   esac
 }
 

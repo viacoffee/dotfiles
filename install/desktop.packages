@@ -1,21 +1,35 @@
-# Required desktop environment related packages
-
-niri
-waybar
-walker
-xdg-desktop-portal
-xdg-desktop-portal-wlr
-wl-clipboard
-grim
-slurp
+# Desktop environment
 brightnessctl
-playerctl
+btop
+fzf
+mako
+niri
+ripgrep
+swaybg
 swayidle
 swaylock
 swayosd
-swaybg
-fzf
-btop
-ttf-space-mono-nerd
-ripgrep
+walker
+waybar
+wl-clipboard
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+# grim
+# slurp
+
+# Optional packages
+alacritty
+bat
+docker
+lazydocker
+lazygit
 lsd
+nvim
+playerctl
+ruby
+rust
+signal-desktop
+spotify
+tldr
+ttf-space-mono-nerd
+whois

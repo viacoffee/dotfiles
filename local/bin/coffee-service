@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Include general helpers
-. "$( dirname "${BASH_SOURCE[0]}" )/includes/helpers.sh"
+. "$( dirname "${BASH_SOURCE[0]}" )/lib/helpers.sh"
 # Include service_helpers.sh for the service_action function
-. "$( dirname "${BASH_SOURCE[0]}" )/includes/service_helpers.sh"
+. "$( dirname "${BASH_SOURCE[0]}" )/lib/service-helpers.sh"
 
 action="${1:-toggle}"
 name="${2:-}"

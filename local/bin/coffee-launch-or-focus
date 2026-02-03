@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# -------------------------------------------------------------------
+# Usage check
+# -------------------------------------------------------------------
 if [[ $# -lt 1 ]]; then
   echo "Usage: $(basename "$0") <window_pattern> [launch_command]"
   echo
@@ -14,20 +17,8 @@ fi
 PATTERN="$1"
 LAUNCH_COMMAND="${2:-$PATTERN}"
 
-WINDOW_ID=$(
-  niri msg windows -j |
-    jq -r --arg p "$PATTERN" '
-      .[]
-      | select(
-          (.app_id // "" | test($p; "i")) or
-          (.title  // "" | test($p; "i"))
-        )
-      | .id
-    ' | head -n1
-)
+# Include niri helpers
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/niri-helpers.sh"
 
-if [[ -n "${WINDOW_ID:-}" ]]; then
-  niri msg focus-window --id "$WINDOW_ID"
-else
-  niri msg spawn -- sh -c "$LAUNCH_COMMAND"
-fi
+niri_focus_or_spawn "$PATTERN" "$LAUNCH_COMMAND"

@@ -1,16 +1,33 @@
-# These are required for base functionality
-
+# Core system packages
 base
 base-devel
 curl
 git
-nvidia
-nvidia-dkms
-nvidia-open-dkms
-nvidia-utils
-nvidia-settings
+stow
+
+# NVIDIA drivers (RTX 30xx+)
+egl-wayland
 lib32-nvidia-utils
 libva-nvidia-driver
-egl-wayland
+nvidia-open-dkms
+nvidia-utils
+
+# X11
 xwayland-sattelite
-stow
+
+# Snapshots/Backup
+snap-pac
+snapper
+
+# Bootloader
+efibootmgr
+limine
+
+# Bluetooth
+blueman
+bluetui
+bluez
+bluez-utils
+
+# Wifi
+impala
