@@ -42,7 +42,7 @@ truncate_to_repo = false   # don't cut off at git repo root
 "Downloads" = " "
 "Music" = "󰝚 "
 "Pictures" = " "
-"Developer" = "󰲋 "
+"Projects" = "󰲋 "
 
 [git_branch]
 symbol = ""

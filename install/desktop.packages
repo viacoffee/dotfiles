@@ -1,7 +1,6 @@
 # Desktop environment
 brightnessctl
 btop
-fzf
 mako
 niri
 ripgrep
@@ -21,6 +20,7 @@ xdg-desktop-portal-wlr
 alacritty
 bat
 docker
+fzf
 lazydocker
 lazygit
 lsd

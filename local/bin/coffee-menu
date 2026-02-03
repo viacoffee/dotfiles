@@ -46,7 +46,7 @@ float_terminal() {
 
 open_in_editor() {
   notify-send "Editing config file" "$1"
-  omarchy-launch-editor "$1"
+  coffee-launch-editor "$1"
 }
 
 install() {

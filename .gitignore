@@ -3,4 +3,5 @@ lazy-lock.json
 *.secret
 *.private
 *.gpg~
+*.git-credentials
 .stow-local-ignore

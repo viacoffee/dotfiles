@@ -7,3 +7,6 @@ if ! command -v mise >/dev/null; then
 else
   mise self-update || true
 fi
+
+# Update tldr definitions
+tldr --update || true
