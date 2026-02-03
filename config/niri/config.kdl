@@ -1,0 +1,153 @@
+focus-follows-mouse true
+spawn-at-startup "waybar"
+
+// -------------------------------------------------------------------
+// Inputs
+// -------------------------------------------------------------------
+input {
+  keyboard {
+    xkb {}
+
+    numlock
+  }
+}
+
+// -------------------------------------------------------------------
+// Output/display
+// -------------------------------------------------------------------
+/-output "eDP-1" {
+  // niri msg outputs
+}
+
+// -------------------------------------------------------------------
+// Layout
+// -------------------------------------------------------------------
+layout {
+  gaps 10
+  center-focused-column "always"
+
+  preset-column-widths {
+    proportion 0.33333
+    proportion 0.5
+    proportion 0.66667
+  }
+
+  focus-ring {
+    width 1
+    active-color "#7fc8ff"
+    inactive-color "#505050"
+  }
+
+  border {
+    width 1
+    active-color "#ffc87f"
+    inactive-color "#505050"
+    urgent-color "#9b0000"
+  }
+}
+
+// -------------------------------------------------------------------
+// Keybinds
+// -------------------------------------------------------------------
+mod "Super"
+
+// System
+binds {
+  Mod+Shift+r { reload-config; }
+  Mod+Return { spawn "alacritty"; }
+
+  // Lock
+  Mod+Shift+q {
+    spawn "sh" "-c" "coffee-lock-screen"
+  }
+
+  // System walker menu
+  Mod+Escape {
+    spawn "sh" "-c" "coffee-menu system"
+  }
+
+  // General walker menu
+  Mod+Alt+Space {
+    spawn "sh" "-c" "coffee-menu"
+  }
+}
+
+// Window focus
+binds {
+  Mod+h { focus-column-left; }
+  Mod+j { focus-window-down; }
+  Mod+k { focus-window-up; }
+  Mod+l { focus-column-right; }
+
+  // Cycle within column
+  Mod+n { focus-window-down; }
+  Mod+p { focus-window-up; }
+}
+
+// Move windows (shift)
+binds {
+  Mod+Shift+h { move-column-left; }
+  Mod+Shift+l { move-column-right; }
+
+  Mod+Shift+j { move-window-down; }
+  Mod+Shift+k { move-window-up; }
+}
+
+// Resize windows
+binds {
+  Mod+Ctrl+h { resize-column -10; }
+  Mod+Ctrl+l { resize-column +10; }
+
+  Mod+Ctrl+j { resize-window -10; }
+  Mod+Ctrl+k { resize-window +10; }
+}
+
+// Layout & window actions
+binds {
+  Mod+w { close-window; }
+
+  Mod+f { toggle-fullscreen; }
+  Mod+t { toggle-floating; }
+
+  // Close all but the focused window
+  Mod+Shift+W {
+    spawn "sh" "-c" "niri_close_all_but_focused"
+  }
+}
+
+// Workspaces
+binds {
+  Mod+1 { focus-workspace 1; }
+  Mod+2 { focus-workspace 2; }
+  Mod+3 { focus-workspace 3; }
+  Mod+4 { focus-workspace 4; }
+  Mod+5 { focus-workspace 5; }
+
+  Mod+Shift+1 { move-window-to-workspace 1; }
+  Mod+Shift+2 { move-window-to-workspace 2; }
+  Mod+Shift+3 { move-window-to-workspace 3; }
+  Mod+Shift+4 { move-window-to-workspace 4; }
+  Mod+Shift+5 { move-window-to-workspace 5; }
+
+  // Previous/next workspace
+  Mod+Ctrl+h { focus-workspace-previous; }
+  Mod+Ctrl+l { focus-workspace-next; }
+}
+
+// Screengrabs
+binds {
+  // Area to clipboard
+  Mod+p {
+    spawn "grim -g \"$(slurp)\" - | wl-copy"
+  }
+
+  // Area to file
+  Mod+Shift+p {
+    spawn "grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"
+  }
+
+  // Screen to file
+  Mod+Shift+Ctrl+p {
+    spawn "grim ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"
+  }
+}

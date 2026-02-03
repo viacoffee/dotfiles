@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-INSTALL_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/install" && pwd)"
+INSTALL_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+# Load helper functions
+if [[ ! -f "$INSTALL_DIR/lib/helpers.sh" ]]; then
+  echo "Error: Helper functions not found: $INSTALL_DIR/lib/helpers.sh" >&2
+  exit 1
+fi
+
 source "$INSTALL_DIR/lib/helpers.sh"
 
 # Install desktop packages
