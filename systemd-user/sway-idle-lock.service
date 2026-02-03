@@ -1,0 +1,14 @@
+[Unit]
+Description=Sway idle lock
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/swayidle \
+  timeout 300 '$HOME/.local/bin/coffee-lock-screen.sh'
+Restart=always
+RestartSec=5
+KillMode=process
+
+[Install]
+WantedBy=default.target

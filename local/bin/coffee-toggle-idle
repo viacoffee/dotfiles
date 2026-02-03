@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Find swayidle PID
+PID=$(pgrep -u "$USER" swayidle) || {
+  # TODO-david need to add notify-send instead of echoing this
+  # echo "swayidle not running"
+  exit 1
+}
+
+# Check current state
+# SIGSTOP sets process state to T (stopped)
+STATE=$(ps -o state= -p "$PID" | tr -d ' ')
+
+if [[ "$STATE" == "T" ]]; then
+  # Process is stopped → resume
+  kill -CONT "$PID"
+  # TODO-david notify-send
+  # echo "Idle lock resumed"
+else
+  # Process is running → pause
+  kill -STOP "$PID"
+  # TODO-david notify-send
+  # echo "Idle lock paused"
+fi

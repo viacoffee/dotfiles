@@ -1,0 +1,21 @@
+# Required desktop environment related packages
+
+niri
+waybar
+walker
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+wl-clipboard
+grim
+slurp
+brightnessctl
+playerctl
+swayidle
+swaylock
+swayosd
+swaybg
+fzf
+btop
+ttf-space-mono-nerd
+ripgrep
+lsd

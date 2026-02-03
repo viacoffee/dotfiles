@@ -1,1 +1,6 @@
 lazy-lock.json
+*.local
+*.secret
+*.private
+*.gpg~
+.stow-local-ignore

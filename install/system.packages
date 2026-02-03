@@ -1,0 +1,16 @@
+# These are required for base functionality
+
+base
+base-devel
+curl
+git
+nvidia
+nvidia-dkms
+nvidia-open-dkms
+nvidia-utils
+nvidia-settings
+lib32-nvidia-utils
+libva-nvidia-driver
+egl-wayland
+xwayland-sattelite
+stow
