@@ -69,10 +69,8 @@ binds {
   Mod+Alt+Space {
     spawn "sh" "-c" "coffee-menu"
   }
-}
 
-// Window focus
-binds {
+  // Window focus
   Mod+h { focus-column-left; }
   Mod+j { focus-window-down; }
   Mod+k { focus-window-up; }
@@ -81,30 +79,21 @@ binds {
   // Cycle within column
   Mod+n { focus-window-down; }
   Mod+p { focus-window-up; }
-}
 
-// Move windows (shift)
-binds {
+  // Move windows (shift)
   Mod+Shift+h { move-column-left; }
   Mod+Shift+l { move-column-right; }
-
   Mod+Shift+j { move-window-down; }
   Mod+Shift+k { move-window-up; }
-}
 
-// Resize windows
-binds {
+  // Resize windows
   Mod+Ctrl+h { resize-column -10; }
   Mod+Ctrl+l { resize-column +10; }
-
   Mod+Ctrl+j { resize-window -10; }
   Mod+Ctrl+k { resize-window +10; }
-}
 
-// Layout & window actions
-binds {
+  // Layout & window actions
   Mod+w { close-window; }
-
   Mod+f { toggle-fullscreen; }
   Mod+t { toggle-floating; }
 
@@ -112,10 +101,8 @@ binds {
   Mod+Shift+W {
     spawn "sh" "-c" "niri_close_all_but_focused"
   }
-}
 
-// Workspaces
-binds {
+  // Workspaces
   Mod+1 { focus-workspace 1; }
   Mod+2 { focus-workspace 2; }
   Mod+3 { focus-workspace 3; }
@@ -131,10 +118,8 @@ binds {
   // Previous/next workspace
   Mod+Ctrl+h { focus-workspace-previous; }
   Mod+Ctrl+l { focus-workspace-next; }
-}
 
-// Screengrabs
-binds {
+  // Screengrabs
   // Area to clipboard
   Mod+p {
     spawn "grim -g \"$(slurp)\" - | wl-copy"
