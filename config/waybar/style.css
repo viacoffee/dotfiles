@@ -1,5 +1,3 @@
-@import "../omarchy/current/theme/waybar.css";
-
 * {
   background-color: #1e2229;
   color: @foreground;
@@ -33,8 +31,6 @@
 #cpu,
 #battery,
 #pulseaudio,
-#custom-omarchy,
-#custom-screenrecording-indicator,
 #custom-idle-indicator,
 #custom-update {
   min-width: 12px;
@@ -73,30 +69,10 @@ tooltip {
   opacity: 0;
 }
 
-#custom-screenrecording-indicator {
-  min-width: 12px;
-  margin-left: 8.75px;
-  font-size: 10px;
-}
-
-#custom-screenrecording-indicator.active {
-  color: #a55555;
-}
-
 #custom-idle-indicator {
   font-size: 12px;
 }
 
 #custom-idle-indicator.active {
-  color: #ffcc00;
-}
-
-#devtools {
-  padding: 0 6px;
-  margin: 0 1.5px;
-  min-width: 9px;
-}
-
-#devtools.active {
   color: #ffcc00;
 }

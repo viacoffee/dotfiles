@@ -1,5 +1,5 @@
 [alias]
-	co = checkout
+  co = checkout
   st = status
   lg = log --oneline --graph --decorate
 [init]

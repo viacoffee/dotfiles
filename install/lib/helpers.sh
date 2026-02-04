@@ -30,7 +30,7 @@ install_packages_from_file() {
     return 0
   fi
   
-  info "Installing ${#packages[@]} packages from $(basename "$package_file")..."
+  info "Installing packages from $(basename "$package_file")..."
   
   # Install packages with error handling
   if ! sudo pacman -S --needed --noconfirm "${packages[@]}"; then

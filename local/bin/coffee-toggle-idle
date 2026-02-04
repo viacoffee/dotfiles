@@ -1,25 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Find swayidle PID
-PID=$(pgrep -u "$USER" swayidle) || {
-  # TODO-david need to add notify-send instead of echoing this
-  # echo "swayidle not running"
-  exit 1
-}
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# Include niri helpers
+source "$SCRIPT_DIR/lib/helpers.sh"
 
-# Check current state
-# SIGSTOP sets process state to T (stopped)
-STATE=$(ps -o state= -p "$PID" | tr -d ' ')
+SERVICE="swayidle.service"
 
-if [[ "$STATE" == "T" ]]; then
-  # Process is stopped → resume
-  kill -CONT "$PID"
+if systemctl --user is-enabled --quiet "$SERVICE"; then
+  systemctl --user disable --now "$SERVICE"
   # TODO-david notify-send
-  # echo "Idle lock resumed"
 else
-  # Process is running → pause
-  kill -STOP "$PID"
+  systemctl --user enable --now "$SERVICE"
   # TODO-david notify-send
-  # echo "Idle lock paused"
 fi
+
+signal_waybar "10"
