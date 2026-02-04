@@ -1,5 +1,5 @@
 focus-follows-mouse true
-spawn-at-startup "waybar"
+//spawn-at-startup "waybar"
 
 // -------------------------------------------------------------------
 // Inputs

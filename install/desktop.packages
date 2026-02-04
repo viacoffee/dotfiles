@@ -12,6 +12,7 @@ walker
 waybar
 wl-clipboard
 xdg-desktop-portal
+xdg-desktop-portal-gtk
 xdg-desktop-portal-wlr
 grim
 slurp

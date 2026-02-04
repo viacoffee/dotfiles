@@ -11,6 +11,22 @@ fi
 
 source "$INSTALL_DIR/lib/helpers.sh"
 
+# Make sure multilib is active
+PACMAN_CONF="/etc/pacman.conf"
+
+if ! grep -q '^\[multilib\]' "$PACMAN_CONF"; then
+  sudo tee -a "$PACMAN_CONF" >/dev/null <<'EOF'
+
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+EOF
+else
+  sudo sed -i \
+    -e 's/^#\[multilib\]/[multilib]/' \
+    -e 's|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|' \
+    "$PACMAN_CONF"
+fi
+
 # Update system
 info "Updating package manager..."
 if ! sudo pacman -Syu --noconfirm; then
