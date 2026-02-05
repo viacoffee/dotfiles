@@ -1,4 +1,5 @@
 prefer-no-csd
+spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 
 // -------------------------------------------------------------------
 // Inputs
@@ -78,6 +79,10 @@ binds {
   Mod+Shift+q {
     spawn "sh" "-c" "coffee-lock-screen"
   }
+
+  // Clipboard
+  Mod+C { spawn "sh" "-c" "wl-paste | wl-copy"; }
+  Mod+V { spawn "wl-paste"; }
 
   // Power walker menu
   Mod+Escape {

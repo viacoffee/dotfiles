@@ -1,12 +1,16 @@
 # Desktop environment
 brightnessctl
 btop
+cliphist
+grim
+hyprlock
 mako
 niri
+prettyping
 ripgrep
+slurp
 swaybg
 swayidle
-hyprlock
 swayosd
 walker
 waybar
@@ -14,9 +18,6 @@ wl-clipboard
 xdg-desktop-portal
 xdg-desktop-portal-gtk
 xdg-desktop-portal-wlr
-grim
-slurp
-prettyping
 
 # Optional packages
 alacritty
@@ -31,7 +32,7 @@ playerctl
 ruby
 rust
 signal-desktop
-#spotify
+spotify
 tldr
 ttf-space-mono-nerd
 whois
