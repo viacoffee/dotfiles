@@ -7,10 +7,15 @@ if ! systemctl is-enabled --quiet bluetooth.service && ! systemctl is-active --q
 fi
 
 # Wifi
-if sudo systemctl is-active --quiet NetworkManager; then
+if systemctl is-active --quiet NetworkManager; then
   sudo systemctl disable --now NetworkManager
 fi
 
-if ! sudo systemctl is-active --quiet iwd; then
+if ! systemctl is-active --quiet iwd; then
   sudo systemctl enable --now iwd.service
+fi
+
+# Snapper-sync
+if ! systemctl is-active --quiet limine-snapper-sync; then
+  sudo systemctl enable --now limine-snapper-sync.service
 fi

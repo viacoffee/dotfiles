@@ -7,21 +7,13 @@ linux-headers
 stow
 less
 
-# NVIDIA drivers (RTX 30xx+)
-# nvidia-open-dkms
-# nvidia-utils
-# lib32-nvidia-utils
-# egl-wayland
-# libva-nvidia-driver
-# qt5-wayland
-# qt6-wayland
-
 # X11
 xwayland-satellite
 
 # Snapshots/Backup
 snap-pac
 snapper
+limine-snapper-sync
 
 # Bootloader
 # efibootmgr
