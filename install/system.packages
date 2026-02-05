@@ -5,6 +5,7 @@ curl
 git
 linux-headers
 stow
+less
 
 # NVIDIA drivers (RTX 30xx+)
 # nvidia-open-dkms
@@ -23,8 +24,8 @@ snap-pac
 snapper
 
 # Bootloader
-efibootmgr
-limine
+# efibootmgr
+# limine
 
 # Bluetooth
 blueman
