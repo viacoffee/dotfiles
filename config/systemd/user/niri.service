@@ -1,9 +1,0 @@
-[Unit]
-Description=Niri Window Manager
-
-[Service]
-ExecStart=niri-session
-Restart=always
-
-[Install]
-WantedBy=default.target
