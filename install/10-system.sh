@@ -34,11 +34,13 @@ install_packages_from_file "$INSTALL_DIR/system.packages" || exit 1
 # Setup greetd/tuigreet
 sudo useradd -r -s /usr/bin/nologin greeter
 sudo mkdir -p /etc/greetd
-sudo sh -c 'cat > /etc/greetd/config.toml << "EOF"
+sudo rm /etc/greetd/config.toml
+# sudo touch /etc/greetd/config.toml
+sudo tee /etc/greetd/config.toml > /dev/null << 'EOF'
 [terminal]
 vt = 1
 
 [default_session]
-command = "tuigreet --time --remember --asterisks --cmd niri-session"
+command = "tuigreet --asterisks --window-padding 2 --container-padding 1 --width 50 --cmd niri-session"
 user = "greeter"
-EOF'
+EOF
