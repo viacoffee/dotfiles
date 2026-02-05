@@ -66,7 +66,7 @@ show_capture_menu() {
 }
 
 show_system_menu() {
-  case $(menu "System" "  Lock\n󱄄  Screensaver\n󰜉  Restart\n󰐥  Shutdown") in
+  case $(menu "System" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
   *Lock*) coffee-lock-screen ;;
   *Restart*) coffee-cmd-reboot ;;
   *Shutdown*) coffee-cmd-shutdown ;;
