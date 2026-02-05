@@ -32,10 +32,10 @@ fi
 install_packages_from_file "$INSTALL_DIR/system.packages" || exit 1
 
 # Setup greetd/tuigreet
-sudo useradd -r -s /usr/bin/nologin greeter
-sudo mkdir -p /etc/greetd
-sudo rm /etc/greetd/config.toml
-# sudo touch /etc/greetd/config.toml
+if ! id greeter &>/dev/null; then
+  sudo useradd -r -s /usr/bin/nologin greeter
+fi
+
 sudo tee /etc/greetd/config.toml > /dev/null << 'EOF'
 [terminal]
 vt = 1
