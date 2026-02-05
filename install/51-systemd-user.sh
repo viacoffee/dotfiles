@@ -11,7 +11,7 @@ systemctl --user add-wants niri.service swaybg.service
 systemctl --user add-wants niri.service swayidle.service
 
 # Add niri-service
-systemctl --user enable niri.service
+# systemctl --user enable niri.service
 
 # Reload daemons
 systemctl --user daemon-reload

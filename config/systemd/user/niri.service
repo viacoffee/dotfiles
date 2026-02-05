@@ -2,9 +2,8 @@
 Description=Niri Window Manager
 
 [Service]
-ExecStart=/usr/bin/niri-session
+ExecStart=niri-session
 Restart=always
-Environment=DISPLAY=:0
 
 [Install]
 WantedBy=default.target
