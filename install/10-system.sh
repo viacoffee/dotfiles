@@ -30,3 +30,14 @@ if [[ ! -f "$INSTALL_DIR/system.packages" ]]; then
 fi
 
 install_packages_from_file "$INSTALL_DIR/system.packages" || exit 1
+
+# Setup greetd/tuigreet
+sudo useradd -r -s /usr/bin/nologin greeter
+sudo mkdir -p /etc/greetd && sudo tee /etc/greetd/config.toml > /dev/null << 'EOF'
+[terminal]
+vt = 1
+
+[default_session]
+command = "tuigreet --time --remember --asterisks --cmd niri-session"
+user = "greeter"
+EOF

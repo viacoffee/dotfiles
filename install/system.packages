@@ -25,3 +25,7 @@ bluetui
 # Wifi
 impala
 iwd
+
+# Login/Session
+greetd
+greetd-tuigreet

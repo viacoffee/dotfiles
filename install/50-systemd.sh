@@ -19,3 +19,8 @@ fi
 if ! systemctl is-active --quiet limine-snapper-sync; then
   sudo systemctl enable --now limine-snapper-sync.service
 fi
+
+# Enable greetd
+if ! systemctl is-enabled --quiet greetd; then
+  sudo systemctl enable greetd
+fi
