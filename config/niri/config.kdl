@@ -62,15 +62,6 @@ cursor {
 }
 
 // -------------------------------------------------------------------
-// Static workspaces
-// -------------------------------------------------------------------
-workspace "1"
-workspace "2"
-workspace "3"
-workspace "4"
-workspace "5"
-
-// -------------------------------------------------------------------
 // Keybinds
 // -------------------------------------------------------------------
 hotkey-overlay {
@@ -81,7 +72,7 @@ hotkey-overlay {
 // System
 binds {
   //Mod+Shift+r { reload-config; }
-  Mod+Return { spawn "$TERMINAL"; }
+  Mod+Return { spawn "alacritty"; }
 
   // Lock
   Mod+Shift+q {
