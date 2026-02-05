@@ -2,10 +2,15 @@
 set -euo pipefail
 
 # Bluetooth
-sudo systemctl enable --now bluetooth.service
+if ! systemctl is-enabled --quiet bluetooth.service && ! systemctl is-active --quiet bluetooth.service; then
+  sudo systemctl enable --now bluetooth.service
+fi
 
 # Wifi
 if sudo systemctl is-active --quiet NetworkManager; then
   sudo systemctl disable --now NetworkManager
 fi
-sudo systemctl enable --now iwd.service
+
+if ! sudo systemctl is-active --quiet iwd; then
+  sudo systemctl enable --now iwd.service
+fi

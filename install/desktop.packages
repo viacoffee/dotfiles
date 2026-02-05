@@ -16,6 +16,7 @@ xdg-desktop-portal-gtk
 xdg-desktop-portal-wlr
 grim
 slurp
+prettyping
 
 # Optional packages
 alacritty

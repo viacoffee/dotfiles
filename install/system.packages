@@ -28,10 +28,7 @@ snapper
 # limine
 
 # Bluetooth
-blueman
 bluetui
-bluez
-bluez-utils
 
 # Wifi
 impala

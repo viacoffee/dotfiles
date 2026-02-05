@@ -34,8 +34,6 @@ layout {
     proportion 0.66667
   }
 
-  default-column-width { proportion 0.5; }
-
   preset-window-heights {
     proportion 0.33333
     proportion 0.5
@@ -64,6 +62,15 @@ cursor {
 }
 
 // -------------------------------------------------------------------
+// Static workspaces
+// -------------------------------------------------------------------
+workspace "1"
+workspace "2"
+workspace "3"
+workspace "4"
+workspace "5"
+
+// -------------------------------------------------------------------
 // Keybinds
 // -------------------------------------------------------------------
 hotkey-overlay {
@@ -74,16 +81,16 @@ hotkey-overlay {
 // System
 binds {
   //Mod+Shift+r { reload-config; }
-  Mod+Return { spawn "alacritty"; }
+  Mod+Return { spawn "$TERMINAL"; }
 
   // Lock
   Mod+Shift+q {
     spawn "sh" "-c" "coffee-lock-screen"
   }
 
-  // System walker menu
+  // Power walker menu
   Mod+Escape {
-    spawn "sh" "-c" "coffee-menu system"
+    spawn "sh" "-c" "coffee-menu power"
   }
 
   // General walker menu
