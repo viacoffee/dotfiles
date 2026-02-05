@@ -1,9 +1,9 @@
-focus-follows-mouse true
-
 // -------------------------------------------------------------------
 // Inputs
 // -------------------------------------------------------------------
 input {
+  focus-follows-mouse
+
   keyboard {
     xkb {}
 
@@ -48,11 +48,9 @@ layout {
 // -------------------------------------------------------------------
 // Keybinds
 // -------------------------------------------------------------------
-mod "Super"
-
 // System
 binds {
-  Mod+Shift+r { reload-config; }
+  //Mod+Shift+r { reload-config; }
   Mod+Return { spawn "alacritty"; }
 
   // Lock
@@ -87,15 +85,15 @@ binds {
   Mod+Shift+k { move-window-up; }
 
   // Resize windows
-  Mod+Ctrl+h { resize-column -10; }
-  Mod+Ctrl+l { resize-column +10; }
-  Mod+Ctrl+j { resize-window -10; }
-  Mod+Ctrl+k { resize-window +10; }
+  Mod+Ctrl+h { set-window-height "+10%"; }
+  Mod+Ctrl+l { set-column-width "+10%"; }
+  Mod+Ctrl+j { set-window-height "-10%"; }
+  Mod+Ctrl+k { set-column-width "+10%"; }
 
   // Layout & window actions
   Mod+w { close-window; }
-  Mod+f { toggle-fullscreen; }
-  Mod+t { toggle-floating; }
+  Mod+f { fullscreen-window; }
+  Mod+t { toggle-window-floating; }
 
   // Close all but the focused window
   Mod+Shift+W {
@@ -115,15 +113,11 @@ binds {
   Mod+Shift+4 { move-window-to-workspace 4; }
   Mod+Shift+5 { move-window-to-workspace 5; }
 
-  // Previous/next workspace
-  Mod+Ctrl+h { focus-workspace-previous; }
-  Mod+Ctrl+l { focus-workspace-next; }
-
   // Screengrabs
   // Area to clipboard
-  Mod+p {
-    spawn "grim -g \"$(slurp)\" - | wl-copy"
-  }
+  //Mod+p {
+  //  spawn "grim -g \"$(slurp)\" - | wl-copy"
+  //}
 
   // Area to file
   Mod+Shift+p {
