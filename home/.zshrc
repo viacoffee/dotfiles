@@ -4,20 +4,33 @@
 # Starship prompt
 eval "$(starship init zsh)"
 
-# Load bashrc (if needed for env vars etc.)
-[ -r "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+# Stats
+alias top="btop"
+alias htop="btop"
+alias ping="prettyping --nolegend"
+
+# Vim
+alias vi="nvim"
+alias vim="nvim"
+
+# Directory listings
+alias l="lsd -a1"
+alias la="lsd -la"
+alias lr="lsd -R"
+alias lra="lsd -RA"
+alias lt="lsd --tree"
 
 # Completion (compinit) — cached
-autoload -Uz compinit
-zmodload zsh/complist
+# autoload -Uz compinit
+# zmodload zsh/complist
 
 # Completion behavior
-zstyle ':completion:*' menu select
-zstyle ':completion:*' rehash true
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+# zstyle ':completion:*' menu select
+# zstyle ':completion:*' rehash true
+# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
 # Use cache for speed
-compinit -d ~/.cache/zsh/zcompdump
+# compinit -d ~/.cache/zsh/zcompdump
 
 # History
 HISTFILE=~/.zsh_history
