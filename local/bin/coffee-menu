@@ -20,14 +20,14 @@ back_to() {
 }
 
 menu() {
-  local prompt="$1"
+  local placeholder="$1"
   local options="$2"
 
   echo -e "$options" | fuzzel \
     --dmenu \
-    --prompt "$prompt> " \
-    --lines 10 \
-    --width 40 \
+    --placeholder="$placeholder" \
+    # --lines 10 \
+    # --width 40 \
     2>/dev/null
 }
 
@@ -35,15 +35,9 @@ terminal() {
   xdg-terminal-exec "$@"
 }
 
-float_terminal() {
-}
-
 open_in_editor() {
   notify-send "Editing" "$1"
   ${EDITOR:-nvim} "$1"
-}
-
-present_terminal() {
 }
 
 install() {
