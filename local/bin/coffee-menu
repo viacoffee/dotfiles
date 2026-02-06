@@ -53,7 +53,7 @@ aur_install() {
 ############################
 
 show_screenshot_menu() {
-  case $(menu "Screenshot" \
+  case $(menu "Screenshot…" \
 "󰹑  Full Screen
 󰆞  Selection
 󰍹  Window") in
@@ -66,7 +66,7 @@ show_screenshot_menu() {
 }
 
 show_screenrecord_menu() {
-  case $(menu "Record" \
+  case $(menu "Record…" \
 "  Start
   Stop") in
 
@@ -77,7 +77,7 @@ show_screenrecord_menu() {
 }
 
 show_capture_menu() {
-  case $(menu "Capture" \
+  case $(menu "Capture…" \
 "  Screenshot
   Screenrecord") in
 
@@ -92,14 +92,20 @@ show_capture_menu() {
 ############################
 
 show_system_menu() {
-  case $(menu "System" \
+  case $(menu "System…" \
 "  Lock
 󰜉  Restart
 󰐥  Shutdown") in
 
-  *Lock*) swaylock ;;
-  *Restart*) systemctl reboot ;;
-  *Shutdown*) systemctl poweroff ;;
+  *Lock*)
+    exec sh -c "coffee-lock-screen"
+    ;;
+  *Restart*)
+    exec sh -c "coffee-cmd-reboot"
+    ;;
+  *Shutdown*)
+    exec sh -c "coffee-cmd-shutdown"
+    ;;
   *) back_to show_main_menu ;;
   esac
 }
@@ -109,7 +115,7 @@ show_system_menu() {
 ############################
 
 show_install_menu() {
-  case $(menu "Install" \
+  case $(menu "Install…" \
 "󰏖  Neovim
 󰏖  Firefox
 󰏖  Docker
@@ -128,7 +134,7 @@ show_install_menu() {
 ############################
 
 show_setup_menu() {
-  case $(menu "Setup" \
+  case $(menu "Setup…" \
 "  Edit niri config
   Edit fuzzel config
   Reload WM") in
@@ -155,7 +161,7 @@ go_to_menu() {
 }
 
 show_main_menu() {
-  go_to_menu "$(menu "Go" \
+  go_to_menu "$(menu "Go…" \
 "󰀻  Apps
   Setup
 󰉉  Install

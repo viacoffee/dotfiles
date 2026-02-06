@@ -103,9 +103,9 @@ binds {
   Mod+k { focus-window-up; }
   Mod+l { focus-column-right; }
 
-  // Cycle within column
-  Mod+n { focus-window-down; }
-  Mod+p { focus-window-up; }
+  // Cycle workspaces
+  Mod+d { focus-workspace-down; }
+  Mod+u { focus-workspace-up; }
 
   // Move windows (shift)
   Mod+Shift+h { move-column-left; }
