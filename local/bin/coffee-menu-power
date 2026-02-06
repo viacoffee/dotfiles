@@ -2,22 +2,22 @@
 
 menu=$(cat <<EOF
   Lock
-  Restart
+  Niri Refresh
+  Reboot
   Shutdown
 EOF
 )
 
-choice=$(echo "$menu" | fuzzel --dmenu --width=30)
+choice=$(echo "$menu" | fuzzel --dmenu --width=18)
 
 case "$choice" in
   *Lock)
-    # exec sh -c "coffee-lock-screen"
-    ~/.local/bin/coffee-lock-screen
+    exec sh -c "coffee-lock-screen"
     ;;
-  *Restart)
-    systemctl reboot
+  *Reboot)
+    exec sh -c "coffee-cmd-reboot"
     ;;
   *Shutdown)
-    systemctl poweroff
+    exec sh -c "coffee-cmd-shutdown"
     ;;
 esac
