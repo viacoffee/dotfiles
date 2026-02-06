@@ -1,17 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-export PATH="$HOME/.local/bin:$PATH"
-
-# Set to true when going directly to a submenu, so we can exit directly
+# Exit after submenu when launched directly
 BACK_TO_EXIT=false
 
+############################
+# Helpers
+############################
+
 back_to() {
-  local parent_menu="$1"
+  local parent="$1"
 
   if [[ "$BACK_TO_EXIT" == true ]]; then
     exit 0
-  elif [[ -n "$parent_menu" ]]; then
-    "$parent_menu"
+  elif [[ -n "$parent" ]]; then
+    "$parent"
   else
     show_main_menu
   fi
@@ -20,73 +22,156 @@ back_to() {
 menu() {
   local prompt="$1"
   local options="$2"
-  local extra="$3"
-  local preselect="$4"
 
-  read -r -a args <<<"$extra"
-
-  if [[ -n "$preselect" ]]; then
-    local index
-    index=$(echo -e "$options" | grep -nxF "$preselect" | cut -d: -f1)
-    if [[ -n "$index" ]]; then
-      args+=("-c" "$index")
-    fi
-  fi
-
-  echo -e "$options" | coffee-launch-walker --dmenu --width 295 --minheight 1 --maxheight 630 -p "$prompt…" "${args[@]}" 2>/dev/null
+  echo -e "$options" | fuzzel \
+    --dmenu \
+    --prompt "$prompt> " \
+    --lines 10 \
+    --width 40 \
+    2>/dev/null
 }
 
 terminal() {
-  xdg-terminal-exec --app-id=org.coffee.terminal "$@"
+  xdg-terminal-exec "$@"
 }
 
 float_terminal() {
-  coffee-launch-floating-terminal $1
 }
 
 open_in_editor() {
-  notify-send "Editing config file" "$1"
-  coffee-launch-editor "$1"
+  notify-send "Editing" "$1"
+  ${EDITOR:-nvim} "$1"
+}
+
+present_terminal() {
 }
 
 install() {
-  present_terminal "echo 'Installing $1...'; sudo pacman -S --noconfirm $2"
+  present_terminal "echo Installing $1... && sudo pacman -S --noconfirm $2"
 }
 
 aur_install() {
-  present_terminal "echo 'Installing $1 from AUR...'; yay -S --noconfirm $2"
+  present_terminal "echo Installing $1... && yay -S --noconfirm $2"
 }
 
-show_capture_menu() {
-  case $(menu "Capture" "  Screenshot\n  Screenrecord") in
-  *Screenshot*) show_screenshot_menu ;;
-  *Screenrecord*) show_screenrecord_menu ;;
-  *) show_trigger_menu ;;
+############################
+# Capture Menus
+############################
+
+show_screenshot_menu() {
+  case $(menu "Screenshot" \
+"󰹑  Full Screen
+󰆞  Selection
+󰍹  Window") in
+
+  *Full*) grim ~/Pictures/shot-$(date +%s).png ;;
+  *Selection*) grim -g "$(slurp)" ~/Pictures/shot-$(date +%s).png ;;
+  *Window*) grim -g "$(slurp -w)" ~/Pictures/shot-$(date +%s).png ;;
+  *) back_to show_capture_menu ;;
   esac
 }
 
-show_system_menu() {
-  case $(menu "System" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
-  *Lock*) coffee-lock-screen ;;
-  *Restart*) coffee-cmd-reboot ;;
-  *Shutdown*) coffee-cmd-shutdown ;;
+show_screenrecord_menu() {
+  case $(menu "Record" \
+"  Start
+  Stop") in
+
+  *Start*) wf-recorder -f ~/Videos/rec-$(date +%s).mp4 ;;
+  *Stop*) pkill wf-recorder ;;
+  *) back_to show_capture_menu ;;
+  esac
+}
+
+show_capture_menu() {
+  case $(menu "Capture" \
+"  Screenshot
+  Screenrecord") in
+
+  *Screenshot*) show_screenshot_menu ;;
+  *Screenrecord*) show_screenrecord_menu ;;
   *) back_to show_main_menu ;;
   esac
 }
 
-show_main_menu() {
-  go_to_menu "$(menu "Go" "󰀻  Apps\n  Setup\n󰉉  Install\n󰭌  Remove\n  Update\n  System")"
+############################
+# System Menu
+############################
+
+show_system_menu() {
+  case $(menu "System" \
+"  Lock
+󰜉  Restart
+󰐥  Shutdown") in
+
+  *Lock*) swaylock ;;
+  *Restart*) systemctl reboot ;;
+  *Shutdown*) systemctl poweroff ;;
+  *) back_to show_main_menu ;;
+  esac
 }
+
+############################
+# Install Menu
+############################
+
+show_install_menu() {
+  case $(menu "Install" \
+"󰏖  Neovim
+󰏖  Firefox
+󰏖  Docker
+󰏖  VLC") in
+
+  *Neovim*) install "Neovim" neovim ;;
+  *Firefox*) install "Firefox" firefox ;;
+  *Docker*) install "Docker" docker ;;
+  *VLC*) install "VLC" vlc ;;
+  *) back_to show_main_menu ;;
+  esac
+}
+
+############################
+# Setup Menu
+############################
+
+show_setup_menu() {
+  case $(menu "Setup" \
+"  Edit niri config
+  Edit fuzzel config
+  Reload WM") in
+
+  *niri*) open_in_editor ~/.config/niri/config.kdl ;;
+  *fuzzel*) open_in_editor ~/.config/fuzzel/fuzzel.ini ;;
+  *Reload*) pkill -USR1 niri ;;
+  *) back_to show_main_menu ;;
+  esac
+}
+
+############################
+# Main Navigation
+############################
 
 go_to_menu() {
   case "${1,,}" in
-  *apps*) walker -p "Launch..." ;;
-  *setup*) show_setup_menu ;;
-  *install*) show_install_menu ;;
-  *remove*) show_remove_menu ;;
-  *system*) show_system_menu ;;
+    *apps*) fuzzel ;;
+    *setup*) show_setup_menu ;;
+    *install*) show_install_menu ;;
+    *capture*) show_capture_menu ;;
+    *system*) show_system_menu ;;
   esac
 }
+
+show_main_menu() {
+  go_to_menu "$(menu "Go" \
+"󰀻  Apps
+  Setup
+󰉉  Install
+  Capture
+  System")"
+}
+
+############################
+# Entry Point
+############################
 
 if [[ -n "$1" ]]; then
   BACK_TO_EXIT=true

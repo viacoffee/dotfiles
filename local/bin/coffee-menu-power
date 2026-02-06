@@ -8,7 +8,7 @@ menu=$(cat <<EOF
 EOF
 )
 
-choice=$(echo "$menu" | fuzzel --dmenu --width=18)
+choice=$(echo "$menu" | fuzzel --dmenu --width=18 --placeholder=System…)
 
 case "$choice" in
   *Lock)

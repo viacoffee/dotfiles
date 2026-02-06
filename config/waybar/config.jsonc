@@ -9,7 +9,6 @@
   ],
   "modules-center": [
     "clock",
-    "custom/update",
     "custom/idle-indicator"
   ],
   "modules-right": [
@@ -17,7 +16,6 @@
     "bluetooth",
     "network",
     "pulseaudio",
-    "cpu",
     "battery"
   ],
   "niri/workspaces": {
@@ -46,11 +44,6 @@
     }
   },
 
-  "cpu": {
-    "interval": 5,
-    "format": "󰍛",
-    "on-click": "coffee-launch-or-focus-tui btop"
-  },
   "clock": {
     "format": "{:L%d - %H:%M}",
     "format-alt": "{:L%A, %d %B, %Y (W%V)}",

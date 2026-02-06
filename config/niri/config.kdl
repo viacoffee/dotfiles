@@ -1,11 +1,15 @@
-prefer-no-csd
+// prefer-no-csd
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 // -------------------------------------------------------------------
 // Inputs
 // -------------------------------------------------------------------
 input {
   focus-follows-mouse
+  disable-power-key-handling
+  warp-mouse-to-focus mode="center-xy"
 
   keyboard {
     xkb {}
@@ -57,9 +61,8 @@ layout {
 
 cursor {
   xcursor-theme "breeze_cursors"
-  xcursor-size 48
+  xcursor-size 68
   hide-when-typing
-  hide-after-inactive-ms 1000
 }
 
 // -------------------------------------------------------------------
@@ -84,12 +87,12 @@ binds {
   Mod+C { spawn "sh" "-c" "wl-paste | wl-copy"; }
   Mod+V { spawn "wl-paste"; }
 
-  // Power walker menu
+  // Power fuzzel dmenu
   Mod+Escape {
-    spawn "sh" "-c" "coffee-menu-power"
+    spawn "sh" "-c" "coffee-menu system"
   }
 
-  // General walker menu
+  // General fuzzel dmenu
   Mod+Alt+Space {
     spawn "sh" "-c" "coffee-menu"
   }
@@ -145,14 +148,13 @@ binds {
   //  spawn "grim -g \"$(slurp)\" - | wl-copy"
   //}
 
-  // Area to file
+  // Area to clipboard
   Mod+Shift+p {
-    spawn "grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"
+    screenshot
   }
 
-  // Screen to file
-  Mod+Shift+Ctrl+p {
-    spawn "grim ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"
+  Mod+Alt+p {
+    screenshot-screen
   }
 
   Ctrl+Alt+Delete { quit; }
