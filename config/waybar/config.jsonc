@@ -9,7 +9,6 @@
   ],
   "modules-center": [
     "clock",
-    "custom/idle-indicator"
   ],
   "modules-right": [
     "group/tray-expander",
@@ -111,12 +110,6 @@
   "custom/expand-icon": {
     "format": "",
     "tooltip": false
-  },
-  "custom/idle-indicator": {
-    "on-click": "coffee-toggle-idle",
-    "exec": "~/.config/waybar/indicators/idle.sh",
-    "signal": 10,
-    "return-type": "json"
   },
   "tray": {
     "icon-size": 14,

@@ -13,7 +13,7 @@
 window#waybar {
   background: rgba(0, 0, 0, 0.8);
   color: #cfd8dc;
-  font-family: 'SpaceMono Nerd Font Mono', sans-serif;
+  font-family: "SpaceMono Nerd Font Mono", sans-serif;
   font-size: 12px;
 }
 
@@ -28,7 +28,8 @@ window#waybar {
 
 #workspaces button.focused,
 #workspaces button.active {
-  color: #cfd8dc;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 #workspaces button.empty {
@@ -43,84 +44,39 @@ window#waybar {
   margin-right: 8px;
 }
 
-/* Individual module spacing (optional) */
-/* #clock, #battery, #cpu, #memory, #network { */
-/*   min-width: 12px; */
-/*   margin: 0 7.5px; */
-/* } */
+#cpu,
+#battery,
+#pulseaudio,
+#custom-update {
+  min-width: 12px;
+  margin: 0 7.5px;
+}
 
- #cpu,
- #battery,
- #pulseaudio,
- #custom-idle-indicator,
- #custom-update {
-   min-width: 12px;
-   margin: 0 7.5px;
- }
+#tray {
+  margin-right: 16px;
+}
 
- #tray {
-   margin-right: 16px;
- }
+#bluetooth {
+  margin-right: 17px;
+}
 
- #bluetooth {
-   margin-right: 17px;
- }
+#network {
+  margin-right: 13px;
+}
 
- #network {
-   margin-right: 13px;
- }
+#custom-expand-icon {
+  margin-right: 18px;
+}
 
- tooltip {
-   padding: 2px;
- }
+#clock {
+  margin-left: 8.75px;
+}
 
-/*
- #cpu,
- #battery,
- #pulseaudio,
- #custom-idle-indicator,
- #custom-update {
-   min-width: 12px;
-   margin: 0 7.5px;
- }
+.hidden {
+  opacity: 0;
+}
 
- #tray {
-   margin-right: 16px;
- }
-
- #bluetooth {
-   margin-right: 17px;
- }
-
- #network {
-   margin-right: 13px;
- }
-
- #custom-expand-icon {
-   margin-right: 18px;
- }
-
- tooltip {
-   padding: 2px;
- }
-
- #custom-update {
-   font-size: 10px;
- }
-
- #clock {
-   margin-left: 8.75px;
- }
-
- .hidden {
-   opacity: 0;
- }
-
- #custom-idle-indicator {
-   font-size: 12px;
- }
-
- #custom-idle-indicator.active {
-   color: #ffcc00;
- }
-*/
+tooltip {
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.8);
+}
