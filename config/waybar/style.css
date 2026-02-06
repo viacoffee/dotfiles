@@ -1,12 +1,38 @@
+/* Reset all modules and the bar itself */
 * {
-  background-color: #1e2229;
-  color: @foreground;
-
+  background: none;
+  background-color: transparent;
   border: none;
   border-radius: 0;
-  min-height: 0;
-  font-family: 'SpaceMono Nerd Font Mono';
+  box-shadow: none;
+  text-shadow: none;
+  transition: none;
+}
+
+/* The main bar container */
+window#waybar {
+  background: rgba(0, 0, 0, 0.8);
+  color: #cfd8dc;
+  font-family: 'SpaceMono Nerd Font Mono', sans-serif;
   font-size: 12px;
+}
+
+/* Specifically clean up workspace buttons */
+#workspaces button {
+  padding: 0 6px;
+  margin: 0 1.5px;
+  min-width: 9px;
+  background: transparent;
+  color: #cfd8dc;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+  color: #cfd8dc;
+}
+
+#workspaces button.empty {
+  opacity: 0.5;
 }
 
 .modules-left {
@@ -17,62 +43,84 @@
   margin-right: 8px;
 }
 
-#workspaces button {
-  all: initial;
-  padding: 0 6px;
-  margin: 0 1.5px;
-  min-width: 9px;
-}
+/* Individual module spacing (optional) */
+/* #clock, #battery, #cpu, #memory, #network { */
+/*   min-width: 12px; */
+/*   margin: 0 7.5px; */
+/* } */
 
-#workspaces button.empty {
-  opacity: 0.5;
-}
+ #cpu,
+ #battery,
+ #pulseaudio,
+ #custom-idle-indicator,
+ #custom-update {
+   min-width: 12px;
+   margin: 0 7.5px;
+ }
 
-#cpu,
-#battery,
-#pulseaudio,
-#custom-idle-indicator,
-#custom-update {
-  min-width: 12px;
-  margin: 0 7.5px;
-}
+ #tray {
+   margin-right: 16px;
+ }
 
-#tray {
-  margin-right: 16px;
-}
+ #bluetooth {
+   margin-right: 17px;
+ }
 
-#bluetooth {
-  margin-right: 17px;
-}
+ #network {
+   margin-right: 13px;
+ }
 
-#network {
-  margin-right: 13px;
-}
+ tooltip {
+   padding: 2px;
+ }
 
-#custom-expand-icon {
-  margin-right: 18px;
-}
+/*
+ #cpu,
+ #battery,
+ #pulseaudio,
+ #custom-idle-indicator,
+ #custom-update {
+   min-width: 12px;
+   margin: 0 7.5px;
+ }
 
-tooltip {
-  padding: 2px;
-}
+ #tray {
+   margin-right: 16px;
+ }
 
-#custom-update {
-  font-size: 10px;
-}
+ #bluetooth {
+   margin-right: 17px;
+ }
 
-#clock {
-  margin-left: 8.75px;
-}
+ #network {
+   margin-right: 13px;
+ }
 
-.hidden {
-  opacity: 0;
-}
+ #custom-expand-icon {
+   margin-right: 18px;
+ }
 
-#custom-idle-indicator {
-  font-size: 12px;
-}
+ tooltip {
+   padding: 2px;
+ }
 
-#custom-idle-indicator.active {
-  color: #ffcc00;
-}
+ #custom-update {
+   font-size: 10px;
+ }
+
+ #clock {
+   margin-left: 8.75px;
+ }
+
+ .hidden {
+   opacity: 0;
+ }
+
+ #custom-idle-indicator {
+   font-size: 12px;
+ }
+
+ #custom-idle-indicator.active {
+   color: #ffcc00;
+ }
+*/
