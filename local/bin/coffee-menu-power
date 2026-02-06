@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
 
-chosen=$(printf " Lock\n Reboot\n Shutdown" | fuzzel --dmenu)
+menu=$(cat <<EOF
+  Lock
+  Restart
+  Shutdown
+EOF
+)
 
-case "$chosen" in
-  Lock)
-    coffee-lock-screen
+choice=$(echo "$menu" | fuzzel --dmenu --width=30)
+
+case "$choice" in
+  *Lock)
+    ~/.local/bin/coffee-lock-screen
     ;;
-  Reboot)
-    coffee-cmd-reboot
+  *Restart)
+    systemctl reboot
     ;;
-  Shutdown)
-    coffee-cmd-shutdown
+  *Shutdown)
+    systemctl poweroff
     ;;
 esac
