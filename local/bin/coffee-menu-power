@@ -11,6 +11,7 @@ choice=$(echo "$menu" | fuzzel --dmenu --width=30)
 
 case "$choice" in
   *Lock)
+    # exec sh -c "coffee-lock-screen"
     ~/.local/bin/coffee-lock-screen
     ;;
   *Restart)
