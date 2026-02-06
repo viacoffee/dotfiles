@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+chosen=$(printf " Lock\n Reboot\n Shutdown" | fuzzel --dmenu)
+
+case "$chosen" in
+  Lock)
+    coffee-lock-screen
+    ;;
+  Reboot)
+    coffee-cmd-reboot
+    ;;
+  Shutdown)
+    coffee-cmd-shutdown
+    ;;
+esac

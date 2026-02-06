@@ -86,7 +86,7 @@ binds {
 
   // Power walker menu
   Mod+Escape {
-    spawn "sh" "-c" "coffee-menu system"
+    spawn "sh" "-c" "coffee-menu-power"
   }
 
   // General walker menu

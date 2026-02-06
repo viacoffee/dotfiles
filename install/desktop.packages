@@ -2,6 +2,7 @@
 brightnessctl
 btop
 cliphist
+fuzzel
 grim
 hyprlock
 mako
@@ -12,7 +13,6 @@ slurp
 swaybg
 swayidle
 swayosd
-walker
 waybar
 wl-clipboard
 xdg-desktop-portal
