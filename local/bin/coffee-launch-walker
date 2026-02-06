@@ -1,4 +1,4 @@
-# Launch the Walker application launcher while ensuring that it's data provider (called elephant) is running first.
+#!/usr/bin/env bash
 
 # Ensure elephant is running before launching walker
 if ! pgrep -x elephant > /dev/null; then
