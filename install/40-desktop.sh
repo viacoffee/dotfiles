@@ -17,5 +17,8 @@ install_packages_from_file "$INSTALL_DIR/desktop.packages"
 # Rebuild font cache
 fc-cache -fv >/dev/null
 
+# Set shell
+chsh -s /bin/zsh
+
 # Safety: enable wayland for firefox
 #echo 'export MOZ_ENABLE_WAYLAND=1' > ~/.config/environment.d/firefox.conf

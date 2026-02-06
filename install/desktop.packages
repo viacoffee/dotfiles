@@ -19,7 +19,7 @@ xdg-desktop-portal
 xdg-desktop-portal-gtk
 xdg-desktop-portal-wlr
 
-# Optional packages
+# Other packages
 alacritty
 bat
 docker
@@ -36,3 +36,5 @@ spotify
 tldr
 ttf-space-mono-nerd
 whois
+zsh
+starship
