@@ -20,5 +20,8 @@ fc-cache -fv >/dev/null
 # Set shell
 chsh -s /bin/zsh
 
+# Create zsh cache
+mkdir -p ~/.cache/zsh
+
 # Safety: enable wayland for firefox
 #echo 'export MOZ_ENABLE_WAYLAND=1' > ~/.config/environment.d/firefox.conf

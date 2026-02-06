@@ -27,12 +27,6 @@ function mkmv() {
   mkdir -p $2 && mv $1 $2
 }
 
-# History
-HISTSIZE=5000
-HISTFILESIZE=10000
-HISTCONTROL=ignoredups:erasedups
-shopt -s histappend
-
 # Add ~/.local/bin to PATH
 if [ -d "$HOME/.local/bin" ]; then
   export PATH="$HOME/.local/bin:$PATH"
