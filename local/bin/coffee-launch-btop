@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
-alacritty --title=coffee.btop -e bash -c 'fastfetch; read -n 1 -s'
+alacritty --title=coffee.btop -e 'btop'

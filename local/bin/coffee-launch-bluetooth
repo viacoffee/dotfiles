@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+
+alacritty --title=coffee.btop -e 'bluetui'

@@ -177,6 +177,7 @@ window-rule {
 window-rule {
   match app-id="Alacritty" title="coffee.about"
   match app-id="Alacritty" title="coffee.btop"
+  match app-id="Alacritty" title="coffee.float-tui"
 
   draw-border-with-background false
   open-floating true

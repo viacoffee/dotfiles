@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+alacritty --title=coffee.about -e bash -c 'fastfetch; read -n 1 -s'
