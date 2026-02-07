@@ -11,13 +11,15 @@ less
 xwayland-satellite
 
 # Snapshots/Backup
-snap-pac
 snapper
 limine-snapper-sync
+limine-mkinitcpio-hook
 
 # Bootloader
 # efibootmgr
 # limine
+plymouth
+btrfs-progs
 
 # Bluetooth
 bluetui
