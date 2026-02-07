@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Try for force dark mode on gtk applications
-gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
 
 # Create base home directories
 echo "Creating default home directories"
