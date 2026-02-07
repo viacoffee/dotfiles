@@ -32,5 +32,5 @@ invisible=false
 
 [urgency=critical]
 default-timeout=0
-text-color=#ffcc00
+text-color=#ef596f
 #layer=overlay
