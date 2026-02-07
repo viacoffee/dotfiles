@@ -91,6 +91,10 @@ binds {
   Mod+C { spawn "sh" "-c" "wl-paste | wl-copy"; }
   Mod+V { spawn "wl-paste"; }
 
+  Mod+Shift+t {
+    spawn "sh" "-c" "coffee-launch-btop"
+  }
+
   // Power fuzzel dmenu
   Mod+Escape {
     spawn "sh" "-c" "coffee-menu system"
@@ -162,4 +166,17 @@ binds {
   }
 
   Ctrl+Alt+Delete { quit; }
+}
+
+window-rule {
+  match app-id="Alacritty" title="coffee.about"
+  match app-id="Alacritty" title="coffee.btop"
+
+  draw-border-with-background false
+  opacity 0.8
+  open-floating true
+  open-focused true
+
+  max-width 300
+  max-height 200
 }
