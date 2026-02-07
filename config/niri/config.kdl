@@ -169,14 +169,19 @@ binds {
 }
 
 window-rule {
+  match is-focused=false
+  opacity 0.98
+  draw-border-with-background false
+}
+
+window-rule {
   match app-id="Alacritty" title="coffee.about"
   match app-id="Alacritty" title="coffee.btop"
 
   draw-border-with-background false
-  opacity 0.8
   open-floating true
   open-focused true
 
-  max-width 300
-  max-height 200
+  min-height 600
+  min-width 800
 }
