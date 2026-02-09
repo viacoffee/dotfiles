@@ -19,7 +19,7 @@ else
 fi
 
 # Update system
-info "Updating system..."
+log "Updating system..."
 if ! sudo pacman -Syu --noconfirm; then
   error "Failed to update base packages"
 fi

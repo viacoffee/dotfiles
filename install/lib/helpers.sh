@@ -159,7 +159,7 @@ install_missing_packages() {
     log "Installing missing packages..."
 
     run_logged "Installing missing packages: ${missing[*]}" \
-      sudo pacman -S --noconfirm --needed "${missing[*]}"
+      "sudo pacman -S --noconfirm --needed ${missing[*]}"
 
     success "Package installation completed"
   else
