@@ -7,12 +7,27 @@ log "Validating required components..."
 # Array to track missing components
 missing_components=()
 
+# Must be x86 only to fully work
+log "Checking that system is x86_64"
+if [ "$(uname -m)" = "x86_64" ]; then
+  success "x86_64 CPU"
+else
+  error "Not an x86_64 CPU"
+fi
+
+# Must have secure boot disabled
+log "Check secure boot is disabled"
+if bootctl status 2>/dev/null | grep -q 'Secure Boot: enabled'; then
+  error "Secure boot needs to be disabled"
+else
+  success "Secure boot is disabled"
+fi
+
 log "Checking for pacman..."
 if command_exists pacman; then
   success "pacman found"
 else
   error "Imagine not being on arch"
-  exit 1
 fi
 
 log "Checking for systemd..."
@@ -60,6 +75,21 @@ echo ""
 if [ ${#missing_components[@]} -gt 0 ]; then
   warn "The following components are missing and installation cannot continue"
   error "Missing components: [$(printf '%s, ' "${missing_components[@]}" | sed 's/, $//')]"
-else
-  success "Preflight checks completed"
 fi
+
+# Temporarily disable mkinitcpio hooks to prevent multiple regenerations during package installation
+# This speeds up installation significantly
+log "Temporarily disabling mkinitcpio hooks during installation..."
+
+# Move the specific mkinitcpio pacman hooks out of the way if they exist
+if [ -f /usr/share/libalpm/hooks/90-mkinitcpio-install.hook ]; then
+  sudo mv /usr/share/libalpm/hooks/90-mkinitcpio-install.hook /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled
+fi
+
+if [ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook ]; then
+  sudo mv /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled
+fi
+
+log "mkinitcpio hooks disabled"
+
+success "Preflight checks completed"

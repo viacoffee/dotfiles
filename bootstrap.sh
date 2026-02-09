@@ -11,6 +11,7 @@ if [ -z "$COFFEE_INSTALL" ]; then
   export COFFEE_INSTALL="$COFFEE_PATH/install"
 fi
 
+export COFFEE_INSTALL_DEFAULTS_PATH=:"$COFFEE_INSTALL/default"
 export COFFEE_INSTALL_LOG_FILE="${COFFEE_INSTALL_LOG_FILE:-/var/log/coffee-install.log}"
 
 # Ensure log file exists
@@ -45,6 +46,7 @@ Vars log:
   + COFFEE_PATH=$COFFEE_PATH
   + COFFEE_INSTALL=$COFFEE_INSTALL 
   + COFFEE_INSTALL_LOG_FILE=$COFFEE_INSTALL_LOG_FILE
+  + COFFEE_INSTALL_DEFAULTS_PATH=$COFFEE_INSTALL_DEFAULTS_PATH
 EOF
 log "Installation started at: $(date '+%Y-%m-%d %H:%M:%S')"
 
@@ -78,12 +80,13 @@ Vars log:
     COFFEE_PATH=$COFFEE_PATH
     COFFEE_INSTALL=$COFFEE_INSTALL 
     COFFEE_INSTALL_LOG_FILE=$COFFEE_INSTALL_LOG_FILE
+    COFFEE_INSTALL_DEFAULTS_PATH=$COFFEE_INSTALL_DEFAULTS_PATH
   + COFFEE_DEFAULT_USER=$COFFEE_DEFAULT_USER
 EOF
 
 # Phase 2.2: Limine bootloader
-if [ -f "$COFFEE_INSTALL/20-login.sh" ]; then
-  source "$COFFEE_INSTALL/20-login.sh"
+if [ -f "$COFFEE_INSTALL/12-bootloader.sh" ]; then
+  source "$COFFEE_INSTALL/12-bootloader.sh"
 else
   error "Bootloader/login configuration failed (script not found)"
 fi
