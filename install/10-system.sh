@@ -13,7 +13,7 @@ if ! grep -q "omarchy" $PACMAN_CONF; then
     sudo mv "$PACMAN_CONF" "$PACMAN_CONF.bak"
 
   run_logged "Copying from: $COFFEE_INSTALL_DEFAULTS_PATH/pacman/pacman.conf to: $PACMAN_CONF" \
-    sudo cp "$COFFEE_INSTALL/pacman.conf" "$PACMAN_CONF"
+    sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/pacman/pacman.conf" "$PACMAN_CONF"
 else
   log "omarchy found in $PACMAN_CONF"
 fi
