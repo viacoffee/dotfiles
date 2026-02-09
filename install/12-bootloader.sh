@@ -31,8 +31,8 @@ HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap conso
 EOF
 
 # Detect boot mode
-if [[ -d /sys/firmware/efi ]]
- EFI=true
+if [[ -d /sys/firmware/efi ]]; then
+  EFI=true
 else
   error "Not EFI system"
 fi
@@ -55,7 +55,9 @@ fi
 success "Limine config: $limine_config"
 
 CMDLINE=$(grep "^[[:space:]]*cmdline:" "$limine_config" | head -1 | sed 's/^[[:space:]]*cmdline:[[:space:]]*//')
-log $CMDLINE
+log "Limine cmdline: $CMDLINE"
+
+# TODO-david DUPLICATING ===================
 
 sudo cp $COFFEE_INSTALL_DEFAULTS_PATH/limine/default.conf /etc/default/limine
 sudo sed -i "s|@@CMDLINE@@|$CMDLINE|g" /etc/default/limine
