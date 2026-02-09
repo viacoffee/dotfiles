@@ -10,46 +10,35 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Simple logging function without command execution
-# Usage: log "message"
-log() {
-  local message="$1"
-  echo -e "${BLUE}>${NC} $message"
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $message" >> "$COFFEE_INSTALL_LOG_FILE"
+_log() {
+  local level="$1"
+  local color="$2"
+  shift 2
+
+  local message
+  message="$(_read_message "$@")"
+
+  if [[ -n $level ]]; then
+    if [[ -n $color ]]; then
+      printf '%b\n' "${color}${level}${NC} $message"
+    else
+      printf '%s %s\n' "$level" "$message"
+    fi
+  else
+    printf '%s\n' "$message"
+  fi
+
+  printf '[%s] %s\n' "$(date '+%F %T')" "$message" \
+    >> "$COFFEE_INSTALL_LOG_FILE"
 }
 
-# Important info message
-# Usage: important "message"
-important() {
-  local message="$1"
-  echo -e "\033[1;34m==> $message\033[0m" 
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $message" >> "$COFFEE_INSTALL_LOG_FILE"
-}
+log() { _log "" "" "$@"; }
+info() { _log "INFO" "$BLUE" "$@"; }
+important() { _log "==>" "\033[1;34m" "$@"; }
+success() { _log "✓" "$GREEN" "$@"; }
+warn() { _log "WARNING" "$YELLOW" "$@"; }
+error() { _log "ERROR" "$RED" "$@"; exit 1; }
 
-# Success message
-# Usage: success "message"
-success() {
-  local message="$1"
-  echo -e "${GREEN}✓${NC} $message"
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✓ $message" >> "$COFFEE_INSTALL_LOG_FILE"
-}
-
-# Error message and exit
-# Usage: error "message"
-error() {
-  local message="$1"
-  echo -e "${RED}ERROR:${NC} $message" >&2
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $message" >> "$COFFEE_INSTALL_LOG_FILE"
-  exit 1
-}
-
-# Warning message
-# Usage: warn "message"
-warn() {
-  local message="$1"
-  echo -e "${YELLOW}WARNING:${NC}  $message"
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] WARNING: $message" >> "$COFFEE_INSTALL_LOG_FILE"
-}
 # Logging function - logs command output to install log and displays to stdout
 # Usage: run_logged "description" "command"
 run_logged() {
