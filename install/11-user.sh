@@ -3,7 +3,7 @@
 # User Account Verification and Configuration
 # Verifies and configures the non-root user running the script for autologin
 
-info "Verifying user account for autologin..."
+log "Verifying user account for autologin..."
 
 # Get the user running the script (the one with sudo privileges)
 # When run with sudo, we need to get the original user, not root
