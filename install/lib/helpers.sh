@@ -147,8 +147,6 @@ install_missing_packages() {
     if ! package_installed "$pkg"; then
       missing+=("$pkg")
       warn "Missing: $pkg"
-    else
-      success "Installed: $pkg"
     fi
   done
 
@@ -159,17 +157,14 @@ install_missing_packages() {
       "sudo pacman -S --noconfirm --needed ${missing[*]}"
 
     success "Package installation completed"
-  else
-    success "All required packages are already installed"
+
+    log "Verifying all packages again..."
+    for pkg in "${packages[@]}"; do
+      if ! package_installed "$pkg"; then
+        error "Failed to verify package: $pkg"
+      fi
+    done
   fi
 
-  # Verify all packages
-  log "Verifying all packages again..."
-  for pkg in "${packages[@]}"; do
-    if package_installed "$pkg"; then
-      success "Verified: $pkg"
-    else
-      error "Failed to verify package: $pkg"
-    fi
-  done
+  success "All packages installed and verified"
 }
