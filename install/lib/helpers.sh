@@ -10,6 +10,14 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+_read_message() {
+  if [[ -t 0 ]]; then
+    printf '%s' "$*"
+  else
+    cat
+  fi
+}
+
 _log() {
   local level="$1"
   local color="$2"
