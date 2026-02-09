@@ -31,7 +31,7 @@ HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap conso
 EOF
 
 # Detect boot mode
-[[ -d /sys/firmware/efi ]] && EFI=true
+if [[ -d /sys/firmware/efi ]] && EFI=true
 
 # Find config location
 log "Finding limine config..."
@@ -88,6 +88,7 @@ sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root
 sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 
 sudo systemctl enable limine-snapper-sync
+fi
 
 log "Re-enabling mkinitcpio hooks"
 # Restore the specific mkinitcpio pacman hooks
