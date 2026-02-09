@@ -85,7 +85,13 @@ if ! sudo snapper list-configs 2>/dev/null | grep -q "home"; then
 fi
 
 # Enable quota to allow space-aware algorithms to work
-sudo btrfs quota enable /
+log "Check if btrfs quota is enabled"
+if btrfs quota status / | grep -qE '^\s*Enabled:\s+yes'; then
+  success "Btrfs quota already enabled"
+else
+  sudo btrfs quota enable /
+  success "Enabled btrfs quota"
+fi
 
 # Tweak default Snapper configs
 sudo sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/{root,home}
