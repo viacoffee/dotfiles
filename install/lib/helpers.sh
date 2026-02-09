@@ -1,80 +1,178 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Exit on error, undefined variables, and pipe failures
-set -euo pipefail
+# Helper functions for installation
+# Provides logging, output formatting, and error handling
 
-info() { printf "\033[1;34m==> %s\033[0m\n" "$*"; }
-warn() { printf "\033[1;33m!!! %s\033[0m\n" "$*"; }
-error() { printf "\033[1;31m=== %s\033[0m\n" "$*"; }
+# Color codes for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
-install_packages_from_file() {
-  local package_file="$1"
-  
-  # Validate input file exists and is readable
-  if [[ ! -f "$package_file" ]]; then
-    error "Package file not found: $package_file"
-    return 1
-  fi
-  
-  if [[ ! -r "$package_file" ]]; then
-    error "Package file not readable: $package_file"
-    return 1
-  fi
-  
-  # Read packages from file, filtering comments and empty lines
-  local -a packages
-  mapfile -t packages < <(grep -v '^#' "$package_file" | grep -v '^$' || true)
-  
-  if [[ ${#packages[@]} -eq 0 ]]; then
-    warn "No packages found in $package_file"
+# Simple logging function without command execution
+# Usage: log "message"
+log() {
+  local message="$1"
+  echo -e "${BLUE}>${NC} $message"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $message" >> "$COFFEE_INSTALL_LOG_FILE"
+}
+
+# Important info message
+# Usage: important "message"
+important() {
+  local message="$1"
+  echo -e "\033[1;34m==> $message\033[0m" 
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $message" >> "$COFFEE_INSTALL_LOG_FILE"
+}
+
+# Success message
+# Usage: success "message"
+success() {
+  local message="$1"
+  echo -e "${GREEN}✓${NC} $message"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✓ $message" >> "$COFFEE_INSTALL_LOG_FILE"
+}
+
+# Error message and exit
+# Usage: error "message"
+error() {
+  local message="$1"
+  echo -e "${RED}ERROR:${NC} $message" >&2
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $message" >> "$COFFEE_INSTALL_LOG_FILE"
+  exit 1
+}
+
+# Warning message
+# Usage: warn "message"
+warn() {
+  local message="$1"
+  echo -e "${YELLOW}WARNING:${NC}  $message"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] WARNING: $message" >> "$COFFEE_INSTALL_LOG_FILE"
+}
+# Logging function - logs command output to install log and displays to stdout
+# Usage: run_logged "description" "command"
+run_logged() {
+  local description="$1"
+  local command="$2"
+  local exit_code
+
+  # Display what we're doing
+  log "$description"
+
+  # Execute command, logging to file and capturing output
+  if eval "$command" 2>&1 | tee -a "$COFFEE_INSTALL_LOG_FILE"; then
+    log "$description completed"
     return 0
-  fi
-  
-  info "Installing packages from $(basename "$package_file")..."
-  
-  # Install packages with error handling
-  if ! sudo pacman -S --needed --noconfirm "${packages[@]}"; then
-    error "Failed to install some packages from $package_file"
-    return 1
-  fi
-  
-  info "Package installation completed successfully"
-}
-
-# Validate and source a script file safely
-source_script() {
-  local script_path="$1"
-  
-  # Validate file exists
-  if [[ ! -f "$script_path" ]]; then
-    error "Script not found: $script_path"
-    return 1
-  fi
-  
-  # Validate file is readable
-  if [[ ! -r "$script_path" ]]; then
-    error "Script not readable: $script_path"
-    return 1
-  fi
-  
-  # Validate file is a regular file (not a directory or special file)
-  if [[ ! -f "$script_path" ]]; then
-    error "Not a regular file: $script_path"
-    return 1
-  fi
-  
-  # Source the script with error handling
-  if ! source "$script_path"; then
-    error "Failed to source: $script_path"
-    return 1
+  else
+    exit_code=$?
+    error "$description failed with exit code $exit_code"
+    return "$exit_code"
   fi
 }
 
-# Check if a command exists in PATH
+# Check if command exists
+# Usage: command_exists "pacman"
 command_exists() {
-  local cmd="$1"
-  if ! command -v "$cmd" &>/dev/null; then
-    error "Required command not found: $cmd"
-    return 1
+  command -v "$1" >/dev/null 2>&1
+}
+
+# Check if package is installed (pacman)
+# Usage: package_installed "sddm"
+package_installed() {
+  pacman -Q "$1" >/dev/null 2>&1
+}
+
+# Install package if not already installed
+# Usage: install_package "sddm" "plymouth"
+install_package() {
+  local packages=("$@")
+  local to_install=()
+ 
+  for pkg in "${packages[@]}"; do
+    if ! package_installed "$pkg"; then
+      to_install+=("$pkg")
+    fi
+  done
+ 
+  if [ ${#to_install[@]} -gt 0 ]; then
+    log "Installing missing packages: ${to_install[*]}"
+    sudo pacman -S --noconfirm --needed "${to_install[@]}" || error "Failed to install packages"
+    success "Packages installed successfully"
+  else
+    success "All required packages already installed"
   fi
+}
+
+# Print section header
+# Usage: section "Display Manager Configuration"
+section() {
+  local title="$1"
+  echo ""
+  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${BLUE}${NC} $title"
+  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo ""
+}
+
+# Print summary
+# Usage: summary "Component" "Status"
+summary() {
+  local component="$1"
+  local status="$2"
+  if [ "$status" = "✓" ]; then
+    echo -e "${GREEN}$component: $status${NC}"
+  else
+    echo -e "${RED}$component: $status${NC}"
+  fi
+}
+
+# Install missing packages
+# Usage:
+# system_packages=(
+#   git
+#   neovim
+#   ripgrep
+#   fd
+# )
+#
+# install_missing_packages "${system_packages[@]}"
+#
+# OR inline:
+# install_missing_packages git neovim ripgrep fd
+install_missing_packages() {
+  local packages=("$@")
+  local missing=()
+
+  log "Checking which packages need to be installed..."
+
+  for pkg in "${packages[@]}"; do
+    if ! package_installed "$pkg"; then
+      missing+=("$pkg")
+      warn "Missing: $pkg"
+    else
+      success "Installed: $pkg"
+    fi
+  done
+
+  if (( ${#missing[@]} > 0 )); then
+    log "Installing missing packages..."
+
+    run_logged "Installing missing packages: ${missing[*]}" \
+      sudo pacman -S --noconfirm --needed "${missing[*]}"
+
+    success "Package installation completed"
+  else
+    success "All required packages are already installed"
+  fi
+
+  # Verify all packages
+  log "Verifying all packages again..."
+  for pkg in "${packages[@]}"; do
+    if package_installed "$pkg"; then
+      success "Verified: $pkg"
+    else
+      error "Failed to verify package: $pkg"
+    fi
+  done
 }

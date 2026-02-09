@@ -6,9 +6,6 @@ xdg-mime default alacritty.desktop x-scheme-handler/terminal
 xdg-mime default firefox.desktop x-scheme-handler/http
 xdg-mime default firefox.desktop x-scheme-handler/https
 
-# Default browser
-xdg-settings set default-web-browser firefox.desktop
-
 # Open directories in file manager
 xdg-mime default Thunar.desktop inode/directory
 

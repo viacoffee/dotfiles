@@ -1,33 +1,22 @@
 # Core system packages
 base
 base-devel
+btrfs-progs
+cryptsetup
 curl
 git
+less
 linux-headers
 stow
-less
 
-# X11
-xwayland-satellite
+# Bootloader
+limine
+plymouth
+
+# Login/Session
+greetd
 
 # Snapshots/Backup
 snapper
 limine-snapper-sync
 limine-mkinitcpio-hook
-
-# Bootloader
-# efibootmgr
-# limine
-plymouth
-btrfs-progs
-
-# Bluetooth
-bluetui
-
-# Wifi
-impala
-iwd
-
-# Login/Session
-greetd
-greetd-tuigreet
