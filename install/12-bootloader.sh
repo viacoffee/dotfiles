@@ -109,6 +109,11 @@ if [[ -n $EFI ]] && efibootmgr &>/dev/null; then
   done < <(efibootmgr | grep -E "^Boot[0-9]{4}\*? Arch Linux Limine" | sed 's/^Boot\([0-9]\{4\}\).*/\1/')
 fi
 
+if [ "$(plymouth-set-default-theme)" != "coffee" ]; then
+  sudo cp -r "$COFFEE_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
+  sudo plymouth-set-default-theme coffee
+fi
+
 #
 # limine_possible_locations=(
 #   /boot/EFI/arch-limine/limine.conf
