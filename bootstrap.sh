@@ -11,7 +11,7 @@ if [ -z "$COFFEE_INSTALL" ]; then
   export COFFEE_INSTALL="$COFFEE_PATH/install"
 fi
 
-export COFFEE_INSTALL_DEFAULTS_PATH=:"$COFFEE_INSTALL/default"
+export COFFEE_INSTALL_DEFAULTS_PATH="$COFFEE_INSTALL/default"
 export COFFEE_INSTALL_LOG_FILE="${COFFEE_INSTALL_LOG_FILE:-/var/log/coffee-install.log}"
 
 # Ensure log file exists
