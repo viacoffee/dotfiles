@@ -31,7 +31,11 @@ HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap conso
 EOF
 
 # Detect boot mode
-if [[ -d /sys/firmware/efi ]] && EFI=true
+if [[ -d /sys/firmware/efi ]]
+ EFI=true
+else
+  error "Not EFI system"
+fi
 
 # Find config location
 log "Finding limine config..."
@@ -51,6 +55,7 @@ fi
 success "Limine config: $limine_config"
 
 CMDLINE=$(grep "^[[:space:]]*cmdline:" "$limine_config" | head -1 | sed 's/^[[:space:]]*cmdline:[[:space:]]*//')
+log $CMDLINE
 
 sudo cp $COFFEE_INSTALL_DEFAULTS_PATH/limine/default.conf /etc/default/limine
 sudo sed -i "s|@@CMDLINE@@|$CMDLINE|g" /etc/default/limine
@@ -88,7 +93,6 @@ sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root
 sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 
 sudo systemctl enable limine-snapper-sync
-fi
 
 log "Re-enabling mkinitcpio hooks"
 # Restore the specific mkinitcpio pacman hooks
