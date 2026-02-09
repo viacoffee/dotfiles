@@ -59,7 +59,7 @@ run_logged() {
 
   # Execute command, logging to file and capturing output
   if eval "$command" 2>&1 | tee -a "$COFFEE_INSTALL_LOG_FILE"; then
-    log "$description completed"
+    success "$description completed"
     return 0
   else
     exit_code=$?

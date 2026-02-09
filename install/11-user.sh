@@ -10,11 +10,11 @@ log "Verifying user account for autologin..."
 if [ -n "$SUDO_USER" ]; then
   # Script was run with sudo, use the original user
   LOGIN_USER="$SUDO_USER"
-  log "Detected user running with sudo: $LOGIN_USER"
+  success "Detected user running with sudo: $LOGIN_USER"
 elif [ "$EUID" -ne 0 ]; then
   # Script not run with sudo, use current user
   LOGIN_USER="$(whoami)"
-  log "Detected current user: $LOGIN_USER"
+  success "Detected current user: $LOGIN_USER"
 else
   # Script is running as root without sudo (not recommended)
   error "Script must be run as a non-root user or with sudo from a non-root user"
