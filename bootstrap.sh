@@ -84,17 +84,19 @@ Vars log:
   + COFFEE_DEFAULT_USER=$COFFEE_DEFAULT_USER
 EOF
 
-# Phase 2.2: Limine bootloader
+# Phase 2.2: Bootloader/snapper/plymouth setup
 if [ -f "$COFFEE_INSTALL/12-bootloader.sh" ]; then
   source "$COFFEE_INSTALL/12-bootloader.sh"
 else
-  error "Bootloader/login configuration failed (script not found)"
+  error "Bootloader setup failed. (script not found)"
 fi
 
-# for phase in "$INSTALL_DIR"/*.sh; do
-#   info "Running $(basename "$phase")"
-#   bash "$phase"
-# done
+# Phase 3: Dotfiles stowing
+if [ -f "$COFFEE_INSTALL/30-dotfiles.sh" ]; then
+  source "$COFFEE_INSTALL/30-dotfiles.sh"
+else
+  error "Dotfiles stowing failed. (script not found)"
+fi
 
 important "Installation completed at: $(date '+%Y-%m-%d %H:%M:%S')"
 

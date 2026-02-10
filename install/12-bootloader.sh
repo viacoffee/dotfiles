@@ -102,6 +102,23 @@ sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,h
 
 sudo systemctl enable limine-snapper-sync
 
+log "Checking plymouth theme configuration..."
+if [ "$(plymouth-set-default-theme)" != "coffee" ]; then
+  run_logged "Copying plymouth theme" \
+    "sudo cp -r $COFFEE_INSTALL_DEFAULTS_PATH/plymouth /usr/share/plymouth/themes/coffee/"
+
+  run_logged "Setting default theme" \
+    "sudo plymouth-set-default-theme coffee"
+fi
+success "Plymouth theme configuration is set"
+
+if [[ -n $EFI ]] && efibootmgr &>/dev/null; then
+    # Remove the archinstall-created Limine entry
+  while IFS= read -r bootnum; do
+    sudo efibootmgr -b "$bootnum" -B >/dev/null 2>&1
+  done < <(efibootmgr | grep -E "^Boot[0-9]{4}\*? Arch Linux Limine" | sed 's/^Boot\([0-9]\{4\}\).*/\1/')
+fi
+
 log "Re-enabling mkinitcpio hooks"
 # Restore the specific mkinitcpio pacman hooks
 if [ -f /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled ]; then
@@ -113,7 +130,8 @@ if [ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled ]; then
 fi
 success "mkinitcpio hooks re-enabled"
 
-sudo limine-update
+run_logged "Running limine-update" \
+  "sudo limine-update"
 
 if [[ -n $EFI ]] && efibootmgr &>/dev/null; then
     # Remove the archinstall-created Limine entry
@@ -121,76 +139,3 @@ if [[ -n $EFI ]] && efibootmgr &>/dev/null; then
     sudo efibootmgr -b "$bootnum" -B >/dev/null 2>&1
   done < <(efibootmgr | grep -E "^Boot[0-9]{4}\*? Arch Linux Limine" | sed 's/^Boot\([0-9]\{4\}\).*/\1/')
 fi
-
-if [ "$(plymouth-set-default-theme)" != "coffee" ]; then
-  sudo cp -r "$COFFEE_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
-  sudo plymouth-set-default-theme coffee
-fi
-
-#
-# limine_possible_locations=(
-#   /boot/EFI/arch-limine/limine.conf
-#   /boot/EFI/BOOT/limine.conf
-#   /boot/EFI/limine/limine.conf
-#   /boot/limine/limine.conf
-#   /boot/limine.conf
-# )
-# limine_config=""
-# for path in $limine_possible_locations; do
-#   if [ -f "$path" ]; then
-#     log "Found Limine config at: $path"
-#     $limine_config="$path"
-#     break
-#   fi
-# done
-#
-# # Extract kernel command line
-# if [ -n "$limine_config" ]; then
-#   # Look for linux_cmdline or cmdline in Limine config
-#   $cmdline=$(grep -E "^\s*(linux_cmdline|cmdline):" "$limine_config" 2>/dev/null | head -1 | sed -E 's/^\s*(linux_cmdline|cmdline):\s*//')
-#
-#   if [ -z "$cmdline" ]; then
-#     warn "Could not extract kernel command line from bootloader"
-#     log "Will use empty command line (only quiet splash will be added)"
-#     $cmdline=""
-#   else
-#     log "Extracted kernel command line: $cmdline"
-#   fi
-# else
-#   warn "No existing Limine configuration found"
-#   log "Searched paths:"
-#   for path in $limine_possible_locations; do
-#     log "  - $path"
-#   done
-#   $cmdline=""
-# fi
-#
-#if command -v limine &>/dev/null; then
-#  sudo tee /etc/mkinitcpio.conf.d/coffee.conf >/dev/null <<'EOF'
-#HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap consolefont block encrypt filesystems fsck btrfs-overlayfs)
-#EOF
-#
-#  # Regenerate initramfs with required modules
-#  echo "Regenerating initramfs with required modules..."
-#
-#  if ! sudo mkinitcpio -P; then
-#    echo "Failed to regenerate initramfs"
-#    exit 1
-#  fi
-#fi
-#
-## Enable quota to allow space-aware algorithms to work
-#sudo btrfs quota enable /
-#
-## Tweak default Snapper configs
-#sudo sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/{root,home}
-#sudo sed -i 's/^NUMBER_LIMIT="50"/NUMBER_LIMIT="5"/' /etc/snapper/configs/{root,home}
-#sudo sed -i 's/^NUMBER_LIMIT_IMPORTANT="10"/NUMBER_LIMIT_IMPORTANT="5"/' /etc/snapper/configs/{root,home}
-#sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
-#sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
-#
-## Update limine
-#sudo limine-update
-#
-## Default plymouth theme
-#sudo plymouth-set-default-theme tribar
