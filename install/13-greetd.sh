@@ -31,8 +31,11 @@ fi
 
 run_logged "Setting greetd config options" \
   "cat <<'EOF' | sudo tee $greetd_path/config.toml
-[initial_session]
-command = \"niri-session\"
+[terminal]
+vt = 1
+
+[default_session]
+command = \"dbus-run-session bash -lc niri-session\"
 user = \"$COFFEE_DEFAULT_USER\"
 EOF"
 

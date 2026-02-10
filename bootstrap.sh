@@ -140,16 +140,17 @@ else
   exit 1
 fi
 
-section "Systemd-user"
-# Phase 5.1: systemd user
-if [ -f "$COFFEE_INSTALL/51-systemd-user.sh" ]; then
-  source "$COFFEE_INSTALL/51-systemd-user.sh"
-else
-  error "Systemd-user failed. (script not found)"
-  exit 1
-fi
-echo ""
-success "Systemd phase complete"
+# TODO-david we'll probably have to have a post-install script for this
+# section "Systemd-user"
+# # Phase 5.1: systemd user
+# if [ -f "$COFFEE_INSTALL/51-systemd-user.sh" ]; then
+#   source "$COFFEE_INSTALL/51-systemd-user.sh"
+# else
+#   error "Systemd-user failed. (script not found)"
+#   exit 1
+# fi
+# echo ""
+# success "Systemd phase complete"
 
 # Post-installation
 section "Post-installation"
