@@ -9,7 +9,7 @@ fi
 
 if [[ -z "$NVIDIA" ]]; then
   warn "No NVIDIA GPU detected. Skipping NVIDIA driver installation."
-  exit 0
+  return 0
 fi
 
 info "NVIDIA GPU detected: $NVIDIA"
