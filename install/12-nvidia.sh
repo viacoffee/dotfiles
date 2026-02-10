@@ -3,12 +3,12 @@
 # Detect NVIDIA GPU with error handling
 NVIDIA=""
 if ! NVIDIA="$(lspci | grep -i 'nvidia')" 2>/dev/null; then
-  warning "Failed to query GPU info (lspci not available or error occurred)"
+  warn "Failed to query GPU info (lspci not available or error occurred)"
   NVIDIA=""
 fi
 
 if [[ -z "$NVIDIA" ]]; then
-  warning "No NVIDIA GPU detected. Skipping NVIDIA driver installation."
+  warn "No NVIDIA GPU detected. Skipping NVIDIA driver installation."
   exit 0
 fi
 
@@ -43,8 +43,8 @@ elif echo "$NVIDIA" | grep -qE "GTX 9|GTX 10|Quadro P|MX1|MX2|MX3"; then
   info "Detected legacy NVIDIA GPU (Maxwell/Pascal). Using legacy drivers (580xx)."
   PACKAGES=(nvidia-580xx-dkms nvidia-580xx-utils lib32-nvidia-580xx-utils)
 else
-  warning "NVIDIA GPU detected but no compatible driver found."
-  warning "For more information, see: https://wiki.archlinux.org/title/NVIDIA"
+  warn "NVIDIA GPU detected but no compatible driver found."
+  warn "For more information, see: https://wiki.archlinux.org/title/NVIDIA"
   exit 0
 fi
 
@@ -115,4 +115,4 @@ then
 fi
 
 success "NVIDIA drivers configured successfully."
-warning "Note: System reboot may be required for changes to take effect."
+warn "Note: System reboot may be required for changes to take effect."
