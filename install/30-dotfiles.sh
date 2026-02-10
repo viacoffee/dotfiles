@@ -11,6 +11,9 @@ else
   USER_HOME="$HOME"
 fi
 
+log "Remove existing bashrc"
+[ -f "$USER_HOME/.bashrc" ] && rm -f "$USER_HOME/.bashrc"
+
 run_logged "stowing home" \
   "stow home"
 run_logged "stowing config" \
