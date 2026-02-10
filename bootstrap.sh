@@ -140,6 +140,7 @@ else
   exit 1
 fi
 
+section "Systemd-user"
 # Phase 5.1: systemd user
 if [ -f "$COFFEE_INSTALL/51-systemd-user.sh" ]; then
   source "$COFFEE_INSTALL/51-systemd-user.sh"
