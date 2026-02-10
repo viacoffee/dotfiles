@@ -140,27 +140,8 @@ else
   exit 1
 fi
 
-# TODO-david we'll probably have to have a post-install script for this
-# section "Systemd-user"
-# # Phase 5.1: systemd user
-# if [ -f "$COFFEE_INSTALL/51-systemd-user.sh" ]; then
-#   source "$COFFEE_INSTALL/51-systemd-user.sh"
-# else
-#   error "Systemd-user failed. (script not found)"
-#   exit 1
-# fi
-# echo ""
-# success "Systemd phase complete"
-
 # Post-installation
 section "Post-installation"
-if [ -f "$COFFEE_INSTALL/80-defaults.sh" ]; then
-  source "$COFFEE_INSTALL/80-defaults.sh"
-else
-  error "Defaults failed. (script not found)"
-  exit 1
-fi
-
 if [ -f "$COFFEE_INSTALL/90-post.sh" ]; then
   source "$COFFEE_INSTALL/90-post.sh"
 else
@@ -183,7 +164,7 @@ cat <<EOF
 
 Next Steps:
   1. Reboot
-  2. Run post-install verification script (sudo .$COFFEE_INSTALL/post-verification.sh)
+  2. Run the post-install script to finish (bash $COFFEE_INSTALL/install/post-install.sh)
   3. Open nvim and let Lazy sync
 
 For more details, see:

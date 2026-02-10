@@ -1,12 +1,13 @@
 #!/bin/bash
 
+echo "Adding default gtk settings"
 # Try for force dark mode on gtk applications
 log "Forcing darkmode for gtk applications..."
 gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
 gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
 gsettings set org.gnome.desktop.interface icon-theme "Yaru-blue"
 
-log "Setting mimes..."
+log "Adding default mimes"
 # Default terminal
 xdg-mime default alacritty.desktop x-scheme-handler/terminal
 xdg-mime default firefox.desktop x-scheme-handler/http
