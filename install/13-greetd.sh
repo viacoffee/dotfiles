@@ -35,8 +35,11 @@ run_logged "Setting greetd config options" \
 vt = 1
 
 [default_session]
-command = \"dbus-run-session bash -lc niri-session\"
+command = \"niri-session\"
 user = \"$COFFEE_DEFAULT_USER\"
+
+[dbus]
+enable = true
 EOF"
 
 info "$greetd_path/config.toml contents:"
@@ -44,7 +47,7 @@ info cat "$greetd_path/config.toml"
 
 log "Enabling greetd systemd service..."
 run_logged "Enable greetd service" \
-  "sudo systemctl enable --now greetd"
+  "sudo systemctl enable greetd"
 
 success "greetd configuration complete"
 log "Default autologin user: $COFFEE_DEFAULT_USER"

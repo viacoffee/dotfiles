@@ -3,8 +3,8 @@
 # Exit immediately if a command exists with a non-zero status
 set -eEo pipefail
 
-if [ -z "$COFFEE_PATH" ]; then
-  export COFFEE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -z "$COFFEE_INSTALL" ]; then
+  export COFFEE_INSTALL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
 # Update tldr definitions
@@ -24,16 +24,16 @@ mapfile -t optional_packages < <(
   grep -Ev '^(#|$)' "$COFFEE_INSTALL/optional.packages" || true
 )
 
-for pkg in "${optional_packages[@]}"; do
-  sudo pacman -S --noconfirm --needed "$pkg"
-done
+if ((${#optional_packages[@]})); then
+  sudo pacman -S --noconfirm --needed "${optional_packages[@]}"
+fi
 
 # Rebuild font cache
-echo "Rebuilding font cache..."
-fc-cache -fv >/dev/null
+# echo "Rebuilding font cache..."
+# fc-cache -fv >/dev/null
 
 # Default browser
-xdg-settings set default-web-browser firefox.desktop
+# xdg-settings set default-web-browser firefox.desktop
 
 # Create base home directories
 echo "Creating default home directories"
