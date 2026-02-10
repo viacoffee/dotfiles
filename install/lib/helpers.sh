@@ -45,7 +45,7 @@ info() { _log "INFO" "$BLUE" "$@"; }
 important() { _log "==>" "\033[1;34m" "$@"; }
 success() { _log "✓" "$GREEN" "$@"; }
 warn() { _log "WARNING" "$YELLOW" "$@"; }
-error() { _log "ERROR" "$RED" "$@"; exit 1; }
+error() { _log "ERROR" "$RED" "$@"; }
 
 # Logging function - logs command output to install log and displays to stdout
 # Usage: run_logged "description" "command"

@@ -1,25 +1,14 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-INSTALL_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-
-# Load helper functions
-if [[ ! -f "$INSTALL_DIR/lib/helpers.sh" ]]; then
-  echo "Error: Helper functions not found: $INSTALL_DIR/lib/helpers.sh" >&2
-  exit 1
-fi
-
-source "$INSTALL_DIR/lib/helpers.sh"
+#!/bin/bash
 
 # Detect NVIDIA GPU with error handling
 NVIDIA=""
 if ! NVIDIA="$(lspci | grep -i 'nvidia')" 2>/dev/null; then
-  warn "Failed to query GPU info (lspci not available or error occurred)"
+  warning "Failed to query GPU info (lspci not available or error occurred)"
   NVIDIA=""
 fi
 
 if [[ -z "$NVIDIA" ]]; then
-  info "No NVIDIA GPU detected. Skipping NVIDIA driver installation."
+  warning "No NVIDIA GPU detected. Skipping NVIDIA driver installation."
   exit 0
 fi
 
@@ -54,22 +43,24 @@ elif echo "$NVIDIA" | grep -qE "GTX 9|GTX 10|Quadro P|MX1|MX2|MX3"; then
   info "Detected legacy NVIDIA GPU (Maxwell/Pascal). Using legacy drivers (580xx)."
   PACKAGES=(nvidia-580xx-dkms nvidia-580xx-utils lib32-nvidia-580xx-utils)
 else
-  warn "NVIDIA GPU detected but no compatible driver found."
-  warn "For more information, see: https://wiki.archlinux.org/title/NVIDIA"
+  warning "NVIDIA GPU detected but no compatible driver found."
+  warning "For more information, see: https://wiki.archlinux.org/title/NVIDIA"
   exit 0
 fi
 
+info "Packages to be installed: ${PACKAGES[*]}"
+
 # Install packages
-info "Installing NVIDIA drivers and dependencies..."
+log "Installing NVIDIA drivers and dependencies..."
 INSTALL_PACKAGES=("$KERNEL_HEADERS" "${PACKAGES[@]}")
 if ! sudo pacman -S --needed --noconfirm "${INSTALL_PACKAGES[@]}"; then
   error "Failed to install NVIDIA packages"
   exit 1
 fi
-info "Package installation completed successfully"
+success "Package installation completed successfully"
 
 # Configure modprobe for early KMS
-info "Configuring modprobe for NVIDIA early KMS..."
+log "Configuring modprobe for NVIDIA early KMS..."
 if ! sudo mkdir -p /etc/modprobe.d; then
   error "Failed to create modprobe.d directory"
   exit 1
@@ -84,7 +75,7 @@ then
 fi
 
 # Configure mkinitcpio for early module loading
-info "Configuring mkinitcpio for NVIDIA modules..."
+log "Configuring mkinitcpio for NVIDIA modules..."
 if ! sudo mkdir -p /etc/mkinitcpio.conf.d; then
   error "Failed to create mkinitcpio.conf.d directory"
   exit 1
@@ -99,14 +90,14 @@ then
 fi
 
 # Regenerate initramfs with NVIDIA modules
-info "Regenerating initramfs with NVIDIA modules..."
+log "Regenerating initramfs with NVIDIA modules..."
 if ! sudo mkinitcpio -P; then
   error "Failed to regenerate initramfs"
   exit 1
 fi
 
 # Set NVIDIA environment variables for Wayland/Niri
-info "Configuring NVIDIA environment variables..."
+log "Configuring NVIDIA environment variables..."
 if ! mkdir -p ~/.config/environment.d; then
   error "Failed to create environment.d directory"
   exit 1
@@ -123,5 +114,5 @@ then
   exit 1
 fi
 
-info "NVIDIA drivers configured successfully."
-warn "Note: System reboot may be required for changes to take effect."
+success "NVIDIA drivers configured successfully."
+warning "Note: System reboot may be required for changes to take effect."

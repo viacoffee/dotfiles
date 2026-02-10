@@ -1,7 +1,5 @@
 #!/bin/bash
 
-section "Preflight checks"
-
 log "Validating required components..."
 
 # Array to track missing components
@@ -13,12 +11,14 @@ if [ "$(uname -m)" = "x86_64" ]; then
   success "x86_64 CPU"
 else
   error "Not an x86_64 CPU"
+  exit 1
 fi
 
 # Must have secure boot disabled
 log "Check secure boot is disabled"
 if bootctl status 2>/dev/null | grep -q 'Secure Boot: enabled'; then
   error "Secure boot needs to be disabled"
+  exit 1
 else
   success "Secure boot is disabled"
 fi
@@ -28,6 +28,7 @@ if command_exists pacman; then
   success "pacman found"
 else
   error "Imagine not being on arch"
+  exit 1
 fi
 
 log "Checking for systemd..."
@@ -35,6 +36,7 @@ if command_exists systemctl; then
   success "systemd found"
 else
   error "systemd not found - this is required!"
+  exit 1
 fi
 
 # Check for sudo access
@@ -45,6 +47,7 @@ elif sudo -v 2>/dev/null; then
   success "sudo access confirmed"
 else
   error "No sudo access - required for system configuration"
+  exit 1
 fi
 
 log "Checking for limine bootloader..."
@@ -73,8 +76,9 @@ fi
 
 echo ""
 if [ ${#missing_components[@]} -gt 0 ]; then
-  warn "The following components are missing and installation cannot continue"
+  error "The following components are missing and installation cannot continue"
   error "Missing components: [$(printf '%s, ' "${missing_components[@]}" | sed 's/, $//')]"
+  exit 1
 fi
 
 # Temporarily disable mkinitcpio hooks to prevent multiple regenerations during package installation
@@ -91,5 +95,3 @@ if [ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook ]; then
 fi
 
 log "mkinitcpio hooks disabled"
-
-success "Preflight checks completed"

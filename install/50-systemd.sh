@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
 # Bluetooth
 if ! systemctl is-enabled --quiet bluetooth.service && ! systemctl is-active --quiet bluetooth.service; then
@@ -11,7 +10,7 @@ if systemctl is-active --quiet NetworkManager; then
   sudo systemctl disable --now NetworkManager
 fi
 
-if ! systemctl is-active --quiet iwd; then
+if ! systemctl is-active --quiet iwd && ! systemctl is-active --quiet NetworkManager; then
   sudo systemctl enable --now iwd.service
 fi
 
@@ -22,5 +21,8 @@ fi
 
 # Enable greetd
 if ! systemctl is-enabled --quiet greetd; then
-  sudo systemctl enable greetd
+  sudo systemctl enable --now greetd
 fi
+
+# Reload daemons
+sudo systemctl daemon-reload

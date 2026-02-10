@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Limine bootloader
-# Implements Omarchy pattern for Limine setup with kernel parameter extraction
 
 log "Configuring Limine bootloader..."
 
@@ -11,16 +10,19 @@ if command_exists limine; then
   success "limine bootloader found"
 else
   error "limine bootloader not found"
+  exit 1
 fi
 
 # Check if limine-mkinitcpio-hook is installed
 if ! command_exists limine-mkinitcpio; then
   error "limine-mkinitcpio-hook not found. Install with: sudo pacman -S limine-mkinitcpio-hook"
+  exit 1
 fi
 
 # Check if limine-snapper-sync is installed
 if ! command_exists limine-snapper-sync; then
   error "limine-mkinitcpio-hook not found. Install with: sudo pacman -S limine-snapper-sync"
+  exit 1
 fi
 
 # Step 1: Extract existing kernel command line from bootloader config
@@ -35,6 +37,7 @@ if [[ -d /sys/firmware/efi ]]; then
   EFI=true
 else
   error "Not EFI system"
+  exit 1
 fi
 
 # Find config location
@@ -51,6 +54,7 @@ elif [[ -f /boot/limine.conf ]]; then
   limine_config="/boot/limine.conf"
 else
   error "Limine config not found"
+  exit 1
 fi
 success "Limine config: $limine_config"
 
@@ -100,7 +104,7 @@ sudo sed -i 's/^NUMBER_LIMIT_IMPORTANT="10"/NUMBER_LIMIT_IMPORTANT="5"/' /etc/sn
 sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 
-sudo systemctl enable limine-snapper-sync
+sudo systemctl enable --now limine-snapper-sync
 
 log "Checking plymouth theme configuration..."
 if [ "$(plymouth-set-default-theme)" != "coffee" ]; then

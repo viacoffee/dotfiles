@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# System phase - verify and install required base packages
-section "System management"
-
 log "Update system, and verify/install base packages..."
 
 # Update our pacman.conf
@@ -22,12 +19,14 @@ fi
 log "Updating system..."
 if ! sudo pacman -Syu --noconfirm; then
   error "Failed to update base packages"
+  exit 1
 fi
 
 # Install required base packages
 log "Getting list of required base packages..."
 if [ ! -f $COFFEE_INSTALL/base.packages ]; then
   error "Package list not found: $COFFEE_INSTALL/base.packages"
+  exit 1
 fi
 
 # Array to track packages that need installation
@@ -36,23 +35,3 @@ mapfile -t base_packages < <(
   grep -Ev '^(#|$)' "$COFFEE_INSTALL/base.packages" || true
 )
 install_missing_packages "${base_packages[@]}"
-
-# TODO-david move this to after all system phases have been complete
-# echo ""
-# success "System management phase complete"
-
-
-# TODO-david move this to the login steps
-# Setup greetd/tuigreet
-# if ! id greeter &>/dev/null; then
-#   sudo useradd -r -s /usr/bin/nologin greeter
-# fi
-#
-# sudo tee /etc/greetd/config.toml > /dev/null << 'EOF'
-# [terminal]
-# vt = 1
-#
-# [default_session]
-# command = "tuigreet --asterisks --window-padding 2 --container-padding 1 --width 50 --cmd niri-session"
-# user = "greeter"
-# EOF
