@@ -20,8 +20,11 @@ run_logged "stowing home" \
 log "Remove niri config if it exists for some reason"
 [ -f "$USER_HOME/.config/niri/config.kdl" ] && rm -f "$USER_HOME/.config/niri/config.kdl"
 
+mkdir -p "$USER_HOME/.config"
 run_logged "stowing config" \
   "stow --no-folding -t $USER_HOME/.config config"
+
+mkdir -p "$USER_HOME/.local"
 run_logged "stowing local" \
   "stow --no-folding -t $USER_HOME/.local local"
 

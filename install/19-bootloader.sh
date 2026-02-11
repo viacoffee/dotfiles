@@ -114,12 +114,12 @@ if [ "$(plymouth-set-default-theme)" != "coffee" ]; then
 fi
 success "Plymouth theme configuration is set"
 
-if [[ -n $EFI ]] && efibootmgr &>/dev/null; then
-    # Remove the archinstall-created Limine entry
-  while IFS= read -r bootnum; do
-    sudo efibootmgr -b "$bootnum" -B >/dev/null 2>&1
-  done < <(efibootmgr | grep -E "^Boot[0-9]{4}\*? Arch Linux Limine" | sed 's/^Boot\([0-9]\{4\}\).*/\1/')
-fi
+#if [[ -n $EFI ]] && efibootmgr &>/dev/null; then
+#    # Remove the archinstall-created Limine entry
+#  while IFS= read -r bootnum; do
+#    sudo efibootmgr -b "$bootnum" -B >/dev/null 2>&1
+#  done < <(efibootmgr | grep -E "^Boot[0-9]{4}\*? Arch Linux Limine" | sed 's/^Boot\([0-9]\{4\}\).*/\1/')
+#fi
 
 log "Re-enabling mkinitcpio hooks"
 # Restore the specific mkinitcpio pacman hooks
@@ -133,4 +133,4 @@ fi
 success "mkinitcpio hooks re-enabled"
 
 run_logged "Running limine-update" \
-  "sudo limine-update"
+  "limine-update"
