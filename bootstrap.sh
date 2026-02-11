@@ -100,11 +100,11 @@ else
   exit 1
 fi
 
-# Phase 2.3: Greetd autologin setup
-if [ -f "$COFFEE_INSTALL/13-greetd.sh" ]; then
-  source "$COFFEE_INSTALL/13-greetd.sh"
+# Phase 2.3: Sddm autologin setup
+if [ -f "$COFFEE_INSTALL/13-sddm.sh" ]; then
+  source "$COFFEE_INSTALL/13-sddm.sh"
 else
-  error "greetd setup failed. (script not found)"
+  error "sddm setup failed. (script not found)"
   exit 1
 fi
 

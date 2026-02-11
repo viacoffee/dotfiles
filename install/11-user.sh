@@ -27,22 +27,6 @@ if [ "$LOGIN_USER" = "root" ]; then
   exit 1
 fi
 
-# Ensure user home directory exists
-if [ ! -d "/home/$LOGIN_USER" ]; then
-  log "Home directory does not exist for user: $LOGIN_USER"
-  log "Creating home directory..."
-  run_logged "Create home directory" \
-    "sudo mkdir -p /home/$LOGIN_USER"
-fi
-
-# Set proper permissions on home directory
-log "Setting home directory ownership..."
-run_logged "Set home directory owner" \
-  "sudo chown -R $LOGIN_USER:$LOGIN_USER /home/$LOGIN_USER"
-
-run_logged "Set home directory permissions" \
-  "sudo chmod 755 /home/$LOGIN_USER"
-
 # Export the username for use in subsequent scripts
 export COFFEE_DEFAULT_USER="$LOGIN_USER"
 

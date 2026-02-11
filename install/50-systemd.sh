@@ -7,7 +7,7 @@ fi
 
 # Wifi
 if systemctl is-active --quiet NetworkManager; then
-  sudo systemctl disable --now NetworkManager
+  sudo systemctl disable NetworkManager
 fi
 
 if ! systemctl is-active --quiet iwd && ! systemctl is-active --quiet NetworkManager; then
@@ -18,11 +18,3 @@ fi
 if ! systemctl is-active --quiet limine-snapper-sync; then
   sudo systemctl enable --now limine-snapper-sync.service
 fi
-
-# Enable greetd
-if ! systemctl is-enabled --quiet greetd; then
-  sudo systemctl enable --now greetd
-fi
-
-# Reload daemons
-sudo systemctl daemon-reload
