@@ -39,7 +39,7 @@ cat <<'EOF'
 
 EOF
 
-important "Bootstrapping system from: $COFFEE_PATH"
+info "Bootstrapping system from: $COFFEE_PATH"
 important "Logfile: $COFFEE_INSTALL_LOG_FILE"
 log <<EOF
 Vars log:
@@ -100,11 +100,11 @@ else
   exit 1
 fi
 
-# Phase 2.3: Sddm autologin setup
-if [ -f "$COFFEE_INSTALL/13-sddm.sh" ]; then
-  source "$COFFEE_INSTALL/13-sddm.sh"
+# Phase 2.3: Greetd autologin setup
+if [ -f "$COFFEE_INSTALL/13-greetd.sh" ]; then
+  source "$COFFEE_INSTALL/13-greetd.sh"
 else
-  error "sddm setup failed. (script not found)"
+  error "greetd setup failed. (script not found)"
   exit 1
 fi
 

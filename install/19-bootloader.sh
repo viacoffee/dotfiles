@@ -58,10 +58,16 @@ else
 fi
 success "Limine config: $limine_config"
 
+# Extract cmdline BEFORE we overwrite the config file
 CMDLINE=$(grep "^[[:space:]]*cmdline:" "$limine_config" | head -1 | sed 's/^[[:space:]]*cmdline:[[:space:]]*//')
-log "Limine cmdline: $CMDLINE"
 
-# TODO-david DUPLICATING ===================
+# If no cmdline found in current config, use a sensible default
+if [[ -z "$CMDLINE" ]]; then
+  warning "No cmdline found in existing config"
+  warning "Manually verify limine config: $limine_config"
+  return 0
+fi
+log "Limine cmdline: $CMDLINE"
 
 sudo cp $COFFEE_INSTALL_DEFAULTS_PATH/limine/default.conf /etc/default/limine
 sudo sed -i "s|@@CMDLINE@@|$CMDLINE|g" /etc/default/limine
