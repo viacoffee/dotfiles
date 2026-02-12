@@ -16,6 +16,7 @@ fuzzel
 fzf
 git
 glib2
+gnome-themes-extra
 greetd
 grim
 hyprlock
@@ -39,6 +40,8 @@ playerctl
 plymouth
 polkit-gnome
 prettyping
+qt5-wayland
+qt6-wayland
 ripgrep
 slurp
 snapper
@@ -47,8 +50,10 @@ stow
 swaybg
 swayidle
 swayosd
+thunar
 tldr
 ttf-space-mono-nerd
+ttf-input-nerd
 tzupdate
 ufw
 ufw-docker
