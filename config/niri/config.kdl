@@ -120,7 +120,7 @@ binds {
 
   // File browser
   Mod+Shift+f {
-    spawn "thunar" "--class" "coffee.float"
+    spawn "thunar" "--title" "float.thunar"
   }
 
   Mod+Shift+t {
@@ -204,13 +204,19 @@ window-rule {
   match app-id="Alacritty" title="coffee.about"
   match app-id="Alacritty" title="coffee.btop"
   match app-id="Alacritty" title="coffee.float-tui"
-  match app-id="^coffee.float"
+  match app-id="float.thunar"
 
   open-floating true
   open-focused true
 
   min-height 600
   min-width 800
+}
+
+window-rule {
+  match app-id="float.thunar"
+  default-window-height { proportion 0.4; }
+  default-column-width { proportion 0.9; }
 }
 
 window-rule {
