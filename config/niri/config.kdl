@@ -104,14 +104,6 @@ binds {
     spawn "sh" "-c" "coffee-lock-screen"
   }
 
-  // Clipboard
-  Mod+C { spawn "sh" "-c" "wl-paste | wl-copy"; }
-  Mod+V { spawn "wl-paste"; }
-
-  Mod+Shift+t {
-    spawn "sh" "-c" "coffee-launch-btop"
-  }
-
   // Power fuzzel dmenu
   Mod+Escape {
     spawn "sh" "-c" "coffee-menu system"
@@ -120,6 +112,19 @@ binds {
   // General fuzzel dmenu
   Mod+Alt+Space {
     spawn "sh" "-c" "coffee-menu"
+  }
+
+  // Clipboard
+  Mod+C { spawn "sh" "-c" "wl-paste | wl-copy"; }
+  Mod+V { spawn "wl-paste"; }
+
+  // File browser
+  Mod+Shift+f {
+    spawn "thunar" "--class" "coffee.float"
+  }
+
+  Mod+Shift+t {
+    spawn "sh" "-c" "coffee-launch-btop"
   }
 
   // Window focus
@@ -186,20 +191,32 @@ binds {
 }
 
 window-rule {
-  match is-focused=false
-  opacity 0.98
   draw-border-with-background false
 }
 
 window-rule {
+  match is-focused=false
+  opacity 0.98
+}
+
+// For floating windows and misc system/about tuis
+window-rule {
   match app-id="Alacritty" title="coffee.about"
   match app-id="Alacritty" title="coffee.btop"
   match app-id="Alacritty" title="coffee.float-tui"
+  match app-id="^coffee.float"
 
-  draw-border-with-background false
   open-floating true
   open-focused true
 
   min-height 600
   min-width 800
+}
+
+window-rule {
+  match app-id="firefox$" title="^Picture-in-Picture$"
+
+  open-floating true
+  default-column-width { fixed 480; }
+  default-window-height { fixed 270; }
 }
