@@ -120,7 +120,7 @@ binds {
 
   // File browser
   Mod+Shift+f {
-    spawn "thunar" "--title" "float.thunar"
+    spawn "thunar" "--name" "float.thunar"
   }
 
   Mod+Shift+t {
@@ -216,7 +216,7 @@ window-rule {
 window-rule {
   match app-id="float.thunar"
   default-window-height { proportion 0.4; }
-  default-column-width { proportion 0.9; }
+  default-column-width { proportion 0.3; }
 }
 
 window-rule {
