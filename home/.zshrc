@@ -20,6 +20,11 @@ alias lr="lsd -R"
 alias lra="lsd -RA"
 alias lt="lsd --tree"
 
+# Add ~/.local/bin to PATH
+if [ -d "$HOME/.local/bin" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
 # Completion (compinit) — cached
 autoload -Uz compinit
 zmodload zsh/complist
