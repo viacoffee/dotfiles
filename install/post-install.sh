@@ -3,10 +3,10 @@
 # Exit immediately if a command exists with a non-zero status
 set -eEo pipefail
 
-if [ -z "$COFFEE_INSTALL" ]; then
-  export COFFEE_INSTALL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-fi
-
+# if [ -z "$COFFEE_INSTALL" ]; then
+#   export COFFEE_INSTALL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# fi
+#
 # Update tldr definitions
 tldr --update || true
 

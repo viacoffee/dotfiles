@@ -151,6 +151,9 @@ fi
 echo ""
 success "Post-installation phase complete"
 
+log "run post post?"
+source "$COFFEE_INSTALL/post-install.sh"
+
 important "Installation completed at: $(date '+%Y-%m-%d %H:%M:%S')"
 
 section "Overview"
