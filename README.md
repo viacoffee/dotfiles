@@ -13,3 +13,8 @@ _setfont -d_
 
 Exec=env PATH=$HOME/.local/bin:$PATH systemd-run --user --scope niri-session
 usr/local/share/wayland-sessions/niri.desktop
+
+ps -eo pid,ppid,cmd | grep waybar | grep -v grep
+systemctl --user show-environment | grep PATH
+
+spawn-at-startup "systemctl --user import-environment PATH"
