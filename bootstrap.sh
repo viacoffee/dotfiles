@@ -12,7 +12,7 @@ if [ -z "$COFFEE_INSTALL" ]; then
 fi
 
 export COFFEE_INSTALL_DEFAULTS_PATH="$COFFEE_INSTALL/default"
-export COFFEE_INSTALL_LOG_FILE="${COFFEE_INSTALL_LOG_FILE:-/var/log/coffee-install.log}"
+export COFFEE_INSTALL_LOG_FILE="${COFFEE_INSTALL_LOG_FILE:-~/.local/state/coffee/install.log}"
 
 # Ensure log file exists
 mkdir -p "$(dirname "$COFFEE_INSTALL_LOG_FILE")" 2>/dev/null || true
