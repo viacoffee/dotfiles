@@ -31,4 +31,4 @@ fi
 export COFFEE_DEFAULT_USER="$LOGIN_USER"
 
 success "User verification completed"
-log "Default login user: $LOGIN_USER"
+log "Default login user: $COFFEE_DEFAULT_USER"
