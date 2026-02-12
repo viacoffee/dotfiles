@@ -10,9 +10,6 @@ clang
 cliphist
 cryptsetup
 curl
-docker
-docker-buildx
-docker-compose
 dust
 fastfetch
 fuzzel
@@ -43,7 +40,6 @@ plymouth
 polkit-gnome
 prettyping
 ripgrep
-rust
 slurp
 snapper
 starship
