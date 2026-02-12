@@ -1,3 +1,8 @@
+# Add ~/.local/bin to PATH
+if [ -d "$HOME/.local/bin" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
 # Interactive check
 [[ $- != *i* ]] && return
 
@@ -26,8 +31,3 @@ function mkcd() {
 function mkmv() {
   mkdir -p $2 && mv $1 $2
 }
-
-# Add ~/.local/bin to PATH
-if [ -d "$HOME/.local/bin" ]; then
-  export PATH="$HOME/.local/bin:$PATH"
-fi
