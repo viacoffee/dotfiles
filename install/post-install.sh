@@ -17,16 +17,16 @@ if [ ! -f $COFFEE_INSTALL/optional.packages ]; then
   exit 1
 fi
 
-echo "Installing optional packages..."
-# Array to track packages that need installation
-declare -a optional_packages=()
-mapfile -t optional_packages < <(
-  grep -Ev '^(#|$)' "$COFFEE_INSTALL/optional.packages" || true
-)
-
-if ((${#optional_packages[@]})); then
-  sudo pacman -S --noconfirm --needed "${optional_packages[@]}"
-fi
+# echo "Installing optional packages..."
+# # Array to track packages that need installation
+# declare -a optional_packages=()
+# mapfile -t optional_packages < <(
+#   grep -Ev '^(#|$)' "$COFFEE_INSTALL/optional.packages" || true
+# )
+#
+# if ((${#optional_packages[@]})); then
+#   sudo pacman -S --noconfirm --needed "${optional_packages[@]}"
+# fi
 
 # Rebuild font cache
 # echo "Rebuilding font cache..."
