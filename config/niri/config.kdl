@@ -5,6 +5,13 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 environment {
   QT_QPA_PLATFORM "wayland"
+  GDK_BACKEND "wayland,x11,*"
+  SDL_VIDEODRIVER "wayland"
+  MOZ_ENABLE_WAYLAND "1"
+  ELECTRON_OZONE_PLATFORM_HINT "wayland"
+  OZONE_PLATFORM "wayland"
+  XDG_SESSION_DESKTOP "niri"
+  GTK_THEME "Adwaita:dark"
 }
 
 // -------------------------------------------------------------------
