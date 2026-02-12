@@ -14,9 +14,6 @@ systemctl_want_enable() {
 
     # Add to default.target wants
     systemctl --user add-wants default.target niri.service "$svc"
-
-    # Enable and start
-    systemctl --user enable --now "$svc"
   done
 }
 
@@ -26,6 +23,3 @@ systemctl_want_enable \
   swaybg.service \
   swayidle.service \
   swayosd.service
-
-# Reload user daemons
-systemctl --user daemon-reload

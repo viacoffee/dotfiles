@@ -18,6 +18,7 @@ fastfetch
 fuzzel
 fzf
 git
+glib2
 greetd
 grim
 hyprlock
@@ -51,7 +52,6 @@ swaybg
 swayidle
 swayosd
 tldr
-ttf-jetbrains-mono-nerd
 ttf-space-mono-nerd
 tzupdate
 ufw
