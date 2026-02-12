@@ -23,3 +23,9 @@ fi
 if ! systemctl is-enabled --quiet greetd.service; then
   sudo systemctl enable greetd.service
 fi
+
+# Ensure .local/bin gets added to the encironment path
+mkdir -p "$HOME/environment.d"
+cat > "$HOME/environment.d/10-path.conf" <<'EOF'
+PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
+EOF

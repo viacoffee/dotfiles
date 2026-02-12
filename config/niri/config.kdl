@@ -18,6 +18,8 @@ input {
   keyboard {
     xkb {}
 
+    repeat-delay 300
+    repeat-rate 50
     numlock
   }
 }
@@ -27,6 +29,15 @@ input {
 // -------------------------------------------------------------------
 /-output "eDP-1" {
   // niri msg outputs
+}
+
+output "HDMI-A-1" {
+  scale 1.0
+  focus-at-startup
+
+  hot-corners {
+    off
+  }
 }
 
 // -------------------------------------------------------------------
@@ -64,8 +75,7 @@ layout {
 }
 
 cursor {
-  xcursor-theme "breeze_cursors"
-  xcursor-size 68
+  xcursor-size 28
   hide-when-typing
 }
 
