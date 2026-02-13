@@ -28,7 +28,8 @@ input {
 }
 
 output "HDMI-A-1" {
-  scale 1.0
+  mode "3440x1440@59.973"
+  scale 1
   focus-at-startup
 
   hot-corners {
@@ -40,9 +41,11 @@ output "HDMI-A-1" {
 // Layout
 // -------------------------------------------------------------------
 layout {
-  gaps 10
+  gaps 0
   always-center-single-column
   center-focused-column "on-overflow"
+
+  default-column-width { proportion 0.33333; }
 
   preset-column-widths {
     proportion 0.33333
@@ -57,40 +60,50 @@ layout {
   }
 
   focus-ring {
-    width 1
+    width 0
     active-color "#7fc8ff"
     inactive-color "#505050"
   }
 
   border {
-    width 1
-    active-gradient from="#e5c07b" to="#56b6c2" angle=45 in="oklch longer hue"
+    width 0
+    active-color "#56b6c2"
     inactive-color "#505050"
     urgent-color "#9b0000"
+  }
+
+  struts {
+    right 50
+  }
+
+  shadow {
+    off
   }
 }
 
 // Animation Settings
 animations {
   workspace-switch {
-    spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    off
   }
   window-open {
-    duration-ms 200
-    curve "ease-out-quad"
+    off
+    // duration-ms 200
+    // curve "ease-out-quad"
   }
   window-close {
-    duration-ms 200
-    curve "ease-out-cubic"
+    off
+    // duration-ms 200
+    // curve "ease-out-cubic"
   }
   horizontal-view-movement {
-    spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
   }
   window-movement {
-    spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
   }
   window-resize {
-    spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
   }
   config-notification-open-close {
     spring damping-ratio=0.6 stiffness=1200 epsilon=0.001
@@ -105,7 +118,7 @@ animations {
 }
 
 cursor {
-  xcursor-size 28
+  xcursor-size 24
   hide-when-typing
 }
 
@@ -167,15 +180,18 @@ binds {
   Mod+Shift+k { move-window-up; }
 
   // Resize windows
-  Mod+Ctrl+h { set-window-height "+10%"; }
+  Mod+Ctrl+h { set-column-width "-10%"; }
   Mod+Ctrl+l { set-column-width "+10%"; }
-  Mod+Ctrl+j { set-window-height "-10%"; }
-  Mod+Ctrl+k { set-column-width "+10%"; }
+  Mod+Ctrl+j { set-window-height "+10%"; }
+  Mod+Ctrl+k { set-window-height "-10%"; }
 
   // Layout & window actions
   Mod+w { close-window; }
   Mod+f { fullscreen-window; }
   Mod+t { toggle-window-floating; }
+  Mod+m { center-column; }
+  Mod+Shift+m { center-visible-columns; }
+  Mod+o { switch-preset-column-width; }
 
   // Close all but the focused window
   Mod+Shift+W {
@@ -221,7 +237,7 @@ window-rule {
 // Unfocused window transparency
 window-rule {
   match is-focused=false
-  opacity 0.98
+  opacity 0.95
 }
 
 // For floating windows and misc system/about tuis
@@ -234,8 +250,8 @@ window-rule {
   open-floating true
   open-focused true
 
-  default-window-height { fixed 600; }
-  default-column-width { fixed 800; }
+  default-window-height { proportion 0.4; }
+  default-column-width { proportion 0.3; }
 }
 
 // Additional sizing for thunar
