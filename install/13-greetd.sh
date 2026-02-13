@@ -26,5 +26,4 @@ user = \"$COFFEE_DEFAULT_USER\"
 EOF"
 
 success "greetd configuration complete"
-info "Auto-login user: $COFFEE_DEFAULT_USER"
-info "Fallback: bare TTY shell on session exit"
+log "Auto-login user: $COFFEE_DEFAULT_USER"
