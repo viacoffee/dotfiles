@@ -270,6 +270,12 @@ window-rule {
   default-window-height { fixed 270; }
 }
 
+// Steam dialogs
+window-rule {
+    match app-id=r#"steam"# title=r#".*(Friends|Settings|Properties).*"#
+    open-floating true
+}
+
 // Environment Variables
 environment {
   QT_QPA_PLATFORM "wayland"
