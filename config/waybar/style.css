@@ -31,12 +31,21 @@ window#waybar {
   padding: 6px 0;
 }
 
-#workspaces button {
-  color: #CDD6F4;
-  padding: 0;
-}
+#workspaces button.focused,
 #workspaces button.active {
   color: #ffffff;
+  font-weight: 700;
+}
+
+#workspaces button.empty {
+  opacity: 0.5;
+}
+
+#workspaces button {
+  background: transparent;
+  color: #cfd8dc;
+  font-size: 24px;
+  padding: 0;
 }
 
 /* #network.disabled { */
