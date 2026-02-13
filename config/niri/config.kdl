@@ -118,7 +118,7 @@ animations {
 }
 
 cursor {
-  xcursor-size 24
+  xcursor-size 18
   hide-when-typing
 }
 
