@@ -1,0 +1,3 @@
+#!/bin/bash
+
+xdg-terminal-exec --dir=$(coffee-cmd-terminal-cwd)

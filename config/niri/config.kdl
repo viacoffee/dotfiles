@@ -133,7 +133,8 @@ hotkey-overlay {
 // System
 binds {
   //Mod+Shift+r { reload-config; }
-  Mod+Return { spawn "alacritty"; }
+  // Spawn terminal
+  Mod+Return { spawn "sh" "-c" "coffee-launch-terminal"; }
 
   // Lock
   Mod+Shift+q {
