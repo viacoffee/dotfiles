@@ -20,7 +20,7 @@ BackgroundEndColor=0x000000
 ProgressBarBackgroundColor=0x606060
 ProgressBarForegroundColor=0xffffff
 DialogClearsFirmwareBackground=true
-MessageBelowAnimation=true
+MessageBelowAnimation=false
 WatermarkHorizontalAlignment=1.5
 WatermarkVerticalAlignment=1.5
 
