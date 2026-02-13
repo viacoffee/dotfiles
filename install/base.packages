@@ -52,8 +52,9 @@ swayidle
 swayosd
 thunar
 tldr
-ttf-space-mono-nerd
 ttf-input-nerd
+ttf-mononoki-nerd
+ttf-space-mono-nerd
 tzupdate
 ufw
 ufw-docker
