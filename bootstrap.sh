@@ -149,6 +149,14 @@ else
   exit 1
 fi
 echo ""
+
+if [ -f "$COFFEE_INSTALL/91-mimes.sh" ]; then
+  source "$COFFEE_INSTALL/91-mimes.sh"
+else
+  error "Mimetype configuration failed. (script not found)"
+  exit 1
+fi
+echo ""
 success "Post-installation phase complete"
 
 important "Installation completed at: $(date '+%Y-%m-%d %H:%M:%S')"
