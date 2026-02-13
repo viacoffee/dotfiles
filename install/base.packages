@@ -34,6 +34,7 @@ lsd
 mako
 mpv
 niri
+noto-fonts
 nvim
 openssh
 playerctl
@@ -52,7 +53,9 @@ swayidle
 swayosd
 thunar
 tldr
+ttf-dejavu
 ttf-input-nerd
+ttf-liberation
 ttf-mononoki-nerd
 ttf-space-mono-nerd
 tzupdate

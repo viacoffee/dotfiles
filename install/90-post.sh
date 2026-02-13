@@ -35,6 +35,9 @@ for dir in "${DEFAULT_DIRS[@]}"; do
   mkdir -p "$HOME/$dir"
 done
 
+# Refresh font cache
+fc-cache -f
+
 # Array to track packages that need installation
 declare -a optional_packages=()
 mapfile -t optional_packages < <(
