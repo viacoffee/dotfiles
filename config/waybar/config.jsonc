@@ -11,7 +11,8 @@
   "spacing": 0,
   "include": ["~/.config/waybar/modules.json"],
   "modules-left": [
-    "clock"
+    "clock",
+    "custom/idle-indicator"
   ],
   "modules-center": [
     "niri/workspaces"

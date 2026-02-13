@@ -60,4 +60,10 @@
     "tooltip-format": "Devices connected: {num_connections}",
     "on-click": "coffee-launch-bluetooth"
   },
+  "custom/idle-indicator": {
+    "on-click": "coffee-toggle-idle",
+    "exec": "$HOME/.config/waybar/indicators/idle.sh",
+    "signal": 10,
+    "return-type": "json"
+  }
 }

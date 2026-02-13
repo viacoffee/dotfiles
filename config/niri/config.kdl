@@ -159,8 +159,13 @@ binds {
     spawn "thunar" "--name" "float.thunar"
   }
 
+  // Btop
   Mod+Shift+t {
     spawn "sh" "-c" "coffee-launch-btop"
+  }
+
+  Mod+Alt+i {
+    spawn "sh" "-c" "coffee-toggle-idle"
   }
 
   // Window focus
