@@ -35,6 +35,13 @@ for dir in "${DEFAULT_DIRS[@]}"; do
   mkdir -p "$HOME/$dir"
 done
 
+# Array to track packages that need installation
+declare -a optional_packages=()
+mapfile -t optional_packages < <(
+  grep -Ev '^(#|$)' "$COFFEE_INSTALL/optional.packages" || true
+)
+install_missing_packages "${optional_packages[@]}"
+
 log "Updating tldr"
 tldr --update || true
 
