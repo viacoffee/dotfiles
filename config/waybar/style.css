@@ -14,43 +14,55 @@ window#waybar {
   border-radius: 0;
   box-shadow: none;
   color: #cfd8dc;
-  font-family: "SpaceMono Nerd Font Mono", monospace, sans-serif;
-  font-size: 16px;
+  font-family: "Mononoki Nerd Font", monospace, sans-serif;
+  font-size: 13.5px;
 }
 
 #network:hover,
 #bluetooth:hover {
-  opacity: 0.5;
+  opacity: 1;
 }
 
-#clock,
+#clock {
+  font-weight: 600;
+  font-size: 16px;
+  padding: 6px 0;
+  opacity: 0.9;
+}
+
 #network,
 #bluetooth,
 #battery {
-  color: #cfd8dc;
+  opacity: 0.7;
+  color: #9aa2ad;
   padding: 6px 0;
 }
 
+#network {
+  margin-right: 4px;
+}
+
+#workspaces button {
+  font-size: 15.5px;
+  padding: 0;
+}
+
 #workspaces button.focused {
-  color: #cfd8dc;
-  font-weight: 700;
+  color: #56b6c2;
+}
+
+#workspaces button.urgent {
+  background-color: #e06c75;
 }
 
 #workspaces button.active {
-  color: #cfd8dc;
-  opacity: 0.8;
+  color: #56b6c2;
 }
 
 #workspaces button.empty {
   opacity: 0.5;
 }
 
-#workspaces button {
-  background: transparent;
-  color: #cfd8dc;
-  font-size: 24px;
-  padding: 0;
-}
 
 /* #network.disabled { */
 /*   color: @color1; */
@@ -66,13 +78,15 @@ window#waybar {
 /* #battery.charging { */
 /*   color: @color2; */
 /* } */
-/* #battery.critical { */
-/*   color: @color3; */
-/* } */
+
+#battery.critical {
+  color: #e06c75;
+}
 
 tooltip {
   background: rgba(0, 0, 0, 0.8);
 }
+
 tooltip * {
   color: #CDD6F4;
   margin: 0 0 0 10px;

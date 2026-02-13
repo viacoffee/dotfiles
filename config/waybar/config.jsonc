@@ -2,7 +2,7 @@
   "reload_style_on_change": true,
   "toggle": true,
   "layer": "top",
-  "width": 30,
+  "width": 35,
   "position": "left",
   "margin-top": 0,
   "margin-bottom": 0,
@@ -11,14 +11,14 @@
   "spacing": 0,
   "include": ["~/.config/waybar/modules.json"],
   "modules-left": [
-    "clock",
+    "clock"
   ],
   "modules-center": [
-    "niri/workspaces",
+    "niri/workspaces"
   ],
   "modules-right": [
-    "network",
     "bluetooth",
+    "network",
     "battery"
   ]
 }
