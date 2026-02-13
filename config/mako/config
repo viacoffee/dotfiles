@@ -7,7 +7,7 @@ default-timeout=5000
 width=420
 
 # Styling
-font=SpaceMono Nerd Font Mono 10
+font=InputMono Nerd Font 10
 background-color=#000000a2
 text-color=#cfd8dcff
 border-color=#0f0f0ff2
