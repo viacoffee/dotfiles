@@ -1,0 +1,63 @@
+{
+  "niri/workspaces": {
+    "on-click": "activate",
+    "format": "{icon}",
+    "format-icons": {
+      "default": "󰄰",
+      "active": "󰄯"
+    }
+  },
+  "clock": {
+    "interval": 1,
+    "format": "{:%H
+      %M}",
+      "format-alt": "{:%d
+        %m
+        %y}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>"
+  },
+  "network": {
+    "format-icons": {
+      "disabled": "<span size='12pt'>󰤭</span>",
+      "disconnected": "<span size='12pt'>󰤩</span>"
+    },
+    "format-disconnected": "{icon}",
+    "format-disabled": "{icon}",
+    "interval": 5,
+    "tooltip-format": "{essid}\t{gwaddr}",
+    "on-click": "rfkill toggle wifi",
+    "on-click-right": "nm-connection-editor",
+    "tooltip": true,
+    "max-length": 20
+  },
+  "bluetooth": {
+    "format-disabled": "<span size='14pt'>󰂲</span>",
+    "on-click": "coffee-launch-bluetooth",
+    "on-click-right": "coffee-launch-bluetooth"
+  },
+  "battery": {
+    "interval": 5,
+    "states": {
+      "critical": 10
+    },
+    "format": "{icon}",
+    "format-icons": [
+      "<span size='14pt'>󰁺</span>",
+      "<span size='14pt'>󰁻</span>",
+      "<span size='14pt'>󰁼</span>",
+      "<span size='14pt'>󰁽</span>",
+      "<span size='14pt'>󰁾</span>",
+      "<span size='14pt'>󰁿</span>",
+      "<span size='14pt'>󰂀</span>",
+      "<span size='14pt'>󰂁</span>",
+      "<span size='14pt'>󰂂</span>",
+      "<span size='14pt'>󰁹</span>"
+    ],
+    "format-charging": "<span size='14pt'>󰂄</span>",
+    "format-plugged": "<span size='14pt'>󰚥</span>",
+    "format-critical": "<span size='14pt'>󰂃</span>",
+    "tooltip": true,
+    "tooltip-format": "Charge: {capacity}%",
+    "tooltip-format-charging": "Charging: {capacity}%"
+  },
+}
