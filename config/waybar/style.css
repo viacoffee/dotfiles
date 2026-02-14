@@ -31,12 +31,17 @@ window#waybar {
   opacity: 0.8;
 }
 
+#tray,
 #network,
 #bluetooth,
 #battery {
   opacity: 0.7;
   color: #9aa2ad;
   padding: 6px 0;
+}
+
+#tray menu {
+  background: rgba(0, 0, 0, 0.8);
 }
 
 #network {

@@ -60,6 +60,28 @@
     "tooltip-format": "Devices connected: {num_connections}",
     "on-click": "coffee-launch-bluetooth"
   },
+  "group/tray-expander": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 600,
+      "children-class": "tray-group-item"
+    },
+    "modules": ["custom/expand-icon", "tray"]
+  },
+  "tray": {
+    "spacing": 16,
+    "reverse-direction": true,
+    "icon-size": 16,
+    "show-passive-items": false
+  },
+  "custom/expand-icon": {
+    "format": "",
+    "tooltip": false,
+    "on-scroll-up": "",
+    "on-scroll-down": "",
+    "on-scroll-left": "",
+    "on-scroll-right": ""
+  },
   "custom/idle-indicator": {
     "on-click": "coffee-toggle-idle",
     "exec": "$HOME/.config/waybar/indicators/idle.sh",
