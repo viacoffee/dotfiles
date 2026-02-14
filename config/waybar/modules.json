@@ -17,7 +17,7 @@
   },
   "clock": {
     "format": "{:%H\n%M}",
-    "format-alt": "{:%d\n%m\n%y}",
+    "format-alt": "{:%m\n%d\n%y}",
     "tooltip": false
   },
   "network": {
