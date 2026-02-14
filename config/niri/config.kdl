@@ -143,9 +143,14 @@ binds {
     spawn "sh" "-c" "coffee-menu system"
   }
 
+  // App fuzzel
+  Mod+Space {
+    spawn "coffee-menu-apps"
+  }
+
   // General fuzzel dmenu
   Mod+Alt+Space {
-    spawn "sh" "-c" "coffee-menu"
+    spawn "coffee-menu"
   }
 
   // Clipboard
