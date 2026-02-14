@@ -8,15 +8,18 @@ width=420
 
 # Styling
 font=InputMono Nerd Font 10
-background-color=#000000a2
+background-color=#000000d0
 text-color=#cfd8dcff
 border-color=#0f0f0ff2
 border-size=1
 border-radius=4
 width=300
-padding=10
+padding=15
 max-icon-size=32
 outer-margin=20
+
+# Formatting
+format=<b>%s</b>\n<i>%b</i>
 
 # Bindings
 on-button-right=dismiss
