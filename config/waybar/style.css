@@ -40,6 +40,10 @@ window#waybar {
   padding: 6px 0;
 }
 
+#custom-expand-icon {
+  padding: 6px 0;
+}
+
 #tray menu {
   background: rgba(0, 0, 0, 0.8);
 }
