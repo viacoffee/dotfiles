@@ -156,6 +156,14 @@ else
   error "Mimetype configuration failed. (script not found)"
   exit 1
 fi
+
+if [ -f "$COFFEE_INSTALL/92-firewall.sh" ]; then
+  source "$COFFEE_INSTALL/92-firewall.sh"
+else
+  error "Firewall configuration failed. (script not found)"
+  exit 1
+fi
+
 echo ""
 success "Post-installation phase complete"
 
