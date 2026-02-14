@@ -26,8 +26,6 @@ menu() {
   echo -e "$options" | fuzzel \
     --dmenu \
     --placeholder="$placeholder" \
-    # --lines 10 \
-    # --width 40 \
     2>/dev/null
 }
 
@@ -152,7 +150,7 @@ show_setup_menu() {
 
 go_to_menu() {
   case "${1,,}" in
-    *apps*) fuzzel ;;
+    *apps*) coffee-menu-apps ;;
     *setup*) show_setup_menu ;;
     *install*) show_install_menu ;;
     *capture*) show_capture_menu ;;
