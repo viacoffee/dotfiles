@@ -19,6 +19,8 @@ glib2
 gnome-themes-extra
 greetd
 grim
+gvfs-mtp
+gvfs-nfs
 hyprlock
 impala
 imv
