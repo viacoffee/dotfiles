@@ -1,4 +1,5 @@
-// spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
+spawn-at-startup "wl-paste --type text --watch cliphist store"
+spawn-at-startup "wl-paste --type image --watch cliphist store"
 
 prefer-no-csd
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
@@ -88,13 +89,9 @@ animations {
   }
   window-open {
     off
-    // duration-ms 200
-    // curve "ease-out-quad"
   }
   window-close {
     off
-    // duration-ms 200
-    // curve "ease-out-cubic"
   }
   horizontal-view-movement {
     spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
@@ -152,8 +149,7 @@ binds {
   }
 
   // Clipboard
-  Mod+C { spawn "sh" "-c" "wl-paste | wl-copy"; }
-  Mod+V { spawn "wl-paste"; }
+  // Mod+v { spawn "sh" "-c" "wl-paste | wtype -"; }
 
   // File browser
   Mod+Shift+f {
@@ -217,22 +213,18 @@ binds {
   Mod+Shift+4 { move-window-to-workspace 4; }
   Mod+Shift+5 { move-window-to-workspace 5; }
 
-  // Screengrabs
-  // Area to clipboard
-  //Mod+p {
-  //  spawn "grim -g \"$(slurp)\" - | wl-copy"
-  //}
-
-  // Area to clipboard
-  Mod+Shift+p {
+  // Area
+  Mod+p {
     screenshot
+  }
+
+  Mod+Shift+p {
+    screenshot-window
   }
 
   Mod+Alt+p {
     screenshot-screen
   }
-
-  Ctrl+Alt+Delete { quit; }
 }
 
 // Global window
