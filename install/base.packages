@@ -53,13 +53,13 @@ stow
 swaybg
 swayidle
 swayosd
-thunar
 tldr
 ttf-dejavu
 ttf-input-nerd
 ttf-liberation
 ttf-mononoki-nerd
 ttf-space-mono-nerd
+tumbler
 tzupdate
 ufw
 ufw-docker
@@ -72,5 +72,6 @@ xdg-desktop-portal-wlr
 xdg-terminal-exec
 xdg-utils
 xwayland-satellite
+yaru-icon-theme
 yay
 zsh

@@ -5,7 +5,7 @@ echo "Adding default gtk settings"
 echo "Forcing darkmode for gtk applications..."
 gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
 gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
-gsettings set org.gnome.desktop.interface icon-theme "Yaru-blue"
+gsettings set org.gnome.desktop.interface icon-theme "Yaru-dark"
 
 # Use Firefox as the default browser
 xdg-settings set default-web-browser firefox.desktop
