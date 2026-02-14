@@ -3,10 +3,7 @@
 # Exit after submenu when launched directly
 BACK_TO_EXIT=false
 
-############################
 # Helpers
-############################
-
 back_to() {
   local parent="$1"
 
@@ -35,7 +32,7 @@ terminal() {
 
 open_in_editor() {
   notify-send "Editing" "$1"
-  ${EDITOR:-nvim} "$1"
+  terminal ${EDITOR:-nvim} "$1"
 }
 
 install() {
@@ -46,131 +43,101 @@ aur_install() {
   present_terminal "echo Installing $1... && yay -S --noconfirm $2"
 }
 
-############################
-# Capture Menus
-############################
-
-show_screenshot_menu() {
-  case $(menu "Screenshot…" \
-"󰹑  Full Screen
-󰆞  Selection
-󰍹  Window") in
-
-  *Full*) grim ~/Pictures/shot-$(date +%s).png ;;
-  *Selection*) grim -g "$(slurp)" ~/Pictures/shot-$(date +%s).png ;;
-  *Window*) grim -g "$(slurp -w)" ~/Pictures/shot-$(date +%s).png ;;
-  *) back_to show_capture_menu ;;
+# Workspaces menu
+show_workspaces_menu() {
+  case $(menu "Workspaces…" "  Open\n  Save current\n  Manage") in
+    *Open*) coffee-menu-workspaces ;;
+    *Save*) coffee-workspaces-save ;;
+    *Manage*) coffee-workspaces ;;
+    *) back_to show_main_menu ;;
   esac
 }
 
-show_screenrecord_menu() {
-  case $(menu "Record…" \
-"  Start
-  Stop") in
-
-  *Start*) wf-recorder -f ~/Videos/rec-$(date +%s).mp4 ;;
-  *Stop*) pkill wf-recorder ;;
-  *) back_to show_capture_menu ;;
-  esac
-}
-
+# Capture menu
 show_capture_menu() {
-  case $(menu "Capture…" \
-"  Screenshot
-  Screenrecord") in
-
-  *Screenshot*) show_screenshot_menu ;;
-  *Screenrecord*) show_screenrecord_menu ;;
-  *) back_to show_main_menu ;;
+  case $(menu "Capture…" "  Screenshot\n  Screenrecord") in
+    *Screenshot*) show_screenshot_menu ;;
+    *Screenrecord*) show_screenrecord_menu ;;
+    *) back_to show_main_menu ;;
   esac
 }
 
-############################
+# Capture/Screenshot menu
+show_screenshot_menu() {
+  case $(menu "Screenshot…" "󰹑  Full Screen\n󰆞  Selection\n󰍹  Window") in
+    *Full*) niri msg action screenshot-screen ;;
+    *Selection*) niri msg action screenshot ;;
+    *Window*) niri msg action screenshot-window ;;
+    *) back_to show_capture_menu ;;
+  esac
+}
+
+# Capture/Screenrecord menu
+show_screenrecord_menu() {
+  case $(menu "Record…" "  Start\n  Stop") in
+    *Start*) wf-recorder -f ~/Videos/rec-$(date +%s).mp4 ;;
+    *Stop*) pkill wf-recorder ;;
+    *) back_to show_capture_menu ;;
+  esac
+}
+
+# About Menu
+show_about_menu() {
+  case $(menu "About…" "  Resources\n  Information") in
+    *Resources*) coffee-launch-btop ;;
+    *Information*) coffee-launch-about ;;
+    *) back_to show_main_menu ;;
+  esac
+}
+
 # System Menu
-############################
-
 show_system_menu() {
-  case $(menu "System…" \
-"  Lock
-󰜉  Restart
-󰐥  Shutdown") in
-
-  *Lock*)
-    exec sh -c "coffee-lock-screen"
-    ;;
-  *Restart*)
-    exec sh -c "coffee-cmd-reboot"
-    ;;
-  *Shutdown*)
-    exec sh -c "coffee-cmd-shutdown"
-    ;;
-  *) back_to show_main_menu ;;
+  case $(menu "System…" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
+    *Lock*) coffee-lock-screen ;;
+    *Restart*) coffee-cmd-reboot ;;
+    *Shutdown*) coffee-cmd-shutdown ;;
+    *) back_to show_main_menu ;;
   esac
 }
 
-############################
 # Install Menu
-############################
-
 show_install_menu() {
-  case $(menu "Install…" \
-"󰏖  Neovim
-󰏖  Firefox
-󰏖  Docker
-󰏖  VLC") in
-
-  *Neovim*) install "Neovim" neovim ;;
-  *Firefox*) install "Firefox" firefox ;;
-  *Docker*) install "Docker" docker ;;
-  *VLC*) install "VLC" vlc ;;
-  *) back_to show_main_menu ;;
+  case $(menu "Install…" "󰏖  Neovim\n󰏖  Firefox\n󰏖  Docker\n󰏖  VLC") in
+    *Neovim*) install "Neovim" neovim ;;
+    *Firefox*) install "Firefox" firefox ;;
+    *Docker*) install "Docker" docker ;;
+    *VLC*) install "VLC" vlc ;;
+    *) back_to show_main_menu ;;
   esac
 }
 
-############################
 # Setup Menu
-############################
-
 show_setup_menu() {
-  case $(menu "Setup…" \
-"  Edit niri config
-  Edit fuzzel config
-  Reload WM") in
-
-  *niri*) open_in_editor ~/.config/niri/config.kdl ;;
-  *fuzzel*) open_in_editor ~/.config/fuzzel/fuzzel.ini ;;
-  *Reload*) pkill -USR1 niri ;;
-  *) back_to show_main_menu ;;
+  case $(menu "Setup…" "  Edit niri config\n  Edit fuzzel config\n  Reload WM") in
+    *niri*) open_in_editor ~/.config/niri/config.kdl ;;
+    *fuzzel*) open_in_editor ~/.config/fuzzel/fuzzel.ini ;;
+    *Reload*) pkill -USR1 niri ;;
+    *) back_to show_main_menu ;;
   esac
 }
 
-############################
-# Main Navigation
-############################
-
+# Main navigation
 go_to_menu() {
   case "${1,,}" in
-    *apps*) coffee-menu-apps ;;
+    *workspaces*) show_workspaces_menu ;;
     *setup*) show_setup_menu ;;
     *install*) show_install_menu ;;
     *capture*) show_capture_menu ;;
+    *about*) show_about_menu ;;
     *system*) show_system_menu ;;
   esac
 }
 
 show_main_menu() {
-  go_to_menu "$(menu "Go…" \
-"󰀻  Apps
-  Setup
-󰉉  Install
-  Capture
-  System")"
+  go_to_menu "$(menu "Go…" "󰀻  Workspaces\n󰉉  Install\n  Capture\n  Setup\n  About\n  System")"
 }
 
-############################
-# Entry Point
-############################
-
+# Entry point
 if [[ -n "$1" ]]; then
   BACK_TO_EXIT=true
   go_to_menu "$1"
