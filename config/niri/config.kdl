@@ -139,7 +139,7 @@ binds {
 
   // Power fuzzel dmenu
   Mod+Escape {
-    spawn "sh" "-c" "coffee-menu system"
+    spawn "sh" "-c" "coffee-menu power"
   }
 
   // App fuzzel
