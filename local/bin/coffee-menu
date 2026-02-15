@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Exit after submenu when launched directly
 BACK_TO_EXIT=false
@@ -45,7 +45,7 @@ aur_install() {
 
 # Workspaces menu
 show_workspaces_menu() {
-  case $(menu "Workspaces…" "  Open\n  Save current\n  Manage") in
+  case $(menu " Workspaces" "  Open\n  Save current\n  Manage") in
     *Open*) coffee-menu-workspaces ;;
     *Save*) coffee-workspaces-save ;;
     *Manage*) coffee-workspaces ;;
@@ -55,7 +55,7 @@ show_workspaces_menu() {
 
 # Capture menu
 show_capture_menu() {
-  case $(menu "Capture…" "  Screenshot\n  Screenrecord") in
+  case $(menu " Capture" "  Screenshot\n  Screenrecord") in
     *Screenshot*) show_screenshot_menu ;;
     *Screenrecord*) show_screenrecord_menu ;;
     *) back_to show_main_menu ;;
@@ -64,7 +64,7 @@ show_capture_menu() {
 
 # Capture/Screenshot menu
 show_screenshot_menu() {
-  case $(menu "Screenshot…" "󰹑  Full Screen\n󰆞  Selection\n󰍹  Window") in
+  case $(menu " Screenshot" "󰹑  Full Screen\n󰆞  Selection\n󰍹  Window") in
     *Full*) niri msg action screenshot-screen ;;
     *Selection*) niri msg action screenshot ;;
     *Window*) niri msg action screenshot-window ;;
@@ -74,16 +74,16 @@ show_screenshot_menu() {
 
 # Capture/Screenrecord menu
 show_screenrecord_menu() {
-  case $(menu "Record…" "  Start\n  Stop") in
-    *Start*) wf-recorder -f ~/Videos/rec-$(date +%s).mp4 ;;
-    *Stop*) pkill wf-recorder ;;
+  case $(menu " Screenrecord" "With desktop audio\nWith desktop + mic") in
+    *"With audio"*) coffee-cmd-screenrecord --with-desktop-audio ;;
+    *"With audio + mic"*) coffee-cmd-screenrecord --with-desktop-audio --with-microphone ;;
     *) back_to show_capture_menu ;;
   esac
 }
 
 # System menu
 show_system_menu() {
-  case $(menu "System…" "  Information\n  Resources\n  Nvidia\n  Snapshots\n󰚰  Update") in
+  case $(menu " System" "  Information\n  Resources\n  Nvidia\n  Snapshots\n󰚰  Update") in
     *Information*) coffee-launch-about ;;
     *Resources*) coffee-launch-term-float btop ;;
     *Nvidia*) coffee-launch-term-float nvtop ;;
@@ -95,7 +95,7 @@ show_system_menu() {
 
 # System/Snapshots menu
 show_snapshot_menu() {
-  case $(menu "Snapshots…" "  Create") in
+  case $(menu " Snapshots" "  Create") in
     *Create*) coffee-launch-term-float coffee-snapshot ;;
     *) back_to show_system_menu ;;
   esac
@@ -103,7 +103,7 @@ show_snapshot_menu() {
 
 # Power menu
 show_power_menu() {
-  case $(menu "Power…" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
+  case $(menu " Power" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
     *Lock*) coffee-lock-screen ;;
     *Restart*) coffee-cmd-reboot ;;
     *Shutdown*) coffee-cmd-shutdown ;;
@@ -122,7 +122,7 @@ go_to_menu() {
 }
 
 show_main_menu() {
-  go_to_menu "$(menu "Go…" "󰀻  Workspaces\n  Capture\n  System\n  Power")"
+  go_to_menu "$(menu " Main menu…" "󰀻  Workspaces\n  Capture\n  System\n  Power")"
 }
 
 # Entry point
