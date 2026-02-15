@@ -17,6 +17,7 @@ fzf
 git
 glib2
 gnome-themes-extra
+gpu-screen-recorder
 greetd
 grim
 gvfs-mtp
@@ -67,6 +68,7 @@ unzip
 waybar
 whois
 wl-clipboard
+xdg-desktop-portal-gnome
 xdg-desktop-portal-gtk
 xdg-desktop-portal-wlr
 xdg-terminal-exec

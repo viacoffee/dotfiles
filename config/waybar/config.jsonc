@@ -12,7 +12,8 @@
   "include": ["~/.config/waybar/modules.json"],
   "modules-left": [
     "clock",
-    "custom/idle-indicator"
+    "custom/idle-indicator",
+    "custom/screenrecord-indicator"
   ],
   "modules-center": [
     "niri/workspaces"

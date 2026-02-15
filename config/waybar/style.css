@@ -106,3 +106,9 @@ tooltip * {
   font-size: 10px;
   color: #e5c07b;
 }
+
+#custom-screenrecord-indicator {
+  margin-top: 10px;
+  font-size: 10px;
+  color: #e06c75;
+}

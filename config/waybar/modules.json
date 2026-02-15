@@ -87,5 +87,11 @@
     "exec": "$HOME/.config/waybar/indicators/idle.sh",
     "signal": 10,
     "return-type": "json"
+  },
+  "custom/screenrecord-indicator": {
+    "on-click": "coffee-cmd-screenrecord",
+    "exec": "$HOME/.config/waybar/indicators/screenrecord.sh",
+    "signal": 9,
+    "return-type": "json"
   }
 }

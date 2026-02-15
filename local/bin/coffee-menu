@@ -75,8 +75,8 @@ show_screenshot_menu() {
 # Capture/Screenrecord menu
 show_screenrecord_menu() {
   case $(menu " Screenrecord" "With desktop audio\nWith desktop + mic") in
-    *"With audio"*) coffee-cmd-screenrecord --with-desktop-audio ;;
-    *"With audio + mic"*) coffee-cmd-screenrecord --with-desktop-audio --with-microphone ;;
+    *"With desktop audio"*) coffee-cmd-screenrecord --with-desktop-audio ;;
+    *"With desktop + mic"*) coffee-cmd-screenrecord --with-desktop-audio --with-microphone ;;
     *) back_to show_capture_menu ;;
   esac
 }
