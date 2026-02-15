@@ -81,17 +81,27 @@ show_screenrecord_menu() {
   esac
 }
 
-# About Menu
+# System menu
 show_system_menu() {
-  case $(menu "System…" "  Resources\n  Nvidia\n  Information") in
+  case $(menu "System…" "  Information\n  Resources\n  Nvidia\n  Snapshots\n󰚰  Update") in
+    *Information*) coffee-launch-about ;;
     *Resources*) coffee-launch-term-float btop ;;
     *Nvidia*) coffee-launch-term-float nvtop ;;
-    *Information*) coffee-launch-about ;;
+    *Snapshots*) show_snapshot_menu ;;
+    *Update*) coffee-launch-term-float coffee-update ;;
     *) back_to show_main_menu ;;
   esac
 }
 
-# System Menu
+# System/Snapshots menu
+show_snapshot_menu() {
+  case $(menu "Snapshots…" "  Create") in
+    *Create*) coffee-launch-term-float coffee-snapshot ;;
+    *) back_to show_system_menu ;;
+  esac
+}
+
+# Power menu
 show_power_menu() {
   case $(menu "Power…" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
     *Lock*) coffee-lock-screen ;;
@@ -101,7 +111,7 @@ show_power_menu() {
   esac
 }
 
-# Setup Menu
+# Setup menu
 show_setup_menu() {
   case $(menu "Setup…" "  Edit niri config\n  Edit fuzzel config\n  Reload WM") in
     *niri*) open_in_editor ~/.config/niri/config.kdl ;;
