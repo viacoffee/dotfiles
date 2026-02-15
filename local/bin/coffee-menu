@@ -111,21 +111,10 @@ show_power_menu() {
   esac
 }
 
-# Setup menu
-show_setup_menu() {
-  case $(menu "Setup…" "  Edit niri config\n  Edit fuzzel config\n  Reload WM") in
-    *niri*) open_in_editor ~/.config/niri/config.kdl ;;
-    *fuzzel*) open_in_editor ~/.config/fuzzel/fuzzel.ini ;;
-    *Reload*) pkill -USR1 niri ;;
-    *) back_to show_main_menu ;;
-  esac
-}
-
 # Main navigation
 go_to_menu() {
   case "${1,,}" in
     *workspaces*) show_workspaces_menu ;;
-    *setup*) show_setup_menu ;;
     *capture*) show_capture_menu ;;
     *system*) show_system_menu ;;
     *power*) show_power_menu ;;
@@ -133,7 +122,7 @@ go_to_menu() {
 }
 
 show_main_menu() {
-  go_to_menu "$(menu "Go…" "󰀻  Workspaces\n  Capture\n  Setup\n  System\n  Power")"
+  go_to_menu "$(menu "Go…" "󰀻  Workspaces\n  Capture\n  System\n  Power")"
 }
 
 # Entry point
