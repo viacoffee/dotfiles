@@ -1,0 +1,58 @@
+#!/bin/bash
+
+set -e
+
+trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m";coffee-snapshot delete' ERR
+
+gum style --border normal --border-foreground 6 --padding "1 2" \
+  "Ready to update?" \
+  "" \
+  "• You cannot stop the update once you start!" \
+  "• Make sure you're connected to power or have a full battery" \
+
+echo
+
+if ! gum confirm "Continue with update?"; then
+  echo "Update cancelled"
+  exit 1
+fi
+
+update_log="/tmp/coffee-update.log"
+# Create snapshot before update
+coffee-snapshot create || [ $? -eq 127 ]
+
+exec > >(tee "$update_log") 2>&1
+
+echo "Updating time..."
+sudo systemctl restart systemd-timesyncd
+
+echo -e "\e[32m\nUpdate system packages\e[0m"
+sudo pacman -Syyu --noconfirm
+
+orphans=$(pacman -Qtdq || true)
+if [[ -n $orphans ]]; then
+  echo -e "\e[32m\nRemove orphan system packages\e[0m"
+  for pkg in $orphans; do
+    sudo pacman -Rs --noconfirm "$pkg" || true
+  done
+  echo
+fi
+
+# Check for errors
+if grep -qi "error" "$update_log"; then
+  echo -e "\e[31mNon-stopping errors detected during update:\e[0m"
+  grep -i "error" "$update_log"
+  echo
+fi
+
+# Check for initramfs generation failure
+if grep -q "Updating linux initcpios" "$update_log"; then
+  if ! grep -q "Initcpio image generation successful" "$update_log"; then
+    echo -e '\e[31mError: Initramfs generation may have failed. Review logs before restart.\e[0m'
+    echo
+  fi
+fi
+
+echo ""
+echo ""
+gum confirm "Would you like to reboot now?" && coffee-cmd-reboot

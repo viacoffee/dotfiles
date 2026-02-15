@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -euo pipefail
 
 COMMAND="$1"
@@ -10,8 +10,7 @@ fi
 
 case "$COMMAND" in
 create)
-  # TODO-david probably should have descriptions for these
-  # DESC="$()"
+  DESC="$(date +'%m-%d-%Y')"
 
   echo -e "\e[32mCreate system snapshot\e[0m"
 
