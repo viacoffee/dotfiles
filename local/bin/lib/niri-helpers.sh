@@ -10,13 +10,17 @@ if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
   exit 1
 fi
 
+niri_is_overview_open() {
+  [ "$(niri msg overview-state)" != "Overview is closed." ]
+}
+
 # -------------------------------------------------------------------
 # Internal helpers
 # -------------------------------------------------------------------
 
 # Fetch window JSON snapshot
 _niri_windows_json() {
-  niri msg windows -j
+  niri msg --json windows
 }
 
 # Message action to each window ID

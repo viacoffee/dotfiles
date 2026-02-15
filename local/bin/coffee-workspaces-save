@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# ❯ pstree -p 3521
+# alacritty(3521)─┬─zsh(3544)───nvim(3683)───nvim(3684)─┬─zsh(5657)
+#                 │                                     ├─{nvim}(3690)
+#                 │                                     ├─{nvim}(3691)
+#                 │                                     ├─{nvim}(3692)
+#                 │                                     └─{nvim}(3693)
+#                 ├─{alacritty}(3530)
+#                 ├─{alacritty}(3531)
+#                 ├─{alacritty}(3532)
+#                 ├─{alacritty}(3533)
+#                 └─{alacritty}(3545)
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/niri-helpers.sh"
+
+if niri_is_overview_open; then
+  notify-send "Can't create workspace from overview"
+  exit 0
+fi
+
+windows=$(_niri_windows_json)
