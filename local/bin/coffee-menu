@@ -82,31 +82,21 @@ show_screenrecord_menu() {
 }
 
 # About Menu
-show_about_menu() {
-  case $(menu "About…" "  Resources\n  Information") in
-    *Resources*) coffee-launch-btop ;;
+show_system_menu() {
+  case $(menu "System…" "  Resources\n  Nvidia\n  Information") in
+    *Resources*) coffee-launch-term-float btop ;;
+    *Nvidia*) coffee-launch-term-float nvtop ;;
     *Information*) coffee-launch-about ;;
     *) back_to show_main_menu ;;
   esac
 }
 
 # System Menu
-show_system_menu() {
-  case $(menu "System…" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
+show_power_menu() {
+  case $(menu "Power…" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
     *Lock*) coffee-lock-screen ;;
     *Restart*) coffee-cmd-reboot ;;
     *Shutdown*) coffee-cmd-shutdown ;;
-    *) back_to show_main_menu ;;
-  esac
-}
-
-# Install Menu
-show_install_menu() {
-  case $(menu "Install…" "󰏖  Neovim\n󰏖  Firefox\n󰏖  Docker\n󰏖  VLC") in
-    *Neovim*) install "Neovim" neovim ;;
-    *Firefox*) install "Firefox" firefox ;;
-    *Docker*) install "Docker" docker ;;
-    *VLC*) install "VLC" vlc ;;
     *) back_to show_main_menu ;;
   esac
 }
@@ -126,15 +116,14 @@ go_to_menu() {
   case "${1,,}" in
     *workspaces*) show_workspaces_menu ;;
     *setup*) show_setup_menu ;;
-    *install*) show_install_menu ;;
     *capture*) show_capture_menu ;;
-    *about*) show_about_menu ;;
     *system*) show_system_menu ;;
+    *power*) show_power_menu ;;
   esac
 }
 
 show_main_menu() {
-  go_to_menu "$(menu "Go…" "󰀻  Workspaces\n󰉉  Install\n  Capture\n  Setup\n  About\n  System")"
+  go_to_menu "$(menu "Go…" "󰀻  Workspaces\n  Capture\n  Setup\n  System\n  Power")"
 }
 
 # Entry point

@@ -129,9 +129,8 @@ hotkey-overlay {
 
 // System
 binds {
-  //Mod+Shift+r { reload-config; }
   // Spawn terminal
-  Mod+Return { spawn "sh" "-c" "coffee-launch-terminal"; }
+  Mod+Return { spawn "sh" "-c" "coffee-launch-term-cwd"; }
 
   // Lock
   Mod+Shift+q {
@@ -163,7 +162,7 @@ binds {
 
   // Btop
   Mod+Shift+t {
-    spawn "sh" "-c" "coffee-launch-btop"
+    spawn "sh" "-c" "coffee-launch-term-float btop"
   }
 
   Mod+Alt+i {
@@ -250,7 +249,7 @@ window-rule {
 // For floating windows and misc system/about tuis
 window-rule {
   match app-id="Alacritty" title="coffee.about"
-  match app-id="Alacritty" title="coffee.btop"
+  match app-id="Alacritty" title="coffee.float"
   match app-id="Alacritty" title="coffee.float-tui"
   match app-id="float.thunar"
 

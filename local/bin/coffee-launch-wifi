@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
 # Attempts to unblock the wifi service first in case it should be been blocked.
-
 rfkill unblock wifi
-alacritty --title=coffee.float-tui -e bash -c 'impala'
+coffee-launch-term-float impala
