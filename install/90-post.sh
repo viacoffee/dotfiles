@@ -45,6 +45,9 @@ mapfile -t optional_packages < <(
 )
 install_missing_packages "${optional_packages[@]}"
 
+# Add dnd mode to mako
+makoctl mode -a dnd
+
 log "Updating tldr"
 tldr --update || true
 

@@ -93,5 +93,19 @@
     "exec": "$HOME/.config/waybar/indicators/screenrecord.sh",
     "signal": 9,
     "return-type": "json"
+  },
+  "custom/dnd": {
+    "on-click": "coffee-toggle-dnd",
+    "exec": "$HOME/.config/waybar/indicators/dnd.sh",
+    "signal": 8,
+    "return-type": "json"
+  },
+  "custom/notifications": {
+    "exec-if": "command -v makoctl",
+    "exec": "$HOME/.config/waybar/indicators/notification.sh",
+    "on-click": "coffee-notifications",
+    "on-click-right": "makoctl dismiss -a",
+    "return-type": "json",
+    "interval": 1
   }
 }

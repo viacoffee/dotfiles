@@ -8,10 +8,8 @@ SERVICE="swayidle.service"
 
 if systemctl --user is-active --quiet "$SERVICE"; then
   systemctl --user stop --now "$SERVICE"
-  notify-send "Idle lock disabled" "Idle locking will not longer lock the screen"
 else
   systemctl --user start --now "$SERVICE"
-  notify-send "Idle lock active" "Idle locking has been started"
 fi
 
 signal_waybar "10"
