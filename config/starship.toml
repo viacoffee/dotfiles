@@ -1,72 +1,60 @@
-# Starship config
+"$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](fg:color_bg1)\
+$username\
+$hostname\
 $directory\
-[](fg:color_bg1 bg:color_aqua)\
 $git_branch\
+$git_state\
 $git_status\
-[](fg:color_aqua)\
-$line_break$character"""
-
-palette = 'one_dark_pro'
-
-[palettes.one_dark_pro]
-color_fg0   = '#ffffff'  # bright foreground
-color_bg1   = '#282c34'  # main background
-color_bg3   = '#3e4451'  # secondary background (One Dark Pro)
-color_blue   = '#61afef' # vivid malibu blue
-color_green  = '#2bbac5' # swapped: fountain blue (cyan)
-color_aqua   = '#4c6e48' # swapped: vivid green
-color_orange = '#DA6F3F' # neon orange (custom override)
-color_purple = '#d070ff' # neon purple (custom override)
-color_red    = '#ef596f' # vivid coral red
-color_yellow = '#D29B40' # rich golden yellow (custom override)
-color_muted = '#535a6b' # grey for muted text
-
-#[username]
-#show_always = true
-#style_user = "bg:color_orange fg:color_fg0"
-#style_root = "bg:color_orange fg:color_fg0"
-#format = '[ ]($style)' # no user name
+$cmd_duration\
+$line_break\
+$python\
+$character"""
 
 [directory]
-style = "fg:color_muted bg:color_bg1"
-format = "[ $path ]($style)"
-truncation_length = 0 # dont truncate
-truncation_symbol = "…/"
-truncate_to_repo = false   # don't cut off at git repo root
+style = "#c5c8c6"
+truncation_length = 0
+truncate_to_repo = false
 
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = "󰝚 "
-"Pictures" = " "
-"Projects" = "󰲋 "
+[character]
+success_symbol = "[∷](bright-black)"
+error_symbol   = "[∷](red)"
+vimcmd_symbol  = "[∷](green)"
+# success_symbol = "[❯](bright-black)"
+# error_symbol = "[❯](red)"
+# vimcmd_symbol = "[❮](green)"
 
 [git_branch]
 symbol = ""
-style = "bg:color_aqua"
-format = '[[ $symbol $branch ](fg:color_fg0 bg:color_aqua)]($style)'
+format = "[$symbol $branch]($style)"
+style = "bright-black"
 
 [git_status]
-style = "bg:color_aqua"
-format = '[[($all_status$ahead_behind )](fg:color_fg0 bg:color_aqua)]($style)'
+format = " [$ahead_behind$stashed $all_status]($style) "
+style = "green"
 
-[time]
-disabled = false
-use_12hr = true
-# time_format = "%R"
-time_format = "%-I:%M %p"
-style = "bg:color_bg1"
-format = '[[  $time ](fg:color_fg0 bg:color_bg1)]($style)'
+# Single-letter lowercase symbols for git status
+conflicted = "c"
+staged     = "s"
+modified   = "m"
+untracked  = "u"
+renamed    = "r"
+deleted    = "d"
+stashed    = "p"
+ahead  = "↑"
+behind = "↓"
 
-[line_break]
-disabled = false
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "yellow"
 
-[character]
-disabled = false
-#error_symbol = "[✗](bold color_red)"
-error_symbol = "[❯](bold color_muted)"
-success_symbol = "[❯](bold color_muted)"
+[cmd_duration]
+format = "[$duration]($style) "
+style = "yellow"
 
+[python]
+format = "[$virtualenv]($style) "
+style = "bright-black"
+detect_extensions = []
+detect_files = []
