@@ -27,6 +27,9 @@ bindings = [
   { key = "Insert", mods = "Control", action = "Copy" }
 ]
 
+[cursor]
+thickness = 0.20
+
 [colors.primary]
 foreground = "#A7AFB9"
 background = "#1e2229"
@@ -35,7 +38,7 @@ bright_foreground = "#c8ccd4"
 
 [colors.cursor]
 text = "#282c34"
-cursor = "#abb2bf"
+cursor = "#A7AFB9"
 
 [colors.vi_mode_cursor]
 text = "#282c34"
