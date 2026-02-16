@@ -28,7 +28,7 @@ bindings = [
 ]
 
 [colors.primary]
-foreground = "#abb2bf"
+foreground = "#A7AFB9"
 background = "#1e2229"
 dim_foreground = "#5c6370"
 bright_foreground = "#c8ccd4"
