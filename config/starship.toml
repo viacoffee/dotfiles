@@ -49,8 +49,8 @@ untracked  = "u"
 renamed    = "r"
 deleted    = "d"
 stashed    = "p"
-ahead  = "↑"
-behind = "↓"
+ahead      = "↑"
+behind     = "↓"
 
 [git_state]
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
