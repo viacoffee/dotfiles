@@ -48,8 +48,8 @@ compinit -d ~/.cache/zsh/zcompdump
 
 # History
 HISTFILE=~/.zsh_history
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=10000
+SAVEHIST=10000
 
 setopt appendhistory
 setopt share_history
