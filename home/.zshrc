@@ -26,6 +26,9 @@ alias gl="git log"
 alias gp="git pull"
 alias gd="git diff"
 
+# General
+alias c="clear"
+
 # Add ~/.local/bin to PATH
 if [ -d "$HOME/.local/bin" ]; then
   export PATH="$HOME/.local/bin:$PATH"
