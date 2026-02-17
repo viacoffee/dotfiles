@@ -53,6 +53,7 @@ window#waybar {
 
 #workspaces button {
   font-size: 14.5px;
+  color: #c5c8c6;
   padding: 0;
 }
 
