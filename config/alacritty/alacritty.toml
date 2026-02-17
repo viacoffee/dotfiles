@@ -33,6 +33,8 @@ thickness = 0.20
 [colors.primary]
 foreground = "#A7AFB9"
 background = "#1e2229"
+# background = "#212428"
+# background = "#222327"
 dim_foreground = "#5c6370"
 bright_foreground = "#c8ccd4"
 
