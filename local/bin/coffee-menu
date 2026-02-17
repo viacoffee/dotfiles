@@ -116,7 +116,7 @@ go_to_menu() {
 }
 
 show_main_menu() {
-  go_to_menu "$(menu " Main menu…" "󰀻  Workspaces\n  Setup\n  Capture\n  System\n  Power")"
+  go_to_menu "$(menu " Main menu" "󰀻  Workspaces\n  Setup\n  Capture\n  System\n  Power")"
 }
 
 # Entry point
