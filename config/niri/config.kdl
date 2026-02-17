@@ -44,7 +44,6 @@ output "HDMI-A-1" {
 layout {
   gaps 0
   always-center-single-column
-  center-focused-column "on-overflow"
 
   default-column-width { proportion 0.33333; }
 
@@ -61,16 +60,11 @@ layout {
   }
 
   focus-ring {
-    width 0
-    active-color "#7fc8ff"
-    inactive-color "#505050"
+    off
   }
 
   border {
-    width 0
-    active-color "#56b6c2"
-    inactive-color "#505050"
-    urgent-color "#9b0000"
+    off
   }
 
   struts {
@@ -203,7 +197,7 @@ binds {
 
   // Layout & window actions
   Mod+w { close-window; }
-  Mod+f { fullscreen-window; }
+  Mod+f { maximize-window-to-edges; }
   Mod+t { toggle-window-floating; }
   Mod+m { center-column; }
   Mod+Shift+m { center-visible-columns; }
