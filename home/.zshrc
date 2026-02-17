@@ -20,6 +20,12 @@ alias lr="lsd -R"
 alias lra="lsd -RA"
 alias lt="lsd --tree"
 
+# Git
+alias gs="git status"
+alias gl="git log"
+alias gp="git pull"
+alias gd="git diff"
+
 # Add ~/.local/bin to PATH
 if [ -d "$HOME/.local/bin" ]; then
   export PATH="$HOME/.local/bin:$PATH"
