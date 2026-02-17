@@ -293,6 +293,8 @@ window-rule {
     open-floating true
 }
 
+recent-windows { off; }
+
 // Environment Variables
 environment {
   QT_QPA_PLATFORM "wayland"
