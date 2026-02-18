@@ -15,7 +15,7 @@ $python\
 $character"""
 
 [directory]
-style = "bold #c5c8c6"
+style = "#c5c8c6"
 truncation_length = 0
 truncate_to_repo = false
 
