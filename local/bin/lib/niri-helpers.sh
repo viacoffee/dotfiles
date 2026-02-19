@@ -4,12 +4,6 @@
 
 set -euo pipefail
 
-# Prevent accidental execution
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-  echo "This file is meant to be sourced, not executed."
-  exit 1
-fi
-
 niri_is_overview_open() {
   niri msg --json overview-state |
     jq -e '.is_open' > /dev/null
