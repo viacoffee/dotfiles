@@ -2,9 +2,13 @@
 
 set -e
 
+# Include helpers for uniformed gum functions
+SCRIPT_DIR="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
+. "$SCRIPT_DIR/lib/helpers.sh"
+
 trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m";coffee-snapshot delete' ERR
 
-gum style --border normal --border-foreground 6 --padding "1 2" \
+gum style --border rounded --border-foreground="#3e4451" --padding "1 2" \
   "Ready to update?" \
   "" \
   "• You cannot stop the update once you start!" \
@@ -12,7 +16,7 @@ gum style --border normal --border-foreground 6 --padding "1 2" \
 
 echo
 
-if ! gum confirm "Continue with update?"; then
+if ! gum confirm --prompt.foreground="#c5c8c6" --unselected.background="" --selected.foreground="#21252b" --selected.background="#56b6c2" "Continue with update?"; then
   echo "Update cancelled"
   exit 1
 fi
@@ -55,4 +59,4 @@ fi
 
 echo ""
 echo ""
-gum confirm "Would you like to reboot now?" && coffee-cmd-reboot
+gum confirm --prompt.foreground="#c5c8c6" --unselected.background="" --selected.foreground="#21252b" --selected.background="#56b6c2" "Would you like to reboot now?" && coffee-cmd-reboot
