@@ -205,7 +205,7 @@ binds {
 
   // Close all but the focused window
   Mod+Shift+W {
-    spawn "sh" "-c" "niri_close_all_but_focused"
+    spawn "sh" "-c" "coffee-wm-workspace-close-all-windows --unfocused"
   }
 
   // Workspaces

@@ -11,7 +11,17 @@ if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
 fi
 
 niri_is_overview_open() {
-  [ "$(niri msg overview-state)" != "Overview is closed." ]
+  niri msg --json overview-state |
+    jq -e '.is_open' > /dev/null
+}
+
+niri_is_window_focused() {
+  local window_id="$1"
+
+  _niri_windows_json |
+    jq -e --argjson wid "$window_id" '
+      any(.id == $wid and .is_focused)
+    ' > /dev/null
 }
 
 # -------------------------------------------------------------------
@@ -61,17 +71,24 @@ niri_windows_on_workspace() {
     jq -r --arg ws "$workspace_id" '.[] | select(.workspace_id == $ws) | .id'
 }
 
-# Return IDs of all windows matching a pattern in app_id or title
+# Return windows matching a pattern in app_id or title
 niri_windows_matching() {
   local pattern="$1"
-  jq -r --arg p "$pattern" '
-    .[]
-    | select(
-        (.app_id // "" | test($p; "i")) or
-        (.title  // "" | test($p; "i"))
-      )
-    | .id
-  '
+
+  if [ -t 0 ]; then
+    _niri_windows_json
+  else
+    cat
+  fi |
+    jq -r --arg p "$pattern" '
+      [
+        .[]
+        | select(
+          (.app_id // "" | test($p; "i")) or
+          (.title  // "" | test($p; "i"))
+        )
+      ]
+    '
 }
 
 # Return IDs of all unfocused windows
@@ -112,13 +129,6 @@ niri_close_all_on_focused_workspace() {
 }
 
 # Close all windows except the focused window (on its workspace)
-# TODO-david I don't really like how this reads. Doing something
-# like:
-#   niri_windows_on_focused_workspace |
-#     niri_unfocused_window_ids |
-#     niri_close_windows
-#
-# would likely be cleaner for functions like this
 niri_close_all_unfocused_on_workspace() {
   niri_windows_on_focused_workspace |
     niri_unfocused_window_ids |
@@ -136,25 +146,27 @@ niri_close_matching() {
 # Focus or spawn window
 niri_focus_or_spawn() {
   local pattern="$1"
-  local launch_cmd="${2:-$pattern}"
-  local windows
+  shift
+
   local window_id
-
-  # Take a single snapshot
-  windows="$(_niri_windows_json)"
-
-  # Look for first matching window
   window_id="$(
-    echo "$windows" |
-      niri_windows_matching "$pattern" |
-      head -n1
+    _niri_windows_json |
+      jq -r --arg p "$pattern" '
+        first(
+          .[]
+          | select(
+              (.app_id // "" | test($p; "i")) or
+              (.title  // "" | test($p; "i"))
+            )
+        ).id // empty
+      '
   )"
 
   if [[ -n "$window_id" ]]; then
     # Focus existing window
-    _niri_message_to_ids focus-window <<<"$window_id"
+    _niri_message_to_ids <<<$window_id focus-window
   else
     # Spawn the app if no window found
-    eval "$launch_cmd" &
+    "$@" &
   fi
 }
