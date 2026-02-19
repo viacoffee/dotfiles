@@ -29,7 +29,7 @@ _niri_message_to_ids() {
   local action="$1"
   shift
   while read -r id; do
-    niri msg "$action" --id "$id"
+    niri msg action "$action" --id "$id"
   done
 }
 
@@ -45,19 +45,20 @@ niri_windows() {
 # Return the ID of the focused window
 niri_focused_window_id() {
   _niri_windows_json |
-    jq -r '.[] | select(.focused) | .id'
+    jq -r '.[] | select(.is_focused) | .id'
 }
 
 # Return the workspace ID of the focused window
 niri_focused_workspace_id() {
   _niri_windows_json |
-    jq -r '.[] | select(.focused) | .workspace_id'
+    jq -r '.[] | select(.is_focused) | .workspace_id'
 }
 
 # Return IDs of all windows on a specific workspace
 niri_windows_on_workspace() {
   local workspace_id="$1"
-  jq -r --arg ws "$workspace_id" '.[] | select(.workspace_id == $ws) | .id'
+  _niri_windows_json |
+    jq -r --arg ws "$workspace_id" '.[] | select(.workspace_id == $ws) | .id'
 }
 
 # Return IDs of all windows matching a pattern in app_id or title
@@ -74,22 +75,22 @@ niri_windows_matching() {
 }
 
 # Return IDs of all unfocused windows
-niri_windows_unfocused() {
-  jq -r '.[] | select(.focused | not) | .id'
+niri_unfocused_window_ids() {
+  jq -r '. | select(.is_focused | not) | .id'
 }
 
-# Return IDs of all windows on the currently focused workspace
+# Return all windows on the currently focused workspace
 niri_windows_on_focused_workspace() {
-  jq -r '
-    . as $windows
-    | $windows[]
-    | select(.focused)
-    | .workspace_id
-    as $ws
-    | $windows[]
-    | select(.workspace_id == $ws)
-    | .id
-  '
+  _niri_windows_json |
+    jq -r '
+      . as $windows
+      | $windows[]
+      | select(.is_focused)
+      | .workspace_id
+      as $ws
+      | $windows[]
+      | select(.workspace_id == $ws)
+    '
 }
 
 # -------------------------------------------------------------------
@@ -111,10 +112,16 @@ niri_close_all_on_focused_workspace() {
 }
 
 # Close all windows except the focused window (on its workspace)
-niri_close_all_but_focused() {
-  _niri_windows_json |
-    niri_windows_on_focused_workspace |
-    niri_windows_unfocused |
+# TODO-david I don't really like how this reads. Doing something
+# like:
+#   niri_windows_on_focused_workspace |
+#     niri_unfocused_window_ids |
+#     niri_close_windows
+#
+# would likely be cleaner for functions like this
+niri_close_all_unfocused_on_workspace() {
+  niri_windows_on_focused_workspace |
+    niri_unfocused_window_ids |
     _niri_message_to_ids close-window
 }
 
