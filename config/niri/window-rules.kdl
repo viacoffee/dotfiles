@@ -11,10 +11,12 @@ window-rule {
 
 // For floating windows and misc system/about tuis
 window-rule {
-  match app-id="Alacritty" title="coffee.about"
-  match app-id="Alacritty" title="coffee.float"
-  match app-id="Alacritty" title="coffee.float-tui"
+  match app-id="coffee.about"
+  match app-id="coffee.float"
+  match app-id="coffee.float-tui"
   match app-id="org.gnome.Nautilus"
+  match app-id="mpv"
+  match app-id="imv"
 
   open-floating true
   open-focused true
