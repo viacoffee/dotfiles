@@ -1,12 +1,22 @@
+include "bindings.kdl"
+include "window-rules.kdl"
+include "animations.kdl"
+
 spawn-at-startup "wl-paste --type text --watch cliphist store"
 spawn-at-startup "wl-paste --type image --watch cliphist store"
 
-prefer-no-csd
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+prefer-no-csd
 
-// -------------------------------------------------------------------
+hotkey-overlay {
+  skip-at-startup
+  hide-not-bound
+}
+
+// No Mod+tab or Alt+Tab overlays
+recent-windows { off; }
+
 // Inputs
-// -------------------------------------------------------------------
 input {
   focus-follows-mouse
   disable-power-key-handling
@@ -21,9 +31,13 @@ input {
   }
 }
 
-// -------------------------------------------------------------------
-// Output/display
-// -------------------------------------------------------------------
+// Cursor
+cursor {
+  xcursor-size 18
+  hide-when-typing
+}
+
+// Output displays
 /-output "eDP-1" {
   // niri msg outputs
 }
@@ -38,9 +52,7 @@ output "HDMI-A-1" {
   }
 }
 
-// -------------------------------------------------------------------
 // Layout
-// -------------------------------------------------------------------
 layout {
   gaps 0
   always-center-single-column
@@ -75,219 +87,6 @@ layout {
     off
   }
 }
-
-// Animation Settings
-animations {
-  workspace-switch {
-    off
-  }
-  window-open {
-    off
-  }
-  window-close {
-    off
-  }
-  horizontal-view-movement {
-    spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
-  }
-  window-movement {
-    spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
-  }
-  window-resize {
-    spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
-  }
-  config-notification-open-close {
-    off
-  }
-  screenshot-ui-open {
-    duration-ms 300
-    curve "ease-out-quad"
-  }
-  overview-open-close {
-    off
-  }
-}
-
-cursor {
-  xcursor-size 18
-  hide-when-typing
-}
-
-// -------------------------------------------------------------------
-// Keybinds
-// -------------------------------------------------------------------
-hotkey-overlay {
-  skip-at-startup
-  hide-not-bound
-}
-
-// System
-binds {
-  // Spawn terminal
-  Mod+Return { spawn "sh" "-c" "coffee-launch-term-cwd"; }
-
-  // Lock
-  Mod+Shift+q {
-    spawn "sh" "-c" "coffee-lock-screen"
-  }
-
-  // Power fuzzel dmenu
-  Mod+Escape {
-    spawn "sh" "-c" "coffee-menu power"
-  }
-
-  // App fuzzel
-  Mod+Space {
-    spawn "coffee-menu-apps"
-  }
-
-  // General fuzzel dmenu
-  Mod+Alt+Space {
-    spawn "coffee-menu"
-  }
-
-  // Clipboard
-  // Mod+v { spawn "sh" "-c" "wl-paste | wtype -"; }
-
-  // File browser
-  Mod+Shift+f {
-    spawn "nautilus"
-  }
-
-  // Btop
-  Mod+Shift+t {
-    spawn "sh" "-c" "coffee-launch-term-float btop"
-  }
-
-  // DND toggle
-  Mod+Alt+d {
-    spawn "sh" "-c" "coffee-toggle-dnd"
-  }
-
-  // Swayidle toggle
-  Mod+Alt+i {
-    spawn "sh" "-c" "coffee-toggle-idle"
-  }
-
-  // Window focus
-  Mod+h { focus-column-left; }
-  Mod+j { focus-window-down; }
-  Mod+k { focus-window-up; }
-  Mod+l { focus-column-right; }
-
-  // Cycle workspaces
-  Mod+d { focus-workspace-down; }
-  Mod+u { focus-workspace-up; }
-
-  // Move windows (shift)
-  Mod+Shift+h { move-column-left; }
-  Mod+Shift+l { move-column-right; }
-  Mod+Shift+j { move-window-down; }
-  Mod+Shift+k { move-window-up; }
-
-  // Consume or expel window (alt)
-  Mod+Alt+h { consume-or-expel-window-left; }
-  Mod+Alt+l { consume-or-expel-window-right; }
-
-  // Resize windows
-  Mod+Ctrl+h { set-column-width "-10%"; }
-  Mod+Ctrl+l { set-column-width "+10%"; }
-  Mod+Ctrl+j { set-window-height "+10%"; }
-  Mod+Ctrl+k { set-window-height "-10%"; }
-
-  // Layout & window actions
-  Mod+w { close-window; }
-  Mod+f { maximize-window-to-edges; }
-  Mod+t { toggle-window-floating; }
-  Mod+m { center-column; }
-  Mod+Shift+m { center-visible-columns; }
-  Mod+o { switch-preset-column-width; }
-
-  // Close all but the focused window
-  Mod+Shift+W {
-    spawn "sh" "-c" "coffee-wm-workspace-close-all-windows --unfocused"
-  }
-
-  // Workspaces
-  Mod+1 { focus-workspace 1; }
-  Mod+2 { focus-workspace 2; }
-  Mod+3 { focus-workspace 3; }
-  Mod+4 { focus-workspace 4; }
-  Mod+5 { focus-workspace 5; }
-  Mod+6 { focus-workspace 6; }
-  Mod+7 { focus-workspace 7; }
-  Mod+8 { focus-workspace 8; }
-  Mod+9 { focus-workspace 9; }
-
-  Mod+Shift+1 { move-window-to-workspace 1; }
-  Mod+Shift+2 { move-window-to-workspace 2; }
-  Mod+Shift+3 { move-window-to-workspace 3; }
-  Mod+Shift+4 { move-window-to-workspace 4; }
-  Mod+Shift+5 { move-window-to-workspace 5; }
-  Mod+Shift+6 { move-window-to-workspace 6; }
-  Mod+Shift+7 { move-window-to-workspace 7; }
-  Mod+Shift+8 { move-window-to-workspace 8; }
-  Mod+Shift+9 { move-window-to-workspace 9; }
-
-  // Area
-  Mod+p {
-    screenshot
-  }
-
-  Mod+Shift+p {
-    screenshot-window
-  }
-
-  Mod+Alt+p {
-    screenshot-screen
-  }
-
-  XF86AudioRaiseVolume { spawn "sh" "-c" "swayosd-client --output-volume +3"; }
-  XF86AudioLowerVolume { spawn "sh" "-c" "swayosd-client --output-volume -3"; }
-  XF86AudioMicMute { spawn "sh" "-c" "swayosd-client --input-volume mute-toggle"; }
-}
-
-// Global window
-window-rule {
-  draw-border-with-background false
-}
-
-// Unfocused window transparency
-window-rule {
-  match is-focused=false
-  opacity 0.97
-}
-
-// For floating windows and misc system/about tuis
-window-rule {
-  match app-id="Alacritty" title="coffee.about"
-  match app-id="Alacritty" title="coffee.float"
-  match app-id="Alacritty" title="coffee.float-tui"
-  match app-id="org.gnome.Nautilus"
-
-  open-floating true
-  open-focused true
-
-  default-window-height { proportion 0.4; }
-  default-column-width { proportion 0.3; }
-}
-
-// Firefox Picture-in-Picture
-window-rule {
-  match app-id="firefox$" title="^Picture-in-Picture$"
-
-  open-floating true
-  default-column-width { fixed 480; }
-  default-window-height { fixed 270; }
-}
-
-// Steam dialogs
-window-rule {
-    match app-id=r#"steam"# title=r#".*(Friends|Settings|Properties).*"#
-    open-floating true
-}
-
-recent-windows { off; }
 
 // Environment Variables
 environment {
