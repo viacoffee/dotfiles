@@ -23,8 +23,11 @@ binds {
     spawn "coffee-menu"
   }
 
-  // Capslock layer: Copy/Paste - terminal only (Insert-based)
-  ISO_Level5_Shift+c { spawn "sh" "-c" "wtype -M ctrl -k Insert"; }
+  // Clipboard history
+  Mod+v { spawn "sh" "-c" "coffee-clipboard"; }
+
+  // Capslock layer: Copy/Paste (terminal)
+  ISO_Level5_Shift+c { spawn "sh" "-c" "wtype -M ctrl -k Insert; sleep 0.1; content=$(xclip -selection primary -o 2>/dev/null); [ -n \"$content\" ] && echo \"$content\" | wl-copy"; }
   ISO_Level5_Shift+v { spawn "sh" "-c" "wtype -M shift -k Insert"; }
 
   // File browser
