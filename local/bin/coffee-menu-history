@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Display dunst notification history in fuzzel
+
+HISTORY=$(dunstctl history)
+
+# Check if history is empty
+if [ -z "$HISTORY" ] || [ "$HISTORY" = '{"type":"aa{sv}","data":[[]]}' ]; then
+  notify-send "No history" "No notifications in history"
+  exit 0
+fi
+
+ITEMS=$(echo "$HISTORY" | jq -r '.data[0][] | "\(.summary.data) \(.body.data)"' 2>/dev/null | head -20)
+
+if [ -z "$ITEMS" ]; then
+  notify-send "No history" "No notifications in history"
+  exit 0
+fi
+
+# Show in fuzzel
+SELECTED=$(echo "$ITEMS" | fuzzel --dmenu --placeholder=" Notifications")
+
+if [ -n "$SELECTED" ]; then
+  # Find the ID and pop from history
+  ID=$(echo "$HISTORY" | jq -r --arg body "$SELECTED" '.data[0][] | select((.summary.data + " " + .body.data) | index($body)) | .id.data' 2>/dev/null | head -1)
+  if [ -n "$ID" ]; then
+    dunstctl history-pop "$ID"
+  fi
+fi

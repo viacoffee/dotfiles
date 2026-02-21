@@ -126,4 +126,7 @@ binds {
   XF86AudioRaiseVolume { spawn "sh" "-c" "swayosd-client --output-volume +3"; }
   XF86AudioLowerVolume { spawn "sh" "-c" "swayosd-client --output-volume -3"; }
   XF86AudioMicMute { spawn "sh" "-c" "swayosd-client --input-volume mute-toggle"; }
+
+  // Notification history
+  Mod+Alt+n { spawn "coffee-menu-history"; }
 }
