@@ -15,6 +15,7 @@ format = <b>%s</b>\n<i>%b</i>
 sort = no
 indicate_hidden = yes
 stack_duplicates = yes
+enable_recursive_icon_lookup = yes
 
 # History
 sticky_history = yes
