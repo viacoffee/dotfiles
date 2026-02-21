@@ -1,0 +1,3 @@
+max-items 200
+max-dedupe-search 200
+min-store-length 1
