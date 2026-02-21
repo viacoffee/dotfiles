@@ -2,6 +2,7 @@
   "reload_style_on_change": true,
   "toggle": true,
   "layer": "top",
+  "mode": "overlay",
   "width": 35,
   "position": "left",
   "margin-top": 0,

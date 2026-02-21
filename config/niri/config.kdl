@@ -82,7 +82,8 @@ layout {
   }
 
   struts {
-    right 50
+    left 34
+    right 51
   }
 
   shadow {
