@@ -23,7 +23,9 @@ input {
   warp-mouse-to-focus mode="center-xy"
 
   keyboard {
-    xkb {}
+    xkb {
+      options "compose:rctrl,lv5:caps_switch"
+    }
 
     repeat-delay 300
     repeat-rate 50
