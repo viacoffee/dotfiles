@@ -20,7 +20,7 @@ mkdir -p ~/.cache/zsh
 # add-wants for user/niri
 systemctl_want_enable \
   waybar \
-  mako \
+  dunst \
   swaybg \
   swayidle \
   swayosd

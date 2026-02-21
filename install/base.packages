@@ -10,6 +10,7 @@ clang
 cliphist
 cryptsetup
 curl
+dunst
 dust
 fastfetch
 fuzzel
@@ -34,7 +35,6 @@ limine-mkinitcpio-hook
 limine-snapper-sync
 linux-headers
 lsd
-mako
 mpv
 nautilus
 niri
