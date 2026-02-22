@@ -94,6 +94,21 @@
     "signal": 9,
     "return-type": "json"
   },
+  "custom/webcam-indicator": {
+    "exec": "$HOME/.config/waybar/indicators/webcam.sh",
+    "return-type": "json",
+    "interval": 3
+  },
+  "custom/screenshare-indicator": {
+    "exec": "$HOME/.config/waybar/indicators/screenshare.sh",
+    "return-type": "json",
+    "interval": 3
+  },
+  "custom/microphone-indicator": {
+    "exec": "$HOME/.config/waybar/indicators/microphone.sh",
+    "return-type": "json",
+    "interval": 3
+  },
   "custom/dnd": {
     "on-click": "coffee-toggle-dnd",
     "exec": "$HOME/.config/waybar/indicators/dnd.sh",
