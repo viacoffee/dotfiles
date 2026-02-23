@@ -11,6 +11,3 @@ fi
 if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$DISPLAY" ]; then
   export WAYLAND_DISPLAY="wayland-0"
 fi
-
-# Load bashrc for login shells
-[ -r "$HOME/.bashrc" ] && . "$HOME/.bashrc"

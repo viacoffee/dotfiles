@@ -1,38 +1,12 @@
 # Interactive check
 [[ $- != *i* ]] && return
 
+# Source shared config
+source ~/.zshrc.aliases
+source ~/.zshrc.functions
+
 # Starship prompt
 eval "$(starship init zsh)"
-
-# Stats
-alias top="btop"
-alias htop="btop"
-alias ping="prettyping --nolegend"
-
-# Vim
-alias vi="nvim"
-alias vim="nvim"
-
-# Directory listings
-alias l="lsd -a1"
-alias la="lsd -la"
-alias lr="lsd -R"
-alias lra="lsd -RA"
-alias lt="lsd --tree"
-
-# Git
-alias gs="git status"
-alias gl="git log"
-alias gp="git pull"
-alias gd="git diff"
-
-# General
-alias c="clear"
-
-# Add ~/.local/bin to PATH
-if [ -d "$HOME/.local/bin" ]; then
-  export PATH="$HOME/.local/bin:$PATH"
-fi
 
 # Completion (compinit) — cached
 autoload -Uz compinit
@@ -58,10 +32,6 @@ setopt hist_reduce_blanks
 
 # Navigation
 setopt autocd
-
-# Directories
-alias ...='cd ../..'
-alias ....='cd ../../..'
 
 # Keybinds
 bindkey -e
