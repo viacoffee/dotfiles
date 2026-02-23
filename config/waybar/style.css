@@ -39,10 +39,6 @@ window#waybar {
   padding: 5px 0;
 }
 
-#bluetooth {
-  margin-left: -2px;
-}
-
 #custom-expand-icon {
   padding: 6px 0;
 }
