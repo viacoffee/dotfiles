@@ -59,6 +59,10 @@ setopt hist_reduce_blanks
 # Navigation
 setopt autocd
 
+# Directories
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
 # Keybinds
 bindkey -e
 
