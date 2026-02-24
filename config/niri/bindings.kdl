@@ -86,7 +86,7 @@ binds {
 
   // Close all but the focused window on the focused window's workspace
   Mod+Shift+W {
-    spawn "sh" "-c" "coffee-wm-workspace-close-all-windows --unfocused"
+    spawn "sh" "-c" "coffee-clear-workspace --unfocused"
   }
 
   // Workspaces

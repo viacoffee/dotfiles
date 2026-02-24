@@ -2,7 +2,32 @@
 # Composable helpers for niri window management
 # Intended to be sourced, not executed
 
-set -euo pipefail
+# -------------------------------------------------------------------
+# Internal helpers
+# -------------------------------------------------------------------
+
+# Fetch window JSON snapshot
+_niri_windows_json() {
+  niri msg --json windows
+}
+
+# Extract .id from streamed JSON objects
+_niri_extract_ids() {
+  jq -r '.id'
+}
+
+# Send a niri action to each window ID read from stdin
+# Usage: _niri_message_to_ids <action>
+_niri_message_to_ids() {
+  local action="$1"
+  while read -r id; do
+    niri msg action "$action" --id "$id"
+  done
+}
+
+# -------------------------------------------------------------------
+# Query primitives
+# -------------------------------------------------------------------
 
 niri_is_overview_open() {
   niri msg --json overview-state |
@@ -18,34 +43,6 @@ niri_is_window_focused() {
     ' > /dev/null
 }
 
-# -------------------------------------------------------------------
-# Internal helpers
-# -------------------------------------------------------------------
-
-# Fetch window JSON snapshot
-_niri_windows_json() {
-  niri msg --json windows
-}
-
-# Message action to each window ID
-# Usage: _niri_message_to_ids <action>
-_niri_message_to_ids() {
-  local action="$1"
-  shift
-  while read -r id; do
-    niri msg action "$action" --id "$id"
-  done
-}
-
-# -------------------------------------------------------------------
-# Query primitives
-# -------------------------------------------------------------------
-
-# Return full window JSON snapshot
-niri_windows() {
-  _niri_windows_json
-}
-
 # Return the ID of the focused window
 niri_focused_window_id() {
   _niri_windows_json |
@@ -58,14 +55,21 @@ niri_focused_workspace_id() {
     jq -r '.[] | select(.is_focused) | .workspace_id'
 }
 
-# Return IDs of all windows on a specific workspace
+# Return all windows on a workspace as streamed JSON objects
+# If no workspace ID is given, defaults to the focused workspace
 niri_windows_on_workspace() {
-  local workspace_id="$1"
+  local ws_id="${1:-}"
+
+  if [[ -z "$ws_id" ]]; then
+    ws_id="$(niri_focused_workspace_id)"
+  fi
+
   _niri_windows_json |
-    jq -r --arg ws "$workspace_id" '.[] | select(.workspace_id == $ws) | .id'
+    jq -c --argjson ws "$ws_id" '.[] | select(.workspace_id == $ws)'
 }
 
-# Return windows matching a pattern in app_id or title
+# Return windows matching a pattern in app_id or title as streamed JSON objects
+# Reads from stdin if piped, otherwise fetches fresh window data
 niri_windows_matching() {
   local pattern="$1"
 
@@ -74,33 +78,12 @@ niri_windows_matching() {
   else
     cat
   fi |
-    jq -r --arg p "$pattern" '
-      [
-        .[]
-        | select(
-          (.app_id // "" | test($p; "i")) or
-          (.title  // "" | test($p; "i"))
-        )
-      ]
-    '
-}
-
-# Return IDs of all unfocused windows
-niri_unfocused_window_ids() {
-  jq -r '. | select(.is_focused | not) | .id'
-}
-
-# Return all windows on the currently focused workspace
-niri_windows_on_focused_workspace() {
-  _niri_windows_json |
-    jq -r '
-      . as $windows
-      | $windows[]
-      | select(.is_focused)
-      | .workspace_id
-      as $ws
-      | $windows[]
-      | select(.workspace_id == $ws)
+    jq -c --arg p "$pattern" '
+      .[]
+      | select(
+        (.app_id // "" | test($p; "i")) or
+        (.title  // "" | test($p; "i"))
+      )
     '
 }
 
@@ -115,29 +98,29 @@ niri_close_all_windows() {
     _niri_message_to_ids close-window
 }
 
-# Close all windows on the focused workspace
-niri_close_all_on_focused_workspace() {
-  _niri_windows_json |
-    niri_windows_on_focused_workspace |
+# Close all windows on a workspace (default: focused workspace)
+niri_close_all_on_workspace() {
+  niri_windows_on_workspace "$@" |
+    _niri_extract_ids |
     _niri_message_to_ids close-window
 }
 
-# Close all windows except the focused window (on its workspace)
-niri_close_all_unfocused_on_workspace() {
-  niri_windows_on_focused_workspace |
-    niri_unfocused_window_ids |
+# Close all unfocused windows on a workspace (default: focused workspace)
+niri_close_unfocused_on_workspace() {
+  niri_windows_on_workspace "$@" |
+    jq -r 'select(.is_focused | not) | .id' |
     _niri_message_to_ids close-window
 }
 
 # Close all windows matching a pattern
 niri_close_matching() {
   local pattern="$1"
-  _niri_windows_json |
-    niri_windows_matching "$pattern" |
+  niri_windows_matching "$pattern" |
+    _niri_extract_ids |
     _niri_message_to_ids close-window
 }
 
-# Focus or spawn window
+# Focus an existing window matching a pattern, or spawn a new process
 niri_focus_or_spawn() {
   local pattern="$1"
   shift
@@ -157,10 +140,8 @@ niri_focus_or_spawn() {
   )"
 
   if [[ -n "$window_id" ]]; then
-    # Focus existing window
-    _niri_message_to_ids <<<$window_id focus-window
+    _niri_message_to_ids focus-window <<<"$window_id"
   else
-    # Spawn the app if no window found
     "$@" &
   fi
 }
