@@ -34,9 +34,9 @@ else
 fi
 
 if [[ $WINDOW_STYLE == "float" ]]; then
-  APP_CLASS="TUI.float"
+  APP_CLASS="coffee.float-tui"
 else
-  APP_CLASS="TUI.tile"
+  APP_CLASS="coffee.tui"
 fi
 
 cat >"$DESKTOP_FILE" <<EOF
