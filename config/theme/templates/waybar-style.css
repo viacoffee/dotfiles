@@ -9,10 +9,10 @@
 }
 
 window#waybar {
-  background: rgba(0, 0, 0, 0.85);
+  background: ${BLACK_CSS_085};
   border-radius: 0;
   box-shadow: none;
-  color: #abb2bf;
+  color: ${FG};
   font-family: "Mononoki Nerd Font", monospace, sans-serif;
   font-size: 13.5px;
 }
@@ -35,7 +35,7 @@ window#waybar {
 #bluetooth,
 #battery {
   opacity: 0.7;
-  color: #9aa2ad;
+  color: ${GRAY_MID};
   padding: 5px 0;
 }
 
@@ -44,7 +44,7 @@ window#waybar {
 }
 
 #tray menu {
-  background: rgba(0, 0, 0, 0.8);
+  background: ${BLACK_CSS_08};
 }
 
 #network {
@@ -53,16 +53,16 @@ window#waybar {
 
 #workspaces button {
   font-size: 14.5px;
-  color: #abb2bf;
+  color: ${FG};
   padding: 0;
 }
 
 #workspaces button.focused {
-  color: #56b6c2;
+  color: ${CYAN};
 }
 
 #workspaces button.active {
-  color: #56b6c2;
+  color: ${CYAN};
 }
 
 #workspaces button.empty {
@@ -70,19 +70,19 @@ window#waybar {
 }
 
 #workspaces button.urgent {
-  color: #e06c75;
+  color: ${RED};
 }
 
 #battery.critical {
-  color: #e06c75;
+  color: ${RED};
 }
 
 tooltip {
-  background: rgba(0, 0, 0, 0.8);
+  background: ${BLACK_CSS_08};
 }
 
 tooltip * {
-  color: #c5c8c6;
+  color: ${FG_ACCENT};
   margin: 0 0 0 10px;
 }
 
@@ -90,42 +90,42 @@ tooltip * {
   margin-top: 10px;
   font-size: 10px;
   opacity: 0.7;
-  color: #9aa2ad;
+  color: ${GRAY_MID};
 }
 
 #custom-screenrecord-indicator {
   margin-top: 10px;
   font-size: 10px;
-  color: #e06c75;
+  color: ${RED};
 }
 
 #custom-webcam-indicator {
   margin: 10px 0 0 -2px;
   font-size: 10px;
-  color: #e06c75;
+  color: ${RED};
 }
 
 #custom-screenshare-indicator {
   margin-top: 10px;
   font-size: 12px;
-  color: #e06c75;
+  color: ${RED};
 }
 
 #custom-microphone-indicator {
   margin-top: 10px;
   font-size: 14.5px;
-  color: #98c379;
+  color: ${GREEN};
 }
 
 #custom-notifications {
   margin-top: 10px;
   font-size: 12px;
-  color: #e06c75;
+  color: ${RED};
 }
 
 #custom-dnd {
   margin: 10px 0 0 -3px;
   font-size: 13px;
   opacity: 0.7;
-  color: #9aa2ad;
+  color: ${GRAY_MID};
 }

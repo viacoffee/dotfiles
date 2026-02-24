@@ -31,4 +31,7 @@ run_logged "stowing local" \
 run_logged "cd back to: $return_pwd" \
   "cd $return_pwd"
 
+run_logged "Generating themed configs" \
+  "coffee-theme-refresh"
+
 success "Dotfiles stowed"

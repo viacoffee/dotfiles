@@ -15,7 +15,7 @@ $python\
 $character"""
 
 [directory]
-style = "#c5c8c6"
+style = "${FG_ACCENT}"
 truncation_length = 0
 truncate_to_repo = false
 

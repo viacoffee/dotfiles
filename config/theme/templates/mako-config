@@ -8,9 +8,9 @@ width=420
 
 # Styling
 font=InputMono Nerd Font 10
-background-color=#21252bd0
-text-color=#cfd8dcff
-border-color=#21252bf2
+background-color=#${BG_ALT_RAW}d0
+text-color=#${FG_LIGHT_FF}
+border-color=#${BG_ALT_RAW}f2
 border-size=1
 border-radius=4
 width=300
@@ -32,5 +32,5 @@ invisible=1
 
 [urgency=critical]
 default-timeout=0
-text-color=#e06c75
+text-color=${RED}
 #layer=overlay

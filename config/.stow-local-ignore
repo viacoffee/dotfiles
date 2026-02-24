@@ -1,0 +1,9 @@
+# Stow default ignore patterns (required when overriding)
+\.git
+\.gitignore
+\.gitmodules
+README.*
+LICENSE.*
+
+# Theme source/build files — not runtime configs
+^theme$
