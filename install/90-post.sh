@@ -20,7 +20,7 @@ mkdir -p ~/.cache/zsh
 # add-wants for user/niri
 systemctl_want_enable \
   waybar \
-  dunst \
+  mako \
   swaybg \
   swayidle \
   swayosd
@@ -45,7 +45,7 @@ mapfile -t optional_packages < <(
 )
 install_missing_packages "${optional_packages[@]}"
 
-# Add dnd mode to mako
+# Enable dnd mode for mako
 makoctl mode -a dnd
 
 log "Updating tldr"
