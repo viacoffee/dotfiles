@@ -1,188 +1,91 @@
 #!/bin/bash
+set -euo pipefail
 
-# Exit immediately if a command exists with a non-zero status
-set -eEo pipefail
+# Curl-able bootstrap for viacoffee/dotfiles
+# Usage:
+#   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/main/bootstrap.sh)
+#   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/main/bootstrap.sh) -b back_to_arch
 
-if [ -z "$COFFEE_PATH" ]; then
-  export COFFEE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_URL="https://github.com/viacoffee/dotfiles.git"
+CLONE_DIR="$HOME/dotfiles"
+BRANCH=""
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+info()  { printf "${BLUE}INFO${NC} %s\n" "$*"; }
+warn()  { printf "${YELLOW}WARNING${NC} %s\n" "$*"; }
+error() { printf "${RED}ERROR${NC} %s\n" "$*" >&2; }
+
+# parse args
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -b|--branch)
+      BRANCH="$2"
+      shift 2
+      ;;
+    -h|--help)
+      cat <<EOF
+Usage: bootstrap.sh [-b|--branch <branch>]
+
+Options:
+  -b, --branch <name>   Branch to clone (default: repo default)
+  -h, --help            Show this help message
+EOF
+      exit 0
+      ;;
+    *)
+      error "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+# ensure git is available
+if ! command -v git &>/dev/null; then
+  warn "git is not installed"
+  info "Attempting to install git via pacman..."
+  sudo pacman -S --noconfirm git
 fi
 
-if [ -z "$COFFEE_INSTALL" ]; then
-  export COFFEE_INSTALL="$COFFEE_PATH/install"
-fi
-
-export COFFEE_INSTALL_DEFAULTS_PATH="$COFFEE_INSTALL/default"
-export COFFEE_INSTALL_LOG_FILE="${COFFEE_INSTALL_LOG_FILE:-~/.local/state/coffee/install.log}"
-
-# Ensure log file exists
-mkdir -p "$(dirname "$COFFEE_INSTALL_LOG_FILE")" 2>/dev/null || true
-touch "$COFFEE_INSTALL_LOG_FILE"
-
-# Source helper functions FIRST (before any function calls)
-if [ ! -f "$COFFEE_INSTALL/lib/helpers.sh" ]; then
-  echo "Error: Helper functions not found at $COFFEE_INSTALL/lib/helpers.sh"
+# guard against clobbering an existing clone
+if [[ -d "$CLONE_DIR" ]]; then
+  error "$CLONE_DIR already exists — remove or rename it first"
   exit 1
 fi
-source "$COFFEE_INSTALL/lib/helpers.sh"
 
-section "https://github.com/viacoffee/dotfiles"
+# clone
+clone_args=(--recurse-submodules)
+if [[ -n "$BRANCH" ]]; then
+  clone_args+=(-b "$BRANCH")
+  info "Cloning branch: $BRANCH"
+else
+  info "Cloning default branch"
+fi
+
+git clone "${clone_args[@]}" "$REPO_URL" "$CLONE_DIR"
+echo ""
+info "Repository cloned to $CLONE_DIR"
+
+# confirm before install
+echo ""
+printf "${BOLD}${YELLOW}"
 cat <<'EOF'
-      )  (
-     (   ) )
-      ) ( (
-    _______)_
- .-'---------|
-( C|/\/\/\/\/|
- '-./\/\/\/\/|
-   '_________'
-    '-------'
-
+  This will run install.sh, which configures packages, bootloader,
+  firewall, display manager, and other system-level settings.
+  This is a DESTRUCTIVE operation intended for a fresh Arch install.
 EOF
-
-info "Bootstrapping system from: $COFFEE_PATH"
-important "Logfile: $COFFEE_INSTALL_LOG_FILE"
-log <<EOF
-Vars log:
-  + COFFEE_PATH=$COFFEE_PATH
-  + COFFEE_INSTALL=$COFFEE_INSTALL 
-  + COFFEE_INSTALL_LOG_FILE=$COFFEE_INSTALL_LOG_FILE
-  + COFFEE_INSTALL_DEFAULTS_PATH=$COFFEE_INSTALL_DEFAULTS_PATH
-EOF
-log "Installation started at: $(date '+%Y-%m-%d %H:%M:%S')"
-
-echo ""
-log "Starting installation phases..."
-
-section "Preflight checks"
-# Phase 1: Preflight checks
-if [ -f "$COFFEE_INSTALL/00-preflight.sh" ]; then
-  source "$COFFEE_INSTALL/00-preflight.sh"
-else
-  error "Preflight checks failed. (script not found)"
-  exit 1
-fi
-echo ""
-success "Preflight checks completed"
-
-# System phase - verify and install required base packages
-section "System management"
-# Phase 2: System management
-if [ -f "$COFFEE_INSTALL/10-system.sh" ]; then
-  source "$COFFEE_INSTALL/10-system.sh"
-else
-  error "System management failed. (script not found)"
-  exit 1
-fi
-
-# Phase 2.1: User account verification and configuration
-if [ -f "$COFFEE_INSTALL/11-user.sh" ]; then
-  source "$COFFEE_INSTALL/11-user.sh"
-else
-  error "User verification failed. (script not found)"
-  exit 1
-fi
-
-# Throw out all the exported vars since we have a new one assigned
-log <<EOF
-Vars log:
-    COFFEE_PATH=$COFFEE_PATH
-    COFFEE_INSTALL=$COFFEE_INSTALL 
-    COFFEE_INSTALL_LOG_FILE=$COFFEE_INSTALL_LOG_FILE
-    COFFEE_INSTALL_DEFAULTS_PATH=$COFFEE_INSTALL_DEFAULTS_PATH
-  + COFFEE_DEFAULT_USER=$COFFEE_DEFAULT_USER
-EOF
-
-# Phase 2.2: Nvidia setup
-if [ -f "$COFFEE_INSTALL/12-nvidia.sh" ]; then
-  source "$COFFEE_INSTALL/12-nvidia.sh"
-else
-  error "Nvidia setup failed. (script not found)"
-  exit 1
-fi
-
-# Phase 2.3: Greetd autologin setup
-if [ -f "$COFFEE_INSTALL/13-greetd.sh" ]; then
-  source "$COFFEE_INSTALL/13-greetd.sh"
-else
-  error "greetd setup failed. (script not found)"
-  exit 1
-fi
-
-# Phase 2.9: Bootloader/snapper/plymouth setup
-if [ -f "$COFFEE_INSTALL/19-bootloader.sh" ]; then
-  source "$COFFEE_INSTALL/19-bootloader.sh"
-else
-  error "Bootloader setup failed. (script not found)"
-  exit 1
-fi
-echo ""
-success "System management phase complete"
-
-# Dotfiles phase - stowing dotfiles
-section "Dotfiles"
-# Phase 3: Dotfiles stowing
-if [ -f "$COFFEE_INSTALL/30-dotfiles.sh" ]; then
-  source "$COFFEE_INSTALL/30-dotfiles.sh"
-else
-  error "Dotfiles stowing failed. (script not found)"
-  exit 1
-fi
-echo ""
-success "Dotfiles phase complete"
-
-# Systemd phase - starting systemd services
-section "Systemd"
-# Phase 5: systemd setup
-if [ -f "$COFFEE_INSTALL/50-systemd.sh" ]; then
-  source "$COFFEE_INSTALL/50-systemd.sh"
-else
-  error "Systemd failed. (script not found)"
-  exit 1
-fi
-
-# Post-installation
-section "Post-installation"
-if [ -f "$COFFEE_INSTALL/90-post.sh" ]; then
-  source "$COFFEE_INSTALL/90-post.sh"
-else
-  error "Post installation failed. (script not found)"
-  exit 1
-fi
+printf "${NC}"
 echo ""
 
-if [ -f "$COFFEE_INSTALL/91-mimes.sh" ]; then
-  source "$COFFEE_INSTALL/91-mimes.sh"
-else
-  error "Mimetype configuration failed. (script not found)"
-  exit 1
+read -rp "Continue with installation? [y/N] " answer
+if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+  info "Aborted. You can run it later with: bash $CLONE_DIR/install.sh"
+  exit 0
 fi
 
-if [ -f "$COFFEE_INSTALL/92-firewall.sh" ]; then
-  source "$COFFEE_INSTALL/92-firewall.sh"
-else
-  error "Firewall configuration failed. (script not found)"
-  exit 1
-fi
-
-echo ""
-success "Post-installation phase complete"
-
-important "Installation completed at: $(date '+%Y-%m-%d %H:%M:%S')"
-
-section "Overview"
-cat <<EOF
-  ✓ Bootloader (Limine) verified
-  ✓ Boot splash (Plymouth) configured
-  ✓ Snapshot management (Snapper) verified
-  ✓ Display manager (greetd) configured with autologin
-  ✓ Niri session configured
-  ✓ Dotfiles stowed
-
-Next Steps:
-  1. Reboot
-  2. Run the post-install script to finish (bash $COFFEE_INSTALL/install/post-install.sh)
-  3. Open nvim and let Lazy sync
-
-For more details, see:
-  - Logs: $COFFEE_INSTALL_LOG_FILE
-EOF
+exec bash "$CLONE_DIR/install.sh"
