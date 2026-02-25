@@ -56,6 +56,9 @@ binds {
   Mod+k { focus-window-up; }
   Mod+l { focus-column-right; }
 
+  // Fuzzel to list open windows and change focus to selected
+  Mod+Tab { spawn "coffee-menu-windows"; }
+
   // Cycle workspaces
   Mod+d { focus-workspace-down; }
   Mod+u { focus-workspace-up; }

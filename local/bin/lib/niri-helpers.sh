@@ -11,6 +11,11 @@ _niri_windows_json() {
   niri msg --json windows
 }
 
+# Fetch workspace JSON snapshot
+_niri_workspaces_json() {
+  niri msg --json workspaces
+}
+
 # Extract .id from streamed JSON objects
 _niri_extract_ids() {
   jq -r '.id'
