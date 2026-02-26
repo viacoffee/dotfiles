@@ -63,8 +63,8 @@ CMDLINE=$(grep "^[[:space:]]*cmdline:" "$limine_config" | head -1 | sed 's/^[[:s
 
 # If no cmdline found in current config, use a sensible default
 if [[ -z "$CMDLINE" ]]; then
-  warning "No cmdline found in existing config"
-  warning "Manually verify limine config: $limine_config"
+  warn "No cmdline found in existing config"
+  warn "Manually verify limine config: $limine_config"
   return 0
 fi
 log "Limine cmdline: $CMDLINE"
