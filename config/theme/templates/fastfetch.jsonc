@@ -21,22 +21,22 @@
         },
         {
             "type": "cpu",
-            "key": "│ ├",
+            "key": "│ ├",
             "keyColor": "green"
         },
         {
             "type": "gpu",
-            "key": "│ ├󰍛",
+            "key": "│ ├",
             "keyColor": "green"
         },
         {
             "type": "memory",
-            "key": "│ ├󰍛",
+            "key": "│ ├",
             "keyColor": "green"
         },
         {
             "type": "disk",
-            "key": "└ └",
+            "key": "└ └󰋊",
             "keyColor": "green"
         },
         {
@@ -55,12 +55,12 @@
         },
         {
             "type": "kernel",
-            "key": "│ ├",
+            "key": "│ ├",
             "keyColor": "yellow"
         },
         {
             "type": "bios",
-            "key": "│ ├",
+            "key": "│ ├",
             "keyColor": "yellow"
         },
         {
@@ -70,24 +70,24 @@
         },
         {
             "type": "shell",
-            "key": "└ └",
+            "key": "└ └",
             "keyColor": "yellow"
         },
         "break",
         {
             "type": "command",
-            "key": " DE",
+            "key": " DE",
             "text": "echo $XDG_SESSION_TYPE",
             "keyColor": "blue"
         },
         {
             "type": "lm",
-            "key": "│ ├",
+            "key": "│ ├󰍂",
             "keyColor": "blue"
         },
         {
             "type": "wm",
-            "key": "│ ├",
+            "key": "│ ├",
             "keyColor": "blue"
         },
         {
@@ -97,7 +97,7 @@
         },
         {
             "type": "terminal",
-            "key": "└ └",
+            "key": "└ └",
             "keyColor": "blue"
         },
         {
@@ -110,15 +110,15 @@
             "format": "${SURFACE_ANSI}╭───────────────────┐${ANSI_BOLD}${FG_ACCENT_ANSI}Uptime / Age / DT${ANSI_BOLD_OFF}${SURFACE_ANSI}┌────────────────╮"
         },
         {
+            "type": "uptime",
+            "key": "  Uptime ",
+            "keyColor": "magenta"
+        },
+        {
             "type": "command",
             "key": "  OS Age ",
             "keyColor": "magenta",
             "text": "birth_install=$(stat -c %W /); current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days"
-        },
-        {
-            "type": "uptime",
-            "key": "  Uptime ",
-            "keyColor": "magenta"
         },
         {
             "type": "datetime",
