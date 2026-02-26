@@ -44,7 +44,9 @@ openssh
 playerctl
 plymouth
 polkit-gnome
+power-profiles-daemon
 prettyping
+python-gobject
 qt5-wayland
 qt6-wayland
 ripgrep
