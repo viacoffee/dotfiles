@@ -47,9 +47,9 @@ if [[ -n $orphans ]]; then
 fi
 
 # Check for errors
-if grep -qi "error" "$update_log"; then
+if grep -qi "^error:" "$update_log"; then
   echo -e "\e[31mNon-stopping errors detected during update:\e[0m"
-  grep -i "error" "$update_log"
+  grep -i "^error:" "$update_log"
   echo
 fi
 
