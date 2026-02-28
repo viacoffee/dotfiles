@@ -56,7 +56,7 @@ code=$?
 case $code in
 	19) # custom-0: clear history
 		echo -e 'No\nYes' | fuzzel -d --placeholder 'Delete history?' --lines 2 | grep -q '^Yes$' \
-			&& rm "$cliphist_db" "$thumb_dir"/*
+			&& rm "$cliphist_db" && rm -f "$thumb_dir"/* 2>/dev/null
 		;;
 	10) # custom-1: delete selected
 		[[ -n "$selected" ]] && {
