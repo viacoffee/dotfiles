@@ -100,19 +100,19 @@ EOF
 
 run_phase "12-nvidia.sh"
 run_phase "13-greetd.sh"
-run_phase "19-bootloader.sh"
+run_phase "14-bootloader.sh"
 echo ""
 success "System management phase complete"
 
 # Dotfiles phase - stowing dotfiles
 section "Dotfiles"
-run_phase "30-dotfiles.sh"
+run_phase "20-dotfiles.sh"
 echo ""
 success "Dotfiles phase complete"
 
 # Systemd phase - starting systemd services
 section "Systemd"
-run_phase "50-systemd.sh"
+run_phase "30-systemd.sh"
 
 # Post-installation
 section "Post-installation"
