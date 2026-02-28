@@ -3,11 +3,7 @@
 log "Starting NVIDIA driver installation"
 
 # Detect NVIDIA GPU with error handling
-NVIDIA=""
-if ! NVIDIA="$(lspci | grep -i 'nvidia')" 2>/dev/null; then
-  warn "Failed to query GPU info (lspci not available or error occurred)"
-  NVIDIA=""
-fi
+NVIDIA="$(lspci | grep -i 'nvidia' || true)"
 
 if [[ -z "$NVIDIA" ]]; then
   warn "No NVIDIA GPU detected. Skipping NVIDIA driver installation."

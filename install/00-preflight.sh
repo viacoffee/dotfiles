@@ -8,14 +8,14 @@ if [[ "$(uname -m)" = "x86_64" ]]; then
   success "x86_64 CPU"
 else
   error "Not an x86_64 CPU"
-  exit 1
+  return 1
 fi
 
 # Must have secure boot disabled
 log "Check secure boot is disabled"
 if bootctl status 2>/dev/null | grep -q 'Secure Boot: enabled'; then
   error "Secure boot needs to be disabled"
-  exit 1
+  return 1
 else
   success "Secure boot is disabled"
 fi
@@ -25,7 +25,7 @@ if command_exists pacman; then
   success "pacman found"
 else
   error "Imagine not being on arch"
-  exit 1
+  return 1
 fi
 
 log "Checking for systemd..."
@@ -33,7 +33,7 @@ if command_exists systemctl; then
   success "systemd found"
 else
   error "systemd not found - this is required!"
-  exit 1
+  return 1
 fi
 
 # Check for sudo access
@@ -44,7 +44,7 @@ elif sudo -v 2>/dev/null; then
   success "sudo access confirmed"
 else
   error "No sudo access - required for system configuration"
-  exit 1
+  return 1
 fi
 
 log "Checking for limine bootloader..."
@@ -52,7 +52,7 @@ if command_exists limine; then
   success "limine bootloader found"
 else
   error "limine bootloader not found"
-  exit 1
+  return 1
 fi
 
 log "Checking for Btrfs filesystem tools..."
@@ -60,7 +60,7 @@ if command_exists btrfs; then
   success "Btrfs tools found"
 else
   error "Btrfs tools not found"
-  exit 1
+  return 1
 fi
 
 log "Checking for LUKS support..."
@@ -68,7 +68,7 @@ if command_exists cryptsetup; then
   success "LUKS support found"
 else
   error "cryptsetup not found"
-  exit 1
+  return 1
 fi
 
 # Temporarily disable mkinitcpio hooks to prevent multiple regenerations during package installation

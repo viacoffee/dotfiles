@@ -58,8 +58,9 @@ if [[ -z "$CMDLINE" ]]; then
 fi
 log "Limine cmdline: $CMDLINE"
 
+CMDLINE_ESCAPED=$(printf '%s\n' "$CMDLINE" | sed 's/[&\\]/\\&/g')
 sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/limine/default.conf" /etc/default/limine
-sudo sed -i "s|@@CMDLINE@@|$CMDLINE|g" /etc/default/limine
+sudo sed -i "s|@@CMDLINE@@|$CMDLINE_ESCAPED|g" /etc/default/limine
 
 # Remove the original config file if it's not /boot/limine.conf
 if [[ "$limine_config" != "/boot/limine.conf" ]] && [[ -f "$limine_config" ]]; then

@@ -18,13 +18,13 @@ elif [[ "$EUID" -ne 0 ]]; then
 else
   # Script is running as root without sudo (not recommended)
   error "Script must be run as a non-root user or with sudo from a non-root user"
-  exit 1
+  return 1
 fi
 
 # Validate that LOGIN_USER is not root
 if [[ "$LOGIN_USER" = "root" ]]; then
   error "Autologin cannot be configured for root user. Please run the installer as a non-root user."
-  exit 1
+  return 1
 fi
 
 # Export the username for use in subsequent scripts

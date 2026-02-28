@@ -6,6 +6,11 @@ if [[ -z "${COFFEE_PATH:-}" ]]; then
   export COFFEE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
+if [[ "$(pwd)" != "$COFFEE_PATH" ]]; then
+  echo "Error: install.sh must be run from the dotfiles root ($COFFEE_PATH)"
+  exit 1
+fi
+
 if [[ -z "${COFFEE_INSTALL:-}" ]]; then
   export COFFEE_INSTALL="$COFFEE_PATH/install"
 fi
@@ -33,7 +38,7 @@ _restore_mkinitcpio_hooks() {
     fi
   done
 }
-trap _restore_mkinitcpio_hooks ERR
+trap _restore_mkinitcpio_hooks EXIT
 
 # Source a numbered install phase script or exit
 run_phase() {

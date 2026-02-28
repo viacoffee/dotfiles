@@ -19,14 +19,14 @@ fi
 log "Updating system..."
 if ! sudo pacman -Syu --noconfirm; then
   error "Failed to update base packages"
-  exit 1
+  return 1
 fi
 
 # Install required base packages
 log "Getting list of required base packages..."
 if [[ ! -f "$COFFEE_INSTALL/base.packages" ]]; then
   error "Package list not found: $COFFEE_INSTALL/base.packages"
-  exit 1
+  return 1
 fi
 
 # Array to track packages that need installation

@@ -6,8 +6,8 @@ else
   USER_HOME="$HOME"
 fi
 
-if ! cd "$COFFEE_PATH"; then
-  error "Failed to cd to $COFFEE_PATH"
+if [[ "$(pwd)" != "$COFFEE_PATH" ]]; then
+  error "Working directory must be $COFFEE_PATH"
   return 1
 fi
 log "Working directory: $(pwd)"
