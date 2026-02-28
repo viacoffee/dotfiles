@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 thumb_dir="${XDG_CACHE_HOME:-$HOME/.cache}/clipboard/thumbnails"
 cliphist_db=~/.cache/clipboard/db

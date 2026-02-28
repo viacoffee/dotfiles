@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -euo pipefail
 
 if [ "$#" -ne 4 ]; then
@@ -50,8 +50,6 @@ Type=Application
 Icon=$ICON_PATH
 StartupNotify=true
 EOF
-
-chmod +x "$DESKTOP_FILE"
 
 if [ "$#" -ne 4 ]; then
   echo -e "You can now find $APP_NAME using the app launcher (SUPER + SPACE)\n"

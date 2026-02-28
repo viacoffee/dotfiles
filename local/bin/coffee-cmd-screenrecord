@@ -3,10 +3,10 @@
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/helpers.sh"
 
-OUTPUT_DIR=$HOME/Videos
+OUTPUT_DIR="$HOME/Videos"
 
 # Ensure directory exists
-mkdir -p $OUTPUT_DIR
+mkdir -p "$OUTPUT_DIR"
 
 DESKTOP_AUDIO="false"
 MICROPHONE_AUDIO="false"
@@ -23,7 +23,7 @@ done
 start_screenrecording() {
   local filename="$OUTPUT_DIR/screenrecording-$(date +'%Y-%m-%d_%H-%M-%S').mp4"
   local audio_devices=""
-  local audio_args=""
+  local -a audio_args=()
 
   [[ "$DESKTOP_AUDIO" == "true" ]] && audio_devices+="default_output"
 
@@ -33,9 +33,9 @@ start_screenrecording() {
     audio_devices+="default_input"
   fi
 
-  [[ -n "$audio_devices" ]] && audio_args+="-a $audio_devices"
+  [[ -n "$audio_devices" ]] && audio_args+=(-a "$audio_devices")
 
-  gpu-screen-recorder -w portal -f 60 -fallback-cpu-encoding yes -o "$filename" $audio_args -ac aac &
+  gpu-screen-recorder -w portal -f 60 -fallback-cpu-encoding yes -o "$filename" "${audio_args[@]}" -ac aac &
 
   signal_waybar "9"
 }
@@ -65,9 +65,7 @@ screenrecording_active() {
 }
 
 if screenrecording_active; then
-  if pgrep -f "^gpu-screen-recorder" >/dev/null; then
-    stop_screenrecording
-  fi
+  stop_screenrecording
 elif [[ "$STOP_RECORDING" == "false" ]]; then
   start_screenrecording
 else

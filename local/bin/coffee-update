@@ -4,7 +4,7 @@ set -e
 
 # Include helpers for uniformed gum functions
 SCRIPT_DIR="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
-. "$SCRIPT_DIR/lib/helpers.sh"
+source "$SCRIPT_DIR/lib/helpers.sh"
 
 # Source theme colors
 COLORS="${XDG_CONFIG_HOME:-$HOME/.config}/theme/colors.sh"
