@@ -28,7 +28,7 @@ elif pacman -Qqs '^linux$' &>/dev/null; then
   KERNEL_HEADERS="linux-headers"
 else
   error "No supported kernel detected"
-  # exit 1
+  exit 1
 fi
 
 info "Detected kernel headers package: $KERNEL_HEADERS"
@@ -47,7 +47,7 @@ elif echo "$NVIDIA" | grep -qE "GTX 9|GTX 10|Quadro P|MX1|MX2|MX3"; then
 else
   warn "NVIDIA GPU detected but no compatible driver found."
   warn "For more information, see: https://wiki.archlinux.org/title/NVIDIA"
-  # exit 0
+  exit 0
 fi
 
 info "Packages to be installed: ${PACKAGES[*]}"
@@ -57,7 +57,7 @@ log "Installing NVIDIA drivers and dependencies..."
 INSTALL_PACKAGES=("$KERNEL_HEADERS" "${PACKAGES[@]}")
 if ! sudo pacman -S --needed --noconfirm "${INSTALL_PACKAGES[@]}"; then
   error "Failed to install NVIDIA packages"
-  # exit 1
+  exit 1
 fi
 success "Package installation completed successfully"
 
@@ -65,7 +65,7 @@ success "Package installation completed successfully"
 log "Configuring modprobe for NVIDIA early KMS..."
 if ! sudo mkdir -p /etc/modprobe.d; then
   error "Failed to create modprobe.d directory"
-  # exit 1
+  exit 1
 fi
 
 if ! sudo tee /etc/modprobe.d/nvidia.conf >/dev/null <<'EOF'
@@ -73,14 +73,14 @@ options nvidia_drm modeset=1
 EOF
 then
   error "Failed to write modprobe configuration"
-  # exit 1
+  exit 1
 fi
 
 # Configure mkinitcpio for early module loading
 log "Configuring mkinitcpio for NVIDIA modules..."
 if ! sudo mkdir -p /etc/mkinitcpio.conf.d; then
   error "Failed to create mkinitcpio.conf.d directory"
-  # exit 1
+  exit 1
 fi
 
 if ! sudo tee /etc/mkinitcpio.conf.d/nvidia.conf >/dev/null <<'EOF'
@@ -88,21 +88,21 @@ MODULES+=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 EOF
 then
   error "Failed to write mkinitcpio configuration"
-  # exit 1
+  exit 1
 fi
 
 # Regenerate initramfs with NVIDIA modules
 log "Regenerating initramfs with NVIDIA modules..."
 if ! sudo mkinitcpio -P; then
   error "Failed to regenerate initramfs"
-  # exit 1
+  exit 1
 fi
 
 # Set NVIDIA environment variables for Wayland/Niri
 log "Configuring NVIDIA environment variables..."
 if ! mkdir -p ~/.config/environment.d; then
   error "Failed to create environment.d directory"
-  # exit 1
+  exit 1
 fi
 
 if ! cat >> ~/.config/environment.d/nvidia.conf <<'EOF'
@@ -113,7 +113,7 @@ __GLX_VENDOR_LIBRARY_NAME=nvidia
 EOF
 then
   error "Failed to write environment configuration"
-  # exit 1
+  exit 1
 fi
 
 success "NVIDIA drivers configured successfully."
