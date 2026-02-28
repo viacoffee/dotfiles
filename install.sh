@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# Exit immediately if a command exists with a non-zero status
-set -eEo pipefail
+set -eEuo pipefail
 
-if [ -z "$COFFEE_PATH" ]; then
+if [[ -z "${COFFEE_PATH:-}" ]]; then
   export COFFEE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
-if [ -z "$COFFEE_INSTALL" ]; then
+if [[ -z "${COFFEE_INSTALL:-}" ]]; then
   export COFFEE_INSTALL="$COFFEE_PATH/install"
 fi
 
@@ -19,11 +18,32 @@ mkdir -p "$(dirname "$COFFEE_INSTALL_LOG_FILE")" 2>/dev/null || true
 touch "$COFFEE_INSTALL_LOG_FILE"
 
 # Source helper functions FIRST (before any function calls)
-if [ ! -f "$COFFEE_INSTALL/lib/helpers.sh" ]; then
+if [[ ! -f "$COFFEE_INSTALL/lib/helpers.sh" ]]; then
   echo "Error: Helper functions not found at $COFFEE_INSTALL/lib/helpers.sh"
   exit 1
 fi
 source "$COFFEE_INSTALL/lib/helpers.sh"
+
+# Restore mkinitcpio hooks if install fails between preflight and bootloader phases
+_restore_mkinitcpio_hooks() {
+  local hook_dir="/usr/share/libalpm/hooks"
+  for hook in 90-mkinitcpio-install 60-mkinitcpio-remove; do
+    if [[ -f "$hook_dir/${hook}.hook.disabled" ]]; then
+      sudo mv "$hook_dir/${hook}.hook.disabled" "$hook_dir/${hook}.hook" 2>/dev/null || true
+    fi
+  done
+}
+trap _restore_mkinitcpio_hooks ERR
+
+# Source a numbered install phase script or exit
+run_phase() {
+  local script="$COFFEE_INSTALL/$1"
+  if [[ ! -f "$script" ]]; then
+    error "$1 not found"
+    exit 1
+  fi
+  source "$script"
+}
 
 section "https://github.com/viacoffee/dotfiles"
 cat <<'EOF'
@@ -54,116 +74,47 @@ echo ""
 log "Starting installation phases..."
 
 section "Preflight checks"
-# Phase 1: Preflight checks
-if [ -f "$COFFEE_INSTALL/00-preflight.sh" ]; then
-  source "$COFFEE_INSTALL/00-preflight.sh"
-else
-  error "Preflight checks failed. (script not found)"
-  exit 1
-fi
+run_phase "00-preflight.sh"
 echo ""
 success "Preflight checks completed"
 
 # System phase - verify and install required base packages
 section "System management"
-# Phase 2: System management
-if [ -f "$COFFEE_INSTALL/10-system.sh" ]; then
-  source "$COFFEE_INSTALL/10-system.sh"
-else
-  error "System management failed. (script not found)"
-  exit 1
-fi
+run_phase "10-system.sh"
+run_phase "11-user.sh"
 
-# Phase 2.1: User account verification and configuration
-if [ -f "$COFFEE_INSTALL/11-user.sh" ]; then
-  source "$COFFEE_INSTALL/11-user.sh"
-else
-  error "User verification failed. (script not found)"
-  exit 1
-fi
-
-# Throw out all the exported vars since we have a new one assigned
+# Log vars after user phase adds COFFEE_DEFAULT_USER
 log <<EOF
 Vars log:
     COFFEE_PATH=$COFFEE_PATH
     COFFEE_INSTALL=$COFFEE_INSTALL 
     COFFEE_INSTALL_LOG_FILE=$COFFEE_INSTALL_LOG_FILE
     COFFEE_INSTALL_DEFAULTS_PATH=$COFFEE_INSTALL_DEFAULTS_PATH
-  + COFFEE_DEFAULT_USER=$COFFEE_DEFAULT_USER
+  + COFFEE_DEFAULT_USER=${COFFEE_DEFAULT_USER:-}
 EOF
 
-# Phase 2.2: Nvidia setup
-if [ -f "$COFFEE_INSTALL/12-nvidia.sh" ]; then
-  source "$COFFEE_INSTALL/12-nvidia.sh"
-else
-  error "Nvidia setup failed. (script not found)"
-  exit 1
-fi
-
-# Phase 2.3: Greetd autologin setup
-if [ -f "$COFFEE_INSTALL/13-greetd.sh" ]; then
-  source "$COFFEE_INSTALL/13-greetd.sh"
-else
-  error "greetd setup failed. (script not found)"
-  exit 1
-fi
-
-# Phase 2.9: Bootloader/snapper/plymouth setup
-if [ -f "$COFFEE_INSTALL/19-bootloader.sh" ]; then
-  source "$COFFEE_INSTALL/19-bootloader.sh"
-else
-  error "Bootloader setup failed. (script not found)"
-  exit 1
-fi
+run_phase "12-nvidia.sh"
+run_phase "13-greetd.sh"
+run_phase "19-bootloader.sh"
 echo ""
 success "System management phase complete"
 
 # Dotfiles phase - stowing dotfiles
 section "Dotfiles"
-# Phase 3: Dotfiles stowing
-if [ -f "$COFFEE_INSTALL/30-dotfiles.sh" ]; then
-  source "$COFFEE_INSTALL/30-dotfiles.sh"
-else
-  error "Dotfiles stowing failed. (script not found)"
-  exit 1
-fi
+run_phase "30-dotfiles.sh"
 echo ""
 success "Dotfiles phase complete"
 
 # Systemd phase - starting systemd services
 section "Systemd"
-# Phase 5: systemd setup
-if [ -f "$COFFEE_INSTALL/50-systemd.sh" ]; then
-  source "$COFFEE_INSTALL/50-systemd.sh"
-else
-  error "Systemd failed. (script not found)"
-  exit 1
-fi
+run_phase "50-systemd.sh"
 
 # Post-installation
 section "Post-installation"
-if [ -f "$COFFEE_INSTALL/90-post.sh" ]; then
-  source "$COFFEE_INSTALL/90-post.sh"
-else
-  error "Post installation failed. (script not found)"
-  exit 1
-fi
+run_phase "90-post.sh"
 echo ""
-
-if [ -f "$COFFEE_INSTALL/91-mimes.sh" ]; then
-  source "$COFFEE_INSTALL/91-mimes.sh"
-else
-  error "Mimetype configuration failed. (script not found)"
-  exit 1
-fi
-
-if [ -f "$COFFEE_INSTALL/92-firewall.sh" ]; then
-  source "$COFFEE_INSTALL/92-firewall.sh"
-else
-  error "Firewall configuration failed. (script not found)"
-  exit 1
-fi
-
+run_phase "91-mimes.sh"
+run_phase "92-firewall.sh"
 echo ""
 success "Post-installation phase complete"
 

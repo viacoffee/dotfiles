@@ -48,17 +48,14 @@ warn() { _log "WARNING" "$YELLOW" "$@"; }
 error() { _log "ERROR" "$RED" "$@"; }
 
 # Logging function - logs command output to install log and displays to stdout
-# Usage: run_logged "description" "command"
+# Usage: run_logged "description" command arg1 arg2 ...
 run_logged() {
-  local description="$1"
-  local command="$2"
+  local description="$1"; shift
   local exit_code
 
-  # Display what we're doing
   log "$description"
 
-  # Execute command, logging to file and capturing output
-  if eval "$command" 2>&1 | tee -a "$COFFEE_INSTALL_LOG_FILE"; then
+  if "$@" 2>&1 | tee -a "$COFFEE_INSTALL_LOG_FILE"; then
     success "$description completed"
     return 0
   else
@@ -80,35 +77,14 @@ package_installed() {
   pacman -Q "$1" >/dev/null 2>&1
 }
 
-# Install package if not already installed
-# Usage: install_package "sddm" "plymouth"
-install_package() {
-  local packages=("$@")
-  local to_install=()
- 
-  for pkg in "${packages[@]}"; do
-    if ! package_installed "$pkg"; then
-      to_install+=("$pkg")
-    fi
-  done
- 
-  if [ ${#to_install[@]} -gt 0 ]; then
-    log "Installing missing packages: ${to_install[*]}"
-    sudo pacman -S --noconfirm --needed "${to_install[@]}" || error "Failed to install packages"
-    success "Packages installed successfully"
-  else
-    success "All required packages already installed"
-  fi
-}
-
 # Print section header
 # Usage: section "Display Manager Configuration"
 section() {
   local title="$1"
   echo ""
-  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${BLUE}${NC} $title"
-  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  printf '%b\n' "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  printf '%b\n' "${BLUE}${NC} $title"
+  printf '%b\n' "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
   echo ""
 }
 
@@ -117,10 +93,10 @@ section() {
 summary() {
   local component="$1"
   local status="$2"
-  if [ "$status" = "✓" ]; then
-    echo -e "${GREEN}$component: $status${NC}"
+  if [[ "$status" = "✓" ]]; then
+    printf '%b\n' "${GREEN}$component: $status${NC}"
   else
-    echo -e "${RED}$component: $status${NC}"
+    printf '%b\n' "${RED}$component: $status${NC}"
   fi
 }
 
@@ -154,16 +130,21 @@ install_missing_packages() {
     log "Installing missing packages..."
 
     run_logged "Installing missing packages: ${missing[*]}" \
-      "sudo pacman -S --noconfirm --needed ${missing[*]}"
+      sudo pacman -S --noconfirm --needed "${missing[@]}"
 
     success "Package installation completed"
 
     log "Verifying all packages again..."
+    local verify_failed=0
     for pkg in "${packages[@]}"; do
       if ! package_installed "$pkg"; then
         error "Failed to verify package: $pkg"
+        verify_failed=1
       fi
     done
+    if (( verify_failed )); then
+      return 1
+    fi
   fi
 
   success "All packages installed and verified"

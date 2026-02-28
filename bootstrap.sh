@@ -10,21 +10,15 @@ REPO_URL="https://github.com/viacoffee/dotfiles.git"
 CLONE_DIR="$HOME/dotfiles"
 BRANCH=""
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-BOLD='\033[1m'
-NC='\033[0m'
-
-info()  { printf "${BLUE}INFO${NC} %s\n" "$*"; }
-warn()  { printf "${YELLOW}WARNING${NC} %s\n" "$*"; }
-error() { printf "${RED}ERROR${NC} %s\n" "$*" >&2; }
-
 # parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -b|--branch)
+      if [[ -z "${2:-}" ]]; then
+        echo "ERROR: -b/--branch requires a branch name" >&2
+        echo "Usage: bootstrap.sh [-b|--branch <branch>]" >&2
+        exit 1
+      fi
       BRANCH="$2"
       shift 2
       ;;
@@ -39,22 +33,37 @@ EOF
       exit 0
       ;;
     *)
-      error "Unknown option: $1"
+      echo "ERROR: Unknown option: $1" >&2
       exit 1
       ;;
   esac
 done
 
+cat <<'EOF'
+      )  (
+     (   ) )
+      ) ( (
+    _______)_
+ .-'---------|
+( C|/\/\/\/\/|
+ '-./\/\/\/\/|
+   '_________'
+    '-------'
+
+EOF
+
+echo "https://github.com/viacoffee/dotfiles"
+echo ""
+
 # ensure git is available
 if ! command -v git &>/dev/null; then
-  warn "git is not installed"
-  info "Attempting to install git via pacman..."
+  echo "git is not installed, attempting to install via pacman..."
   sudo pacman -S --noconfirm git
 fi
 
 # guard against clobbering an existing clone
 if [[ -d "$CLONE_DIR" ]]; then
-  error "$CLONE_DIR already exists — remove or rename it first"
+  echo "ERROR: $CLONE_DIR already exists — remove or rename it first" >&2
   exit 1
 fi
 
@@ -62,34 +71,34 @@ fi
 clone_args=(--recurse-submodules)
 if [[ -n "$BRANCH" ]]; then
   clone_args+=(-b "$BRANCH")
-  info "Cloning branch: $BRANCH"
+  echo "Cloning branch: $BRANCH"
 else
-  info "Cloning default branch"
+  echo "Cloning default branch"
 fi
 
 git clone "${clone_args[@]}" "$REPO_URL" "$CLONE_DIR"
 echo ""
-info "Repository cloned to $CLONE_DIR"
+echo "Repository cloned to $CLONE_DIR"
 
 # confirm before install
 echo ""
-printf "${BOLD}${YELLOW}"
+printf '\033[1m\033[1;33m'
 cat <<'EOF'
   This will run install.sh, which configures packages, bootloader,
   firewall, display manager, and other system-level settings.
   This is a DESTRUCTIVE operation intended for a fresh Arch install.
 EOF
-printf "${NC}"
+printf '\033[0m'
 echo ""
 
 read -rp "Continue with installation? [y/N] " answer
 if [[ ! "$answer" =~ ^[Yy]$ ]]; then
-  info "Aborted. You can run it later with: bash $CLONE_DIR/install.sh"
+  echo "Aborted. You can run it later with: bash $CLONE_DIR/install.sh"
   exit 0
 fi
 
 if ! cd "$CLONE_DIR"; then
-  error "Failed to cd into $CLONE_DIR"
+  echo "ERROR: Failed to cd into $CLONE_DIR" >&2
   exit 1
 fi
 

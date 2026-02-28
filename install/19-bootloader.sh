@@ -4,25 +4,16 @@
 
 log "Configuring Limine bootloader..."
 
-# Check one more time to see if limine is installed
-log "Checking for limine bootloader..."
-if command_exists limine; then
-  success "limine bootloader found"
-else
-  error "limine bootloader not found"
-  exit 1
-fi
-
 # Check if limine-mkinitcpio-hook is installed
 if ! command_exists limine-mkinitcpio; then
   error "limine-mkinitcpio-hook not found. Install with: sudo pacman -S limine-mkinitcpio-hook"
-  exit 1
+  return 1
 fi
 
 # Check if limine-snapper-sync is installed
 if ! command_exists limine-snapper-sync; then
-  error "limine-mkinitcpio-hook not found. Install with: sudo pacman -S limine-snapper-sync"
-  exit 1
+  error "limine-snapper-sync not found. Install with: sudo pacman -S limine-snapper-sync"
+  return 1
 fi
 
 # Step 1: Extract existing kernel command line from bootloader config
@@ -33,11 +24,9 @@ HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap conso
 EOF
 
 # Detect boot mode
-if [[ -d /sys/firmware/efi ]]; then
-  EFI=true
-else
+if [[ ! -d /sys/firmware/efi ]]; then
   error "Not EFI system"
-  exit 1
+  return 1
 fi
 
 # Find config location
@@ -54,7 +43,7 @@ elif [[ -f /boot/limine.conf ]]; then
   limine_config="/boot/limine.conf"
 else
   error "Limine config not found"
-  exit 1
+  return 1
 fi
 success "Limine config: $limine_config"
 
@@ -65,17 +54,12 @@ CMDLINE=$(grep "^[[:space:]]*cmdline:" "$limine_config" | head -1 | sed 's/^[[:s
 if [[ -z "$CMDLINE" ]]; then
   warn "No cmdline found in existing config"
   warn "Manually verify limine config: $limine_config"
-  return 0
+  return 1
 fi
 log "Limine cmdline: $CMDLINE"
 
-sudo cp $COFFEE_INSTALL_DEFAULTS_PATH/limine/default.conf /etc/default/limine
+sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/limine/default.conf" /etc/default/limine
 sudo sed -i "s|@@CMDLINE@@|$CMDLINE|g" /etc/default/limine
-
-# UKI and EFI fallback are EFI only
-if [[ -z $EFI ]]; then
-  sudo sed -i '/^ENABLE_UKI=/d; /^ENABLE_LIMINE_FALLBACK=/d' /etc/default/limine
-fi
 
 # Remove the original config file if it's not /boot/limine.conf
 if [[ "$limine_config" != "/boot/limine.conf" ]] && [[ -f "$limine_config" ]]; then
@@ -83,7 +67,7 @@ if [[ "$limine_config" != "/boot/limine.conf" ]] && [[ -f "$limine_config" ]]; t
 fi
 
 # We overwrite the whole thing knowing the limine-update will add the entries for us
-sudo cp $COFFEE_INSTALL_DEFAULTS_PATH/limine/limine.conf /boot/limine.conf
+sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/limine/limine.conf" /boot/limine.conf
 
 # Match Snapper configs
 if ! sudo snapper list-configs 2>/dev/null | grep -q "root"; then
@@ -96,7 +80,7 @@ fi
 
 # Enable quota to allow space-aware algorithms to work
 log "Check if btrfs quota is enabled"
-if btrfs quota status / | grep -qE '^\s*Enabled:\s+yes'; then
+if sudo btrfs quota status / | grep -qE '^\s*Enabled:\s+yes'; then
   success "Btrfs quota already enabled"
 else
   sudo btrfs quota enable /
@@ -111,12 +95,12 @@ sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root
 sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 
 log "Checking plymouth theme configuration..."
-if [ "$(plymouth-set-default-theme)" != "coffee" ]; then
+if [[ "$(plymouth-set-default-theme)" != "coffee" ]]; then
   run_logged "Copying plymouth theme" \
-    "sudo cp -r $COFFEE_INSTALL_DEFAULTS_PATH/plymouth /usr/share/plymouth/themes/coffee/"
+    sudo cp -r "$COFFEE_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
 
   run_logged "Setting default theme" \
-    "sudo plymouth-set-default-theme coffee"
+    sudo plymouth-set-default-theme coffee
 fi
 success "Plymouth theme configuration is set"
 
@@ -129,14 +113,14 @@ success "Plymouth theme configuration is set"
 
 log "Re-enabling mkinitcpio hooks"
 # Restore the specific mkinitcpio pacman hooks
-if [ -f /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled ]; then
+if [[ -f /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled ]]; then
   sudo mv /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled /usr/share/libalpm/hooks/90-mkinitcpio-install.hook
 fi
 
-if [ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled ]; then
+if [[ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled ]]; then
   sudo mv /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook
 fi
 success "mkinitcpio hooks re-enabled"
 
 run_logged "Running limine-update" \
-  "sudo limine-update"
+  sudo limine-update

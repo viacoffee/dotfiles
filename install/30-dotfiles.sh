@@ -1,37 +1,35 @@
 #!/bin/bash
 
-return_pwd=$(pwd)
-log "Current directory: $return_pwd"
-run_logged "cd to $COFFEE_INSTALL" \
-  "cd $COFFEE_INSTALL"
-
 if [[ $EUID -eq 0 && -n $SUDO_USER ]]; then
   USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
 else
   USER_HOME="$HOME"
 fi
 
+if ! cd "$COFFEE_PATH"; then
+  error "Failed to cd to $COFFEE_PATH"
+  return 1
+fi
+log "Working directory: $(pwd)"
+
 log "Remove existing bashrc"
-[ -f "$USER_HOME/.bashrc" ] && rm -f "$USER_HOME/.bashrc"
+[[ -f "$USER_HOME/.bashrc" ]] && rm -f "$USER_HOME/.bashrc"
 
-run_logged "stowing home" \
-  "stow home"
+log "stowing home"
+stow home
 
-log "Remove niri config if it exists for some reason"
-[ -f "$USER_HOME/.config/niri/config.kdl" ] && rm -f "$USER_HOME/.config/niri/config.kdl"
+log "Remove niri config if it exists"
+[[ -f "$USER_HOME/.config/niri/config.kdl" ]] && rm -f "$USER_HOME/.config/niri/config.kdl"
 
 mkdir -p "$USER_HOME/.config"
-run_logged "stowing config" \
-  "stow --no-folding -t $USER_HOME/.config config"
+log "stowing config"
+stow --no-folding -t "$USER_HOME/.config" config
 
 mkdir -p "$USER_HOME/.local"
-run_logged "stowing local" \
-  "stow --no-folding -t $USER_HOME/.local local"
+log "stowing local"
+stow --no-folding -t "$USER_HOME/.local" local
 
-run_logged "cd back to: $return_pwd" \
-  "cd $return_pwd"
-
-run_logged "Generating themed configs" \
-  "coffee-theme-refresh"
+log "Generating themed configs"
+coffee-theme-refresh
 
 success "Dotfiles stowed"

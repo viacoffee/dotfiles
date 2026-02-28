@@ -2,17 +2,17 @@
 
 # Add daemons to niri-service
 systemctl_want_enable() {
-  if [ "$#" -lt 1 ]; then
-    echo "Usage: autostart_user_service SERVICE [SERVICE...]"
+  if [[ "$#" -lt 1 ]]; then
+    error "Usage: systemctl_want_enable SERVICE [SERVICE...]"
     return 1
   fi
 
   for svc in "$@"; do
-    # Add to default.target wants
     run_logged "enabling $svc" \
-      "systemctl --user add-wants default.target niri.service $svc"
+      systemctl --user add-wants default.target niri.service "$svc"
   done
 }
+
 # Create zsh cache
 log "Creating zsh cache directory..."
 mkdir -p ~/.cache/zsh
@@ -23,7 +23,8 @@ systemctl_want_enable \
   mako \
   swaybg \
   swayidle \
-  swayosd
+  swayosd \
+  coffee-first-login
 
 log "Creating default home directories"
 DEFAULT_DIRS=(
@@ -45,12 +46,12 @@ mapfile -t optional_packages < <(
 )
 install_missing_packages "${optional_packages[@]}"
 
-# Enable dnd mode for mako
-makoctl mode -a dnd
+# Enable dnd mode for mako (deferred to first login)
+touch "$HOME/.first-login"
 
 log "Updating tldr"
 tldr --update || true
 
 # Set shell
 log "Changing default shell..."
-chsh -s /bin/zsh
+sudo usermod -s /bin/zsh "$COFFEE_DEFAULT_USER"

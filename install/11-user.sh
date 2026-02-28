@@ -7,11 +7,11 @@ log "Verifying user account for autologin..."
 
 # Get the user running the script (the one with sudo privileges)
 # When run with sudo, we need to get the original user, not root
-if [ -n "$SUDO_USER" ]; then
+if [[ -n "${SUDO_USER:-}" ]]; then
   # Script was run with sudo, use the original user
   LOGIN_USER="$SUDO_USER"
   success "Detected user running with sudo: $LOGIN_USER"
-elif [ "$EUID" -ne 0 ]; then
+elif [[ "$EUID" -ne 0 ]]; then
   # Script not run with sudo, use current user
   LOGIN_USER="$(whoami)"
   success "Detected current user: $LOGIN_USER"
@@ -22,7 +22,7 @@ else
 fi
 
 # Validate that LOGIN_USER is not root
-if [ "$LOGIN_USER" = "root" ]; then
+if [[ "$LOGIN_USER" = "root" ]]; then
   error "Autologin cannot be configured for root user. Please run the installer as a non-root user."
   exit 1
 fi

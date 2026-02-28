@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "Adding default gtk settings"
+info "Adding default gtk settings"
 # Try to force dark mode on gtk applications
-echo "Forcing darkmode for gtk applications..."
+info "Forcing darkmode for gtk applications..."
 gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
 gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
 gsettings set org.gnome.desktop.interface icon-theme "Yaru-dark"
@@ -10,7 +10,7 @@ gsettings set org.gnome.desktop.interface icon-theme "Yaru-dark"
 # Use Firefox as the default browser
 xdg-settings set default-web-browser firefox.desktop
 
-echo "Adding default mimes"
+info "Adding default mimes"
 # Default terminal
 xdg-mime default alacritty.desktop x-scheme-handler/terminal
 

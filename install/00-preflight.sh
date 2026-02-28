@@ -2,12 +2,9 @@
 
 log "Validating required components..."
 
-# Array to track missing components
-missing_components=()
-
 # Must be x86 only to fully work
 log "Checking that system is x86_64"
-if [ "$(uname -m)" = "x86_64" ]; then
+if [[ "$(uname -m)" = "x86_64" ]]; then
   success "x86_64 CPU"
 else
   error "Not an x86_64 CPU"
@@ -54,30 +51,23 @@ log "Checking for limine bootloader..."
 if command_exists limine; then
   success "limine bootloader found"
 else
-  warn "limine bootloader not found"
-  missing_components+=("limine")
+  error "limine bootloader not found"
+  exit 1
 fi
 
 log "Checking for Btrfs filesystem tools..."
 if command_exists btrfs; then
   success "Btrfs tools found"
 else
-  warn "Btrfs tools not found"
-  missing_components+=("btrfs-progs")
+  error "Btrfs tools not found"
+  exit 1
 fi
 
 log "Checking for LUKS support..."
 if command_exists cryptsetup; then
   success "LUKS support found"
 else
-  warn "cryptsetup not found"
-  missing_components+=("cryptsetup")
-fi
-
-echo ""
-if [ ${#missing_components[@]} -gt 0 ]; then
-  error "The following components are missing and installation cannot continue"
-  error "Missing components: [$(printf '%s, ' "${missing_components[@]}" | sed 's/, $//')]"
+  error "cryptsetup not found"
   exit 1
 fi
 
@@ -86,11 +76,11 @@ fi
 log "Temporarily disabling mkinitcpio hooks during installation..."
 
 # Move the specific mkinitcpio pacman hooks out of the way if they exist
-if [ -f /usr/share/libalpm/hooks/90-mkinitcpio-install.hook ]; then
+if [[ -f /usr/share/libalpm/hooks/90-mkinitcpio-install.hook ]]; then
   sudo mv /usr/share/libalpm/hooks/90-mkinitcpio-install.hook /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled
 fi
 
-if [ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook ]; then
+if [[ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook ]]; then
   sudo mv /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled
 fi
 

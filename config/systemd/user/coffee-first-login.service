@@ -1,0 +1,9 @@
+[Unit]
+Description=First login setup
+After=graphical-session.target mako.service
+ConditionPathExists=%h/.first-login
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/coffee-first-login
+RemainAfterExit=yes
