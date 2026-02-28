@@ -4,7 +4,7 @@ set -euo pipefail
 COMMAND="${1:-}"
 
 if [[ -z $COMMAND ]]; then
-  echo "Usage: coffee-snapshot <create|restore>" >&2
+  echo "Usage: coffee-snapshot <create|restore|delete>" >&2
   exit 1
 fi
 
@@ -24,5 +24,18 @@ create)
   ;;
 restore)
   sudo limine-snapper-restore
+  ;;
+delete)
+  echo -e "\e[32mDelete latest snapshot\e[0m"
+
+  mapfile -t CONFIGS < <(sudo snapper --csvout list-configs | awk -F, 'NR>1 {print $1}')
+
+  for config in "${CONFIGS[@]}"; do
+    latest="$(sudo snapper -c "$config" --csvout list | awk -F, 'NR>1 {id=$1} END {print id}')"
+    if [[ -n "$latest" && "$latest" != "0" ]]; then
+      sudo snapper -c "$config" delete "$latest"
+    fi
+  done
+  echo
   ;;
 esac
