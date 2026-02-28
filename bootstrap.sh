@@ -88,4 +88,9 @@ if [[ ! "$answer" =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-exec bash "$CLONE_DIR/install.sh"
+if ! cd "$CLONE_DIR"; then
+  error "Failed to cd into $CLONE_DIR"
+  exit 1
+fi
+
+exec bash install.sh
