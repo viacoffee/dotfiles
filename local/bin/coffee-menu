@@ -78,7 +78,7 @@ show_system_menu() {
 # System/Snapshots menu
 show_snapshot_menu() {
   case $(menu " Snapshots" "  Create") in
-    *Create*) coffee-launch-term-float coffee-snapshot ;;
+    *Create*) coffee-launch-term-float coffee-snapshot create ;;
     *) back_to show_system_menu ;;
   esac
 }
