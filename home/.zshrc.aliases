@@ -16,7 +16,7 @@ alias lt='lsd --tree'
 
 # Git
 alias gs='git status'
-alias gl='git log'
+alias gl='git log --oneline --graph --decorate'
 alias gp='git pull'
 alias gd='git diff'
 
