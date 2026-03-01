@@ -116,7 +116,7 @@ binds {
 
   // Area
   Mod+p {
-    screenshot
+    screenshot show-pointer=false
   }
 
   // Screenshot region
@@ -126,7 +126,7 @@ binds {
 
   // Screenshot entire screen
   Mod+Alt+p {
-    screenshot-screen
+    screenshot-screen show-pointer=false
   }
 
   // Audio controls
