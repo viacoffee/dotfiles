@@ -91,7 +91,7 @@
   "custom/screenrecord-indicator": {
     "on-click": "coffee-cmd-screenrecord",
     "exec": "$HOME/.config/waybar/indicators/screenrecord.sh",
-    "signal": 9,
+    "interval": 3,
     "return-type": "json"
   },
   "custom/webcam-indicator": {
