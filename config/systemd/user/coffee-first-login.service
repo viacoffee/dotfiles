@@ -7,3 +7,6 @@ ConditionPathExists=%h/.first-login
 Type=oneshot
 ExecStart=%h/.local/bin/coffee-first-login
 RemainAfterExit=yes
+
+[Install]
+WantedBy=graphical-session.target

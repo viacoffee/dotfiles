@@ -32,7 +32,7 @@ binds {
 
   // File browser
   Mod+Shift+f {
-    spawn "nautilus"
+    spawn "uwsm-app" "--" "nautilus"
   }
 
   // Btop

@@ -147,6 +147,6 @@ niri_focus_or_spawn() {
   if [[ -n "$window_id" ]]; then
     _niri_message_to_ids focus-window <<<"$window_id"
   else
-    "$@" &
+    uwsm-app -- "$@" &
   fi
 }

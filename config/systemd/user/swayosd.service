@@ -1,4 +1,5 @@
 [Unit]
+Description=On-screen display server
 PartOf=graphical-session.target
 After=graphical-session.target
 Requisite=graphical-session.target
@@ -6,3 +7,6 @@ Requisite=graphical-session.target
 [Service]
 ExecStart=swayosd-server
 Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target

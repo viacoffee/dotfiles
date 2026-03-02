@@ -1,15 +1,10 @@
 #!/bin/bash
 
-# Add daemons to niri-service
-systemctl_want_enable() {
-  if [[ "$#" -lt 1 ]]; then
-    error "Usage: systemctl_want_enable SERVICE [SERVICE...]"
-    return 1
-  fi
-
+# Enable graphical session services
+enable_user_services() {
   for svc in "$@"; do
     run_logged "enabling $svc" \
-      systemctl --user add-wants default.target niri.service "$svc"
+      systemctl --user enable "$svc"
   done
 }
 
@@ -17,8 +12,8 @@ systemctl_want_enable() {
 log "Creating zsh cache directory..."
 mkdir -p ~/.cache/zsh
 
-# add-wants for user/niri
-systemctl_want_enable \
+# Enable session services
+enable_user_services \
   waybar \
   mako \
   swaybg \

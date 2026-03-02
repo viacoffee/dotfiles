@@ -16,7 +16,7 @@ vt = "next"
 source_profile = true
 
 [initial_session]
-command = "niri-session"
+command = "uwsm start niri"
 user = "$COFFEE_DEFAULT_USER"
 
 [default_session]

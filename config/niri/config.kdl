@@ -2,6 +2,7 @@ include "bindings.kdl"
 include "window-rules.kdl"
 include "animations.kdl"
 
+spawn-at-startup "uwsm" "finalize"
 spawn-sh-at-startup "wl-paste --type text --watch cliphist store"
 spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
 

@@ -1,15 +1,16 @@
 [Unit]
-Description=Sway Idle Lock and Monitor Off
+Description=Idle lock and monitor off
+PartOf=graphical-session.target
 After=graphical-session.target
+Requisite=graphical-session.target
 
 [Service]
 Type=simple
 ExecStart=/usr/bin/swayidle \
   timeout 300 "coffee-lock-screen" \
   timeout 600 "niri msg action power-off-monitors"
-Restart=always
+Restart=on-failure
 RestartSec=5
-KillMode=process
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical-session.target
