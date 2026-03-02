@@ -17,6 +17,40 @@ if ! systemctl is-enabled --quiet iwd && ! systemctl is-enabled --quiet NetworkM
     sudo systemctl enable iwd.service
 fi
 
+# Use iwd's built-in DHCP client for WiFi
+sudo mkdir -p /etc/iwd
+sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/iwd/main.conf" /etc/iwd/main.conf
+
+# Keep systemd-networkd for ethernet only — mask WiFi/WWAN .network files
+# so networkd doesn't compete with iwd for DHCP on wireless interfaces
+sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/networkd/20-ethernet.network" /etc/systemd/network/20-ethernet.network
+for net in 20-wlan.network 20-wwan.network; do
+  if [[ -f "/etc/systemd/network/$net" ]] && [[ ! -L "/etc/systemd/network/$net" ]]; then
+    sudo ln -sf /dev/null "/etc/systemd/network/$net"
+  fi
+done
+
+# Disable wait-online — blocks boot when ethernet has no cable
+if systemctl is-enabled --quiet systemd-networkd-wait-online.service; then
+  run_logged "Disable systemd-networkd-wait-online" \
+    sudo systemctl disable systemd-networkd-wait-online.service
+fi
+
+# Ensure systemd-resolved is enabled for DNS
+if ! systemctl is-enabled --quiet systemd-resolved.service; then
+  run_logged "Enable systemd-resolved" \
+    sudo systemctl enable systemd-resolved.service
+fi
+
+# Ensure resolv.conf points to systemd-resolved stub
+if [[ ! -L /etc/resolv.conf ]] || [[ "$(readlink /etc/resolv.conf)" != *"stub-resolv"* ]]; then
+  sudo ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+fi
+
+# IP forwarding for Docker
+sudo mkdir -p /etc/sysctl.d
+sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/sysctl/99-docker.conf" /etc/sysctl.d/99-docker.conf
+
 # Snapper-sync
 if ! systemctl is-enabled --quiet limine-snapper-sync; then
   run_logged "Enable limine-snapper-sync service" \
