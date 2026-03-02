@@ -59,6 +59,7 @@ output "HDMI-A-1" {
 layout {
   gaps 0
   always-center-single-column
+  background-color "#1e2229"
 
   default-column-width { proportion 0.33333; }
 
