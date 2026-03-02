@@ -95,6 +95,11 @@ sudo sed -i 's/^NUMBER_LIMIT_IMPORTANT="10"/NUMBER_LIMIT_IMPORTANT="5"/' /etc/sn
 sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 
+# Blacklist hardware watchdog modules (desktop, not needed)
+log "Blacklisting hardware watchdog modules..."
+sudo mkdir -p /etc/modprobe.d
+sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/modprobe/nowatchdog.conf" /etc/modprobe.d/nowatchdog.conf
+
 log "Checking plymouth theme configuration..."
 run_logged "Copying plymouth theme" \
   sudo cp -r "$COFFEE_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
