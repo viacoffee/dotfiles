@@ -20,7 +20,7 @@ fi
 log "Extracting kernel command line from existing bootloader config..."
 
 sudo tee /etc/mkinitcpio.conf.d/coffee_hooks.conf <<EOF >/dev/null
-HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap consolefont block encrypt filesystems fsck btrfs-overlayfs)
+HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap consolefont block encrypt filesystems btrfs-overlayfs)
 EOF
 
 # Detect boot mode
