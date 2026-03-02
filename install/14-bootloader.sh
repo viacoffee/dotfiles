@@ -96,10 +96,10 @@ sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root
 sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 
 log "Checking plymouth theme configuration..."
-if [[ "$(plymouth-set-default-theme)" != "coffee" ]]; then
-  run_logged "Copying plymouth theme" \
-    sudo cp -r "$COFFEE_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
+run_logged "Copying plymouth theme" \
+  sudo cp -r "$COFFEE_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
 
+if [[ "$(plymouth-set-default-theme)" != "coffee" ]]; then
   run_logged "Setting default theme" \
     sudo plymouth-set-default-theme coffee
 fi
