@@ -51,10 +51,25 @@ fi
 sudo mkdir -p /etc/sysctl.d
 sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/sysctl/99-docker.conf" /etc/sysctl.d/99-docker.conf
 
+# Disable NVIDIA suspend/hibernate services
+# NOTE-david possibly revisit this after laptop testing
+for svc in nvidia-suspend nvidia-hibernate nvidia-resume nvidia-suspend-then-hibernate; do
+  if systemctl is-enabled --quiet "$svc.service" 2>/dev/null; then
+    run_logged "Disable $svc" \
+      sudo systemctl disable "$svc.service"
+  fi
+done
+
 # Snapper-sync
 if ! systemctl is-enabled --quiet limine-snapper-sync; then
   run_logged "Enable limine-snapper-sync service" \
     sudo systemctl enable limine-snapper-sync.service
+fi
+
+# Disable snapper-timeline — we're not using the timer (disabled), so this is pointless
+if systemctl is-enabled --quiet snapper-timeline.timer 2>/dev/null; then
+  run_logged "Disable snapper-timeline timer" \
+    sudo systemctl disable snapper-timeline.timer
 fi
 
 # Greetd
