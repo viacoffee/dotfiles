@@ -36,6 +36,6 @@ window-rule {
 
 // Steam dialogs
 window-rule {
-    match app-id=r#"steam"# title=r#".*(Friends|Settings|Properties).*"#
+    match app-id=r#"steam"# title=r#".*(Steam|Friends|Settings|Properties|Path).*"#
     open-floating true
 }
