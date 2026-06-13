@@ -4,7 +4,6 @@ alias htop='btop'
 alias ping='prettyping --nolegend'
 
 # Vim
-alias vi='nvim'
 alias vim='nvim'
 
 # Directory listings
