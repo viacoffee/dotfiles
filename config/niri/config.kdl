@@ -77,10 +77,15 @@ layout {
 
   focus-ring {
     off
+    // active-color "#5c6370"
+    // width 1
   }
 
   border {
     off
+    // width 1
+    // inactive-color "#1e2229"
+    // active-color "#5c6370"
   }
 
   struts {
