@@ -18,6 +18,7 @@ alias gs='git status'
 alias gl='git log --oneline --graph --decorate'
 alias gp='git pull'
 alias gd='git diff'
+alias gc='git commit'
 
 # General
 alias c='clear'
@@ -25,3 +26,7 @@ alias c='clear'
 # Navigation
 alias ...='cd ../..'
 alias ....='cd ../../..'
+
+# Agents
+alias cc='claude'
+alias oc='opencode'
