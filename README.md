@@ -4,14 +4,14 @@
 
 ## Screenshots
 
-![Main menu](/.github/assets/menu-main.png)
-![Applications menu](/.github/assets/menu-applications.png)
-![Power menu](/.github/assets/menu-power.png)
 ![Floating windows](/.github/assets/floats.png)
-![Hyprlock](/.github/assets/hyprlock.png)
-![Indicators](/.github/assets/indicators.png)
-![Notifications](/.github/assets/notification.png)
-![Plymouth](/.github/assets/plymouth.png)
+
+| | |
+|---|---|
+| ![Main menu](/.github/assets/menu-main.png) | ![Power menu](/.github/assets/menu-power.png) |
+| ![Applications menu](/.github/assets/menu-applications.png) | ![Hyprlock](/.github/assets/hyprlock.png) |
+| ![Indicators](/.github/assets/indicators.png) | ![Notifications](/.github/assets/notification.png) |
+| ![Plymouth](/.github/assets/plymouth.png) | |
 
 ## Installation
 
