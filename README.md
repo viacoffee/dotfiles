@@ -31,12 +31,22 @@ After archinstall finishes and the system reboots, log in and continue below.
 
 ### Post-reboot
 
-```bash
-wget https://github.com/viacoffee/dotfiles/archive/refs/heads/master.zip -O dotfiles.zip
-unzip dotfiles.zip -d ~/ && mv ~/dotfiles-master ~/dotfiles
-cd ~/dotfiles
-./install.sh
-```
+1. **Install git and a downloader**:
+
+   ```bash
+   sudo pacman -S --noconfirm git curl
+   ```
+
+2. **Run the bootstrap script**:
+
+   ```bash
+   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh)
+   ```
+
+   To install a specific branch, pass `-b`:
+   ```bash
+   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh) -b back_to_arch
+   ```
 
 ## Keyboard Shortcuts
 
