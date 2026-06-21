@@ -3,19 +3,18 @@
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/niri-helpers.sh"
 
-windows="$(_niri_windows_json)"
-workspaces="$(_niri_workspaces_json)"
+niri_init
 
 # Join windows with workspace index, format for fuzzel
 # Output: "id\tws_idx  app_id: title" (focused window marked with *)
-entries="$(jq -r --argjson ws "$workspaces" '
+entries="$(jq -r --argjson ws "$_NIRI_WORKSPACES" '
   ($ws | map({(.id | tostring): .idx}) | add) as $ws_map
   | sort_by(.is_focused | not)
   | .[]
   | ($ws_map[.workspace_id | tostring] // "?") as $idx
   | (if .is_focused then "* " else "  " end) as $mark
   | "\(.id)\t\($mark)[\($idx)]  \(.app_id // "unknown"): \(.title // "untitled")"
-' <<< "$windows")"
+' <<< "$_NIRI_WINDOWS")"
 
 [[ -z "$entries" ]] && exit 0
 

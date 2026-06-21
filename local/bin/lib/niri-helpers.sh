@@ -1,19 +1,36 @@
 #!/usr/bin/env bash
-# Composable helpers for niri window management
+# Snapshot-based helpers for niri window management
 # Intended to be sourced, not executed
+#
+# Call niri_init to pre-fetch window/workspace state once. All functions
+# lazy-cache on first call if niri_init was not called explicitly.
+
+# App launcher used by niri_focus_or_spawn; override before sourcing if needed
+NIRI_APP_LAUNCHER="${NIRI_APP_LAUNCHER:-uwsm-app}"
+
+# -------------------------------------------------------------------
+# Snapshot
+# -------------------------------------------------------------------
+
+# Pre-fetch both snapshots. Call this once at script start to avoid
+# multiple IPC round-trips when using several query functions.
+niri_init() {
+  _NIRI_WINDOWS=$(niri msg --json windows)
+  _NIRI_WORKSPACES=$(niri msg --json workspaces)
+}
 
 # -------------------------------------------------------------------
 # Internal helpers
 # -------------------------------------------------------------------
 
-# Fetch window JSON snapshot
 _niri_windows_json() {
-  niri msg --json windows
+  _NIRI_WINDOWS="${_NIRI_WINDOWS:-$(niri msg --json windows)}"
+  echo "$_NIRI_WINDOWS"
 }
 
-# Fetch workspace JSON snapshot
 _niri_workspaces_json() {
-  niri msg --json workspaces
+  _NIRI_WORKSPACES="${_NIRI_WORKSPACES:-$(niri msg --json workspaces)}"
+  echo "$_NIRI_WORKSPACES"
 }
 
 # Extract .id from streamed JSON objects
@@ -74,21 +91,16 @@ niri_windows_on_workspace() {
 }
 
 # Return windows matching a pattern in app_id or title as streamed JSON objects
-# Reads from stdin if piped, otherwise fetches fresh window data
 niri_windows_matching() {
   local pattern="$1"
 
-  if [ -t 0 ]; then
-    _niri_windows_json
-  else
-    cat
-  fi |
+  _niri_windows_json |
     jq -c --arg p "$pattern" '
       .[]
       | select(
-        (.app_id // "" | test($p; "i")) or
-        (.title  // "" | test($p; "i"))
-      )
+          (.app_id // "" | test($p; "i")) or
+          (.title  // "" | test($p; "i"))
+        )
     '
 }
 
@@ -147,6 +159,6 @@ niri_focus_or_spawn() {
   if [[ -n "$window_id" ]]; then
     _niri_message_to_ids focus-window <<<"$window_id"
   else
-    uwsm-app -- "$@" &
+    $NIRI_APP_LAUNCHER -- "$@" &
   fi
 }
