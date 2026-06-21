@@ -23,6 +23,9 @@ binds {
     spawn "coffee-menu"
   }
 
+  // Open input prompt for claude haiku
+  Mod+Shift+Space { spawn "sh" "-c" "coffee-hivemind"; }
+
   // Clipboard history
   Mod+v { spawn "sh" "-c" "coffee-clipboard"; }
 
