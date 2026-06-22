@@ -61,6 +61,7 @@ After archinstall finishes and the system reboots, log in and continue below.
 | `Mod+Escape` | Power menu |
 | `Mod+Space` | Application launcher |
 | `Mod+Alt+Space` | General menu |
+| `Mod+Shift+Space` | Quick AI prompt (Claude) |
 | `Mod+V` | Clipboard history |
 | `Mod+Shift+F` | File browser (Nautilus) |
 | `Mod+Shift+T` | System monitor (btop) in floating terminal |
@@ -121,36 +122,12 @@ After archinstall finishes and the system reboots, log in and continue below.
 
 ## Commands
 
-Custom scripts installed to `~/.local/bin/`:
+Scripts with no keyboard shortcut or menu entry — invoke these manually from a terminal.
 
 | Command | Description |
 |---|---|
-| `coffee-menu` | General-purpose fuzzel menu with submenus |
-| `coffee-menu-apps` | Application launcher via fuzzel |
-| `coffee-menu-windows` | Window switcher via fuzzel |
-| `coffee-menu-history` | View mako notification history |
-| `coffee-launch-or-focus` | Launch an app or focus it if already running |
-| `coffee-launch-term-cwd` | Open terminal in the current focused terminal's directory |
-| `coffee-launch-term-float` | Open a command in a floating terminal window |
-| `coffee-launch-bluetooth` | Open bluetui in a floating terminal |
-| `coffee-launch-wifi` | Open impala (wifi TUI) in a floating terminal |
-| `coffee-launch-about` | Show a system info panel |
-| `coffee-lock-screen` | Lock the screen with hyprlock |
-| `coffee-snapshot` | Take a screenshot |
-| `coffee-clipboard` | Open clipboard history (cliphist) picker |
-| `coffee-toggle-dnd` | Toggle do-not-disturb (mako) |
-| `coffee-toggle-idle` | Toggle swayidle (prevent screen lock/sleep) |
-| `coffee-toggle-scrollclick` | Toggle scroll-to-click on a SteelSeries mouse |
 | `coffee-theme-background` | Set desktop wallpaper from a file path or URL |
 | `coffee-theme-refresh` | Rebuild themed configs from `palette.toml` + templates |
-| `coffee-clear-workspace` | Close all unfocused windows on the current workspace |
-| `coffee-update` | Run system update |
-| `coffee-install-tui` | Create a launcher shortcut for a TUI application |
-| `coffee-first-login` | Deferred setup that runs once on first Wayland login |
-| `coffee-cmd-reboot` | Reboot the system |
-| `coffee-cmd-shutdown` | Shut down the system |
-| `coffee-cmd-screenrecord` | Start/stop screen recording |
-| `coffee-cmd-terminal-cwd` | Print the CWD of the active terminal (used by other scripts) |
 
 ## Aliases
 
