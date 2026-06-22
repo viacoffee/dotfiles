@@ -1,0 +1,31 @@
+{
+  "reload_style_on_change": true,
+  "toggle": true,
+  "layer": "top",
+  "width": 36,
+  "position": "left",
+  "margin-top": 0,
+  "margin-bottom": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+  "spacing": 0,
+  "include": ["~/.config/waybar/modules.json"],
+  "modules-left": [
+    "clock",
+    "custom/dnd",
+    "custom/idle-indicator",
+    "custom/screenrecord-indicator",
+    "custom/screenshare-indicator",
+    "custom/webcam-indicator"
+    // "custom/microphone-indicator"
+  ],
+  "modules-center": [
+    "niri/workspaces"
+  ],
+  "modules-right": [
+    "group/tray-expander",
+    "bluetooth",
+    "network",
+    "battery"
+  ]
+}

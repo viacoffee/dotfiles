@@ -1,0 +1,147 @@
+// System
+binds {
+  // Spawn terminal
+  Mod+Return { spawn "sh" "-c" "coffee-launch-term-cwd"; }
+
+  // Lock
+  Mod+Shift+q {
+    spawn "sh" "-c" "coffee-lock-screen"
+  }
+
+  // Power fuzzel dmenu
+  Mod+Escape {
+    spawn "sh" "-c" "coffee-menu power"
+  }
+
+  // App fuzzel
+  Mod+Space {
+    spawn "coffee-menu-apps"
+  }
+
+  // General fuzzel dmenu
+  Mod+Alt+Space {
+    spawn "coffee-menu"
+  }
+
+  // Open input prompt for claude haiku
+  Mod+Shift+Space { spawn "sh" "-c" "coffee-hivemind"; }
+
+  // Clipboard history
+  Mod+v { spawn "sh" "-c" "coffee-clipboard"; }
+
+  // Capslock layer: Copy/Paste (terminal)
+  ISO_Level5_Shift+c { spawn "sh" "-c" "wtype -M ctrl -k Insert; sleep 0.1; content=$(xclip -selection primary -o 2>/dev/null); [ -n \"$content\" ] && echo \"$content\" | wl-copy"; }
+  ISO_Level5_Shift+v { spawn "sh" "-c" "wtype -M shift -k Insert"; }
+
+  // File browser
+  Mod+Shift+f {
+    spawn "uwsm-app" "--" "nautilus"
+  }
+
+  // Btop
+  Mod+Shift+t {
+    spawn "sh" "-c" "coffee-launch-term-float btop"
+  }
+
+  // DND toggle
+  Mod+Alt+d {
+    spawn "sh" "-c" "coffee-toggle-dnd"
+  }
+
+  // Swayidle toggle
+  Mod+Alt+i {
+    spawn "sh" "-c" "coffee-toggle-idle"
+  }
+
+  // Window focus
+  Mod+h { focus-column-left; }
+  Mod+j { focus-window-down; }
+  Mod+k { focus-window-up; }
+  Mod+l { focus-column-right; }
+
+  // Fuzzel to list open windows and change focus to selected
+  Mod+Tab { spawn "coffee-menu-windows"; }
+
+  // Cycle workspaces
+  Mod+d { focus-workspace-down; }
+  Mod+u { focus-workspace-up; }
+
+  // Move windows (shift)
+  Mod+Shift+h { move-column-left; }
+  Mod+Shift+l { move-column-right; }
+  Mod+Shift+j { move-window-down; }
+  Mod+Shift+k { move-window-up; }
+
+  // Consume or expel window (alt)
+  Mod+Alt+h { consume-or-expel-window-left; }
+  Mod+Alt+l { consume-or-expel-window-right; }
+
+  // Resize windows
+  Mod+Ctrl+h { set-column-width "-10%"; }
+  Mod+Ctrl+l { set-column-width "+10%"; }
+  Mod+Ctrl+j { set-window-height "+10%"; }
+  Mod+Ctrl+k { set-window-height "-10%"; }
+
+  // Layout & window actions
+  Mod+w { close-window; }
+  Mod+f { maximize-window-to-edges; }
+  Mod+t { toggle-window-floating; }
+  Mod+m { center-column; }
+  Mod+Shift+m { center-visible-columns; }
+  Mod+o { switch-preset-column-width; }
+
+  // Close all but the focused window on the focused window's workspace
+  Mod+Shift+W {
+    spawn "sh" "-c" "coffee-clear-workspace --unfocused"
+  }
+
+  // Workspaces
+  Mod+1 { focus-workspace 1; }
+  Mod+2 { focus-workspace 2; }
+  Mod+3 { focus-workspace 3; }
+  Mod+4 { focus-workspace 4; }
+  Mod+5 { focus-workspace 5; }
+  Mod+6 { focus-workspace 6; }
+  Mod+7 { focus-workspace 7; }
+  Mod+8 { focus-workspace 8; }
+  Mod+9 { focus-workspace 9; }
+
+  // Move window to workspace
+  Mod+Shift+1 { move-window-to-workspace 1; }
+  Mod+Shift+2 { move-window-to-workspace 2; }
+  Mod+Shift+3 { move-window-to-workspace 3; }
+  Mod+Shift+4 { move-window-to-workspace 4; }
+  Mod+Shift+5 { move-window-to-workspace 5; }
+  Mod+Shift+6 { move-window-to-workspace 6; }
+  Mod+Shift+7 { move-window-to-workspace 7; }
+  Mod+Shift+8 { move-window-to-workspace 8; }
+  Mod+Shift+9 { move-window-to-workspace 9; }
+
+  // Area
+  Mod+p {
+    screenshot show-pointer=false
+  }
+
+  // Screenshot region
+  Mod+Shift+p {
+    screenshot-window
+  }
+
+  // Screenshot entire screen
+  Mod+Alt+p {
+    screenshot-screen show-pointer=false
+  }
+
+  // Audio controls
+  XF86AudioRaiseVolume { spawn "sh" "-c" "swayosd-client --output-volume +3"; }
+  XF86AudioLowerVolume { spawn "sh" "-c" "swayosd-client --output-volume -3"; }
+  XF86AudioMute { spawn "sh" "-c" "swayosd-client --output-volume mute-toggle"; }
+  XF86AudioMicMute { spawn "sh" "-c" "swayosd-client --input-volume mute-toggle"; }
+
+  // Brightness controls
+  XF86MonBrightnessUp { spawn "sh" "-c" "swayosd-client --brightness +5"; }
+  XF86MonBrightnessDown { spawn "sh" "-c" "swayosd-client --brightness -5"; }
+
+  // Notification history
+  Mod+Alt+n { spawn "coffee-menu-history"; }
+}

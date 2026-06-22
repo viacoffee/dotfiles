@@ -1,1 +1,9 @@
 lazy-lock.json
+*.local
+*.secret
+*.private
+*.gpg~
+*.git-credentials
+.stow-local-ignore
+!config/.stow-local-ignore
+config/theme/colors.sh

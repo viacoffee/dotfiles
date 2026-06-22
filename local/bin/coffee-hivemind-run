@@ -1,0 +1,29 @@
+#!/bin/bash
+
+query="$*"
+
+BLUE='\033[38;2;97;175;239m'
+BOLD='\033[1m'
+DIM='\033[2m'
+RESET='\033[0m'
+
+echo ""
+printf "${BLUE}>${RESET} %s\n" "$query"
+echo ""
+
+raw=$(cd /tmp && claude -p "$query" \
+  --model claude-haiku-4-5-20251001 \
+  --system-prompt "Reply in one sentence only. No bullet points." \
+  --allowedTools "" \
+  --output-format json)
+
+result=$(echo "$raw" | jq -r '.result')
+session_id=$(echo "$raw" | jq -r '.session_id')
+
+echo "$result" | glow -
+echo ""
+printf "  ${DIM}type to dive deeper, enter to close${RESET}\n"
+echo ""
+read -rp " > " followup
+
+[[ -n "$followup" ]] && bash -c "cd /tmp && claude --resume $session_id $(printf '%q' "$followup"); exec bash"

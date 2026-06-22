@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Attempts to unblock the wifi service first in case it should be been blocked.
+rfkill unblock wifi
+coffee-launch-term-float impala

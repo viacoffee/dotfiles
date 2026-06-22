@@ -1,0 +1,30 @@
+[alias]
+  co = checkout
+  st = status
+  lg = log --oneline --graph --decorate
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+[commit]
+	verbose = true
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[tag]
+	sort = -version:refname
+[rerere]
+	enabled = true
+	autoupdate = true
+[user]
+	name = David Knight
+	email = 231013+viacoffee@users.noreply.github.com
+[include]
+  path = ~/.config/git/config.local

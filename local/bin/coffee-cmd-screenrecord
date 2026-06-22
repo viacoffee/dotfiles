@@ -1,0 +1,66 @@
+#!/bin/bash
+
+OUTPUT_DIR="$HOME/Videos"
+
+# Ensure directory exists
+mkdir -p "$OUTPUT_DIR"
+
+DESKTOP_AUDIO="false"
+MICROPHONE_AUDIO="false"
+STOP_RECORDING="false"
+
+for arg in "$@"; do
+  case "$arg" in
+    --with-desktop-audio) DESKTOP_AUDIO="true" ;;
+    --with-microphone) MICROPHONE_AUDIO="true" ;;
+    --stop-recording) STOP_RECORDING="true" ;;
+  esac
+done
+
+start_screenrecording() {
+  local filename="$OUTPUT_DIR/screenrecording-$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+  local audio_devices=""
+  local -a audio_args=()
+
+  [[ "$DESKTOP_AUDIO" == "true" ]] && audio_devices+="default_output"
+
+  if [[ "$MICROPHONE_AUDIO" == "true" ]]; then
+    # Merge audio tracks into one - separate tracks only play one at a time in most players
+    [[ -n "$audio_devices" ]] && audio_devices+="|"
+    audio_devices+="default_input"
+  fi
+
+  [[ -n "$audio_devices" ]] && audio_args+=(-a "$audio_devices")
+
+  gpu-screen-recorder -w portal -f 60 -fallback-cpu-encoding yes -o "$filename" "${audio_args[@]}" -ac aac &
+}
+
+stop_screenrecording() {
+  pkill -SIGINT gpu-screen-rec # SIGINT required to save video properly
+
+  # Wait a maximum of 5 seconds to finish before hard killing
+  local count=0
+  while pidof gpu-screen-recorder >/dev/null && [ $count -lt 50 ]; do
+    sleep 0.1
+    count=$((count + 1))
+  done
+
+  if pidof gpu-screen-recorder >/dev/null; then
+    pkill -9 gpu-screen-rec
+    notify-send "Screen recording error" "Recording process had to be force-killed. Video may be corrupted." -u critical -t 5000
+  else
+    notify-send "Screen recording saved to $OUTPUT_DIR" -t 2000
+  fi
+}
+
+screenrecording_active() {
+  pidof gpu-screen-recorder >/dev/null
+}
+
+if screenrecording_active; then
+  stop_screenrecording
+elif [[ "$STOP_RECORDING" == "false" ]]; then
+  start_screenrecording
+else
+  exit 1
+fi

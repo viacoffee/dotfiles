@@ -1,0 +1,125 @@
+{
+  "niri/workspaces": {
+    "on-click": "activate",
+    "format": "{icon}",
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8",
+      "9": "9",
+      "10": "0"
+    }
+  },
+  "clock": {
+    "format": "{:%H\n%M}",
+    "format-alt": "{:%m\n%d\n%y}",
+    "tooltip": false
+  },
+  "network": {
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "format": "{icon}",
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰀂",
+    "format-disconnected": "󰤮",
+    "tooltip-format-wifi": "{essid} ({frequency} GHz)\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-ethernet": "⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-disconnected": "Disconnected",
+    "interval": 3,
+    "spacing": 1,
+    "on-click": "coffee-launch-wifi"
+  },
+  "battery": {
+    "format": "{capacity}% {icon}",
+    "format-discharging": "{icon}",
+    "format-charging": "{icon}",
+    "format-plugged": "",
+    "format-icons": {
+      "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
+      "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    },
+    "format-full": "󰂅",
+    "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
+    "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
+    "interval": 5,
+    "on-click": "coffee-menu power",
+    "states": {
+      "warning": 20,
+      "critical": 10
+    }
+  },
+  "bluetooth": {
+    "format": "",
+    "format-disabled": "󰂲",
+    "format-connected": "",
+    "format-no-controller": "",
+    "tooltip-format": "Devices connected: {num_connections}",
+    "on-click": "coffee-launch-bluetooth"
+  },
+  "group/tray-expander": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 600,
+      "children-class": "tray-group-item"
+    },
+    "modules": ["custom/expand-icon", "tray"]
+  },
+  "tray": {
+    "spacing": 16,
+    "reverse-direction": true,
+    "icon-size": 16,
+    "show-passive-items": false
+  },
+  "custom/expand-icon": {
+    "format": "",
+    "tooltip": false,
+    "on-scroll-up": "",
+    "on-scroll-down": "",
+    "on-scroll-left": "",
+    "on-scroll-right": ""
+  },
+  "custom/idle-indicator": {
+    "on-click": "coffee-toggle-idle",
+    "exec": "$HOME/.config/waybar/indicators/idle.sh",
+    "signal": 10,
+    "return-type": "json"
+  },
+  "custom/screenrecord-indicator": {
+    "on-click": "coffee-cmd-screenrecord",
+    "exec": "$HOME/.config/waybar/indicators/screenrecord.sh",
+    "interval": 3,
+    "return-type": "json"
+  },
+  "custom/webcam-indicator": {
+    "exec": "$HOME/.config/waybar/indicators/webcam.sh",
+    "return-type": "json",
+    "interval": 3
+  },
+  "custom/screenshare-indicator": {
+    "exec": "$HOME/.config/waybar/indicators/screenshare.sh",
+    "return-type": "json",
+    "interval": 3
+  },
+  "custom/microphone-indicator": {
+    "exec": "$HOME/.config/waybar/indicators/microphone.sh",
+    "return-type": "json",
+    "interval": 3
+  },
+  "custom/dnd": {
+    "on-click": "coffee-toggle-dnd",
+    "exec": "$HOME/.config/waybar/indicators/dnd.sh",
+    "signal": 8,
+    "return-type": "json"
+  },
+  "custom/notifications": {
+    "exec-if": "command -v makoctl",
+    "exec": "$HOME/.config/waybar/indicators/notification.sh",
+    "on-click-right": "makoctl dismiss -a",
+    "return-type": "json",
+    "interval": 1
+  }
+}

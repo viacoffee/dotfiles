@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+
+# Deferred setup that requires a running Wayland session
+# Runs once on first login, then cleans up after itself
+
+sleep 2
+
+# Enable do-not-disturb mode
+if command -v makoctl >/dev/null 2>&1; then
+  makoctl mode -a dnd
+fi
+
+# Remove marker and disable this service
+rm -f "$HOME/.first-login"
+systemctl --user disable coffee-first-login.service

@@ -1,0 +1,43 @@
+# Abyssal Theme Palette
+# Deep ocean exploration — cold inky blues illuminated by bioluminescence.
+# Run `coffee-theme-refresh` after editing to regenerate configs.
+
+[meta]
+name = "abyssal"
+
+[colors]
+# Backgrounds
+bg        = "#0b0f19"
+bg_alt    = "#101621"
+bg_dark   = "#161e2e"
+surface   = "#1e2a3e"
+
+# Foregrounds
+fg        = "#a0b9d9"
+fg_accent = "#c4d6eb"
+fg_light  = "#dce8f4"
+
+# Grays
+gray      = "#4e6078"
+gray_mid  = "#7e93ab"
+inactive  = "#293549"
+proc_misc = "#728da8"
+
+# Normal palette
+red       = "#ff6b8a"
+green     = "#5ed4b0"
+yellow    = "#e8d168"
+blue      = "#5ea6f7"
+magenta   = "#c49cf0"
+cyan      = "#5ecece"
+
+# Dim variants
+dim_red     = "#b34c62"
+dim_green   = "#42957b"
+dim_yellow  = "#a29249"
+dim_blue    = "#4275ad"
+dim_magenta = "#8a6eaa"
+dim_cyan    = "#429090"
+
+# Bright foreground
+bright_fg = "#d0e0f0"

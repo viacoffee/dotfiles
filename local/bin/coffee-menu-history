@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Display mako notification history in fuzzel
+
+HISTORY=$(makoctl history 2>/dev/null)
+
+# Check if history is empty
+if [ -z "$HISTORY" ] || [ "$(echo "$HISTORY" | jq '.data[0] | length')" -eq 0 ]; then
+  notify-send "No history" "No notifications in history"
+  exit 0
+fi
+
+ITEMS=$(echo "$HISTORY" | jq -r '.data[0][] | "\(.["summary"].data) \(.["body"].data)"' 2>/dev/null | head -20)
+
+if [ -z "$ITEMS" ]; then
+  notify-send "No history" "No notifications in history"
+  exit 0
+fi
+
+# Show in fuzzel
+SELECTED=$(echo "$ITEMS" | fuzzel --dmenu --placeholder=" Notifications")
+
+if [ -n "$SELECTED" ]; then
+  # Restore the most recent notification from history
+  makoctl restore
+fi

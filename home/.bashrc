@@ -1,0 +1,2 @@
+# Interactive check
+[[ $- != *i* ]] && return

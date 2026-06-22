@@ -1,0 +1,31 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/niri-helpers.sh"
+
+niri_init
+
+# Join windows with workspace index, format for fuzzel
+# Output: "id\tws_idx  app_id: title" (focused window marked with *)
+entries="$(jq -r --argjson ws "$_NIRI_WORKSPACES" '
+  ($ws | map({(.id | tostring): .idx}) | add) as $ws_map
+  | sort_by(.is_focused | not)
+  | .[]
+  | ($ws_map[.workspace_id | tostring] // "?") as $idx
+  | (if .is_focused then "* " else "  " end) as $mark
+  | "\(.id)\t\($mark)[\($idx)]  \(.app_id // "unknown"): \(.title // "untitled")"
+' <<< "$_NIRI_WINDOWS")"
+
+[[ -z "$entries" ]] && exit 0
+
+selected="$(echo "$entries" \
+  | fuzzel -d \
+    --width=65 --lines=10 \
+    --placeholder=' Switch to window...' \
+    --no-sort --with-nth=2 \
+  || true)"
+
+[[ -z "$selected" ]] && exit 0
+
+window_id="$(cut -f1 <<< "$selected")"
+niri msg action focus-window --id "$window_id"

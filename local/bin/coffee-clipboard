@@ -1,0 +1,77 @@
+#!/bin/bash
+
+thumb_dir="${XDG_CACHE_HOME:-$HOME/.cache}/clipboard/thumbnails"
+cliphist_db=~/.cache/clipboard/db
+
+list=$(cliphist list)
+if [[ -z "$list" ]]; then
+	fuzzel -d --placeholder='' --prompt-only 'Clipboard is empty'
+	rm -rf "$thumb_dir"
+	exit
+fi
+
+mkdir -p "$thumb_dir"
+
+selected=$(echo "$list" | gawk -F'\t' -v th="$thumb_dir" '
+BEGIN { FS="\t" }
+# Skip HTML meta/image entries
+/^[0-9]+\s<meta/ { next }
+/^[0-9]+\s.*<img / { next }
+# Binary data images
+/^[0-9]+\s\[\[ binary data/ {
+	id=$1
+	if (match($2, /\.(png|jpg|jpeg|gif|bmp|webp)/, m)) {
+		ext=m[0]
+		gsub(/.*\./, "", ext)
+		if (ext == "") ext="png"
+	} else {
+		ext="png"
+	}
+	file=id"."ext
+	thumb=th "/" file
+	system("[ ! -f \"" thumb "\" ] && printf %s \"" id "\" | cliphist decode >\"" thumb "\"")
+	print $0 "\0icon\x1f" th "/" file
+	next
+}
+# File path images
+/^[0-9]+\s.*\.(png|jpg|jpeg|gif|bmp|webp)/ {
+	id=$1
+	path=$2
+	ext=path
+	gsub(/.*\./, "", ext)
+	if (ext == "") next
+	file=id"."ext
+	thumb=th "/" file
+	system("[ -f \"" path "\" ] && [ ! -f \"" thumb "\" ] && ln -f \"" path "\" \"" thumb "\"")
+	print $0 "\0icon\x1f" th "/" file
+	next
+}
+{ print }
+' | fuzzel -d \
+	--width=65 --lines=10 \
+	--placeholder ' Search clipboard...' \
+	--counter --no-sort --with-nth 2)
+code=$?
+
+case $code in
+	19) # custom-0: clear history
+		echo -e 'No\nYes' | fuzzel -d --placeholder 'Delete history?' --lines 2 | grep -q '^Yes$' \
+			&& rm "$cliphist_db" && rm -f "$thumb_dir"/* 2>/dev/null
+		;;
+	10) # custom-1: delete selected
+		[[ -n "$selected" ]] && {
+			id=$(cut -f1 <<< "$selected")
+			echo "$id" | cliphist delete
+			find "$thumb_dir" -name "$id.*" -delete
+		}
+		;;
+	*) # copy to clipboard
+		[[ -n "$selected" ]] && echo "$selected" | cliphist decode | wl-copy
+		;;
+esac
+
+# cleanup orphaned thumbnails
+while IFS= read -r file; do
+	id=${file##*/}; id=${id%.*}
+	grep -q "^$id" <<< "$list" || rm "$file"
+done < <(find "$thumb_dir" -type f 2>/dev/null)

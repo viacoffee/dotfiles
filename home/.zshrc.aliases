@@ -1,0 +1,32 @@
+# Stats
+alias top='btop'
+alias htop='btop'
+alias ping='prettyping --nolegend'
+
+# Vim
+alias vim='nvim'
+
+# Directory listings
+alias l='lsd -a1'
+alias la='lsd -la'
+alias lr='lsd -R'
+alias lra='lsd -RA'
+alias lt='lsd --tree'
+
+# Git
+alias gs='git status'
+alias gl='git log --oneline --graph --decorate'
+alias gp='git pull'
+alias gd='git diff'
+alias gc='git commit'
+
+# General
+alias c='clear'
+
+# Navigation
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# Agents
+alias cc='claude'
+alias oc='opencode'

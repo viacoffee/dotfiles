@@ -1,0 +1,3 @@
+#!/bin/bash
+
+fuzzel --width=45 --lines=6 --placeholder=" Applications"

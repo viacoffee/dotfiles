@@ -1,0 +1,36 @@
+window#osd {
+  opacity: 0.95;
+  background: ${BLACK_CSS_095};
+  border: 1px solid ${DARK_BORDER_CSS_095};
+  border-radius: 6px;
+}
+
+window#osd #container {
+  margin: 7px;
+  padding 7px;
+  background:transparent;
+}
+
+window#osd image {
+  -gtk-icon-transform: scale(0.6);
+}
+
+window#osd image,
+window#osd label {
+  font-family: 'InputMono Nerd Font';
+  font-size: 12px;
+  color: ${FG_LIGHT};
+}
+
+window#osd progressbar {
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+}
+
+window#osd progress {
+  min-height: inherit;
+  border-radius: inherit;
+  border: none;
+  background-color: ${FG_LIGHT};
+}
