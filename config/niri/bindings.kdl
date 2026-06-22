@@ -135,7 +135,12 @@ binds {
   // Audio controls
   XF86AudioRaiseVolume { spawn "sh" "-c" "swayosd-client --output-volume +3"; }
   XF86AudioLowerVolume { spawn "sh" "-c" "swayosd-client --output-volume -3"; }
+  XF86AudioMute { spawn "sh" "-c" "swayosd-client --output-volume mute-toggle"; }
   XF86AudioMicMute { spawn "sh" "-c" "swayosd-client --input-volume mute-toggle"; }
+
+  // Brightness controls
+  XF86MonBrightnessUp { spawn "sh" "-c" "swayosd-client --brightness +5"; }
+  XF86MonBrightnessDown { spawn "sh" "-c" "swayosd-client --brightness -5"; }
 
   // Notification history
   Mod+Alt+n { spawn "coffee-menu-history"; }
