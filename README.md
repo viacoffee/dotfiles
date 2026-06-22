@@ -111,7 +111,15 @@ After archinstall finishes and the system reboots, log in and continue below.
 |---|---|
 | `XF86AudioRaiseVolume` | Volume up |
 | `XF86AudioLowerVolume` | Volume down |
+| `XF86AudioMute` | Mute/unmute output |
 | `XF86AudioMicMute` | Mute/unmute microphone |
+
+### Brightness
+
+| Shortcut | Action |
+|---|---|
+| `XF86MonBrightnessUp` | Brightness up |
+| `XF86MonBrightnessDown` | Brightness down |
 
 ### Terminal (Capslock layer)
 
