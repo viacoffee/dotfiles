@@ -12,17 +12,21 @@ NIRI_APP_LAUNCHER="${NIRI_APP_LAUNCHER:-uwsm-app}"
 # Snapshot
 # -------------------------------------------------------------------
 
-# Pre-fetch both snapshots. Call this once at script start to avoid
+# Pre-fetch all snapshots. Call this once at script start to avoid
 # multiple IPC round-trips when using several query functions.
 niri_init() {
   _NIRI_WINDOWS=$(niri msg --json windows)
   _NIRI_WORKSPACES=$(niri msg --json workspaces)
+  _NIRI_OUTPUTS=$(niri msg --json outputs)
 }
 
 # -------------------------------------------------------------------
 # Internal helpers
 # -------------------------------------------------------------------
 
+# Lazy-cached snapshot accessors — fetch from niri IPC on first call,
+# return the cached value on subsequent calls within the same process.
+# Call niri_init upfront to pre-warm all three at once.
 _niri_windows_json() {
   _NIRI_WINDOWS="${_NIRI_WINDOWS:-$(niri msg --json windows)}"
   echo "$_NIRI_WINDOWS"
@@ -31,6 +35,11 @@ _niri_windows_json() {
 _niri_workspaces_json() {
   _NIRI_WORKSPACES="${_NIRI_WORKSPACES:-$(niri msg --json workspaces)}"
   echo "$_NIRI_WORKSPACES"
+}
+
+_niri_outputs_json() {
+  _NIRI_OUTPUTS="${_NIRI_OUTPUTS:-$(niri msg --json outputs)}"
+  echo "$_NIRI_OUTPUTS"
 }
 
 # Extract .id from streamed JSON objects
@@ -51,11 +60,7 @@ _niri_message_to_ids() {
 # Query primitives
 # -------------------------------------------------------------------
 
-niri_is_overview_open() {
-  niri msg --json overview-state |
-    jq -e '.is_open' > /dev/null
-}
-
+# Return true if the given window ID is currently focused
 niri_is_window_focused() {
   local window_id="$1"
 
@@ -161,4 +166,51 @@ niri_focus_or_spawn() {
   else
     $NIRI_APP_LAUNCHER -- "$@" &
   fi
+}
+
+# -------------------------------------------------------------------
+# Named workspace navigation
+# -------------------------------------------------------------------
+
+# Return the name of the focused workspace (empty if unnamed)
+niri_focused_workspace_name() {
+  _niri_workspaces_json |
+    jq -r '.[] | select(.is_focused) | .name // empty'
+}
+
+# Return workspace JSON object(s) matching a name
+niri_workspace_by_name() {
+  local name="$1"
+  _niri_workspaces_json |
+    jq -c --arg n "$name" '.[] | select(.name == $n)'
+}
+
+# -------------------------------------------------------------------
+# Output-aware operations
+# -------------------------------------------------------------------
+
+# Return the name of the focused output
+niri_focused_output() {
+  _niri_workspaces_json |
+    jq -r '.[] | select(.is_focused) | .output'
+}
+
+# Return all workspaces on an output as streamed JSON objects
+niri_workspaces_on_output() {
+  local output="$1"
+  _niri_workspaces_json |
+    jq -c --arg out "$output" '.[] | select(.output == $out)'
+}
+
+# Return all windows on an output as streamed JSON objects
+niri_windows_on_output() {
+  local output="$1"
+  jq -cn \
+    --argjson wins "$(_niri_windows_json)" \
+    --argjson ws "$(_niri_workspaces_json)" \
+    --arg out "$output" '
+      ([$ws[] | select(.output == $out) | .id]) as $ws_ids
+      | $wins[]
+      | select(.workspace_id as $wid | $ws_ids | any(. == $wid))
+    '
 }
