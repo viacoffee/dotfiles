@@ -1,5 +1,6 @@
 include "bindings.kdl"
 include "window-rules.kdl"
+// include optional=true "window-rules.laptop.kdl"
 include "animations.kdl"
 
 spawn-at-startup "uwsm" "finalize"
@@ -50,6 +51,19 @@ output "eDP-1" {
   hot-corners {
     off
   }
+
+  layout {
+    default-column-width { proportion 0.5; }
+
+    preset-column-widths {
+      proportion 0.5
+      proportion 0.66667
+    }
+
+    focus-ring {
+      off
+    }
+  }
 }
 
 output "HDMI-A-1" {
@@ -60,48 +74,56 @@ output "HDMI-A-1" {
   hot-corners {
     off
   }
+
+  layout {
+    default-column-width { proportion 0.33333; }
+
+    preset-column-widths {
+      proportion 0.33333
+      proportion 0.5
+      proportion 0.66667
+    }
+
+    preset-window-heights {
+      proportion 0.33333
+      proportion 0.5
+      proportion 0.66667
+    }
+
+    focus-ring {
+      off
+    }
+
+    border {
+      off
+    }
+  }
 }
 
 // Layout
 layout {
-  gaps 0
   always-center-single-column
   background-color "#1e2229"
-
-  default-column-width { proportion 0.33333; }
-
-  preset-column-widths {
-    proportion 0.33333
-    proportion 0.5
-    proportion 0.66667
-  }
-
-  preset-window-heights {
-    proportion 0.33333
-    proportion 0.5
-    proportion 0.66667
-  }
+  gaps 0
 
   focus-ring {
     off
-    // active-color "#5c6370"
-    // width 1
   }
 
   border {
+    width 1
+    inactive-color "#1e2229"
+    active-color "#5c6370"
+  }
+
+  shadow {
     off
-    // width 1
-    // inactive-color "#1e2229"
-    // active-color "#5c6370"
   }
 
   struts {
     right 51
   }
 
-  shadow {
-    off
-  }
 }
 
 // Environment Variables

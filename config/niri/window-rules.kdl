@@ -1,8 +1,3 @@
-// Global window
-window-rule {
-  draw-border-with-background false
-}
-
 // Unfocused window transparency
 window-rule {
   match is-focused=false
