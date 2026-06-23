@@ -1,3 +1,5 @@
 #!/bin/bash
 
+# Attempts to unblock the bluetooth service first.
+rfkill unblock bluetooth
 coffee-launch-term-float bluetui

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if rfkill list wifi | grep -q "Soft blocked: yes"; then
+  rfkill unblock wifi
+else
+  rfkill block wifi
+fi
