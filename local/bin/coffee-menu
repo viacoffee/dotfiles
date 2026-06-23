@@ -95,10 +95,11 @@ show_power_menu() {
 
 # Setup menu
 show_setup_menu() {
-  case $(menu " Setup" "  Audio\n  Wifi\n󰂯  Bluetooth") in
-    *Audio*) coffee-launch-term-float wiremix ;;
-    *Wifi*) coffee-launch-wifi ;;
+  case $(menu " Setup" "  Audio\n  Wifi\n󰂯  Bluetooth\n󰀝  Airplane Mode") in
+    *Audio*)     coffee-launch-term-float wiremix ;;
+    *Wifi*)      coffee-launch-wifi ;;
     *Bluetooth*) coffee-launch-bluetooth ;;
+    *Airplane*)  coffee-toggle-airplane ;;
     *) back_to show_main_menu ;;
   esac
 }

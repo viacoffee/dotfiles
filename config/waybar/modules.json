@@ -118,6 +118,12 @@
     "signal": 8,
     "return-type": "json"
   },
+  "custom/airplane-indicator": {
+    "on-click": "coffee-toggle-airplane",
+    "exec": "$HOME/.config/waybar/indicators/airplane.sh",
+    "signal": 9,
+    "return-type": "json"
+  },
   "custom/notifications": {
     "exec-if": "command -v makoctl",
     "exec": "$HOME/.config/waybar/indicators/notification.sh",
