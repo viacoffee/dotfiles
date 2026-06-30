@@ -30,3 +30,7 @@ alias ....='cd ../../..'
 # Agents
 alias cc='claude'
 alias oc='opencode'
+
+# Quick open
+## Firefox
+alias ff='uwsm-app -- firefox --new-window'
