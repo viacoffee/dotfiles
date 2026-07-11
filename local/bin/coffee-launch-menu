@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Themed bemenu picker. Reads newline-separated items on stdin, prints the pick.
+# Usage: printf 'a\nb\n' | coffee-launch-menu "Prompt"
+
+exec bemenu \
+  --prompt "$1" \
+  --ignorecase \
+  --fn 'InputMono Nerd Font 10' \
+  --line-height 30 \
+  --hp 10 \
+  --no-overlap \
+  --border 0 \
+  --border-radius 0 \
+  --nb '#000000ff' --nf '#cfd8dc' \
+  --tb '#000000ff' --tf '#61afef' \
+  --fb '#000000ff' --ff '#cfd8dc' \
+  --hb '#000000ff' --hf '#56b6c2' \
+  --sb '#000000ff' --sf '#56b6c2' \
+  --bdr '#0f0f0f'
