@@ -1,4 +1,4 @@
 #!/bin/bash
 
-query=$(echo "" | fuzzel --dmenu --placeholder=" Ask the hivemind…" --width=40 --lines=0 --line-height=30 --vertical-pad=8)
+query=$(coffee-launch-menu " Ask the hivemind…" < /dev/null)
 [[ -n "$query" ]] && coffee-launch-term-float coffee-hivemind-run "$query"

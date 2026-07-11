@@ -1,128 +1,28 @@
 #!/bin/bash
 
-# Exit after submenu when launched directly
-BACK_TO_EXIT=false
+if [[ "$1" == power ]]; then
+  options="  Lock
+  Restart
+  Shutdown"
 
-# Helpers
-back_to() {
-  local parent="$1"
-
-  if [[ "$BACK_TO_EXIT" == true ]]; then
-    exit 0
-  elif [[ -n "$parent" ]]; then
-    "$parent"
-  else
-    show_main_menu
-  fi
-}
-
-menu() {
-  local placeholder="$1"
-  local options="$2"
-
-  echo -e "$options" | fuzzel \
-    --dmenu \
-    --placeholder="$placeholder" \
-    2>/dev/null
-}
-
-# Install menu
-show_install_menu() {
-  case $(menu " Install" "  TUI\n  Web App") in
-    *TUI*) coffee-launch-term-float coffee-install-tui ;;
-    *Web*) coffee-launch-term-float coffee-install-webapp ;;
-    *) back_to show_main_menu ;;
-  esac
-}
-
-# Capture menu
-show_capture_menu() {
-  case $(menu " Capture" "  Screenshot\n  Screenrecord") in
-    *Screenshot*) show_screenshot_menu ;;
-    *Screenrecord*) show_screenrecord_menu ;;
-    *) back_to show_main_menu ;;
-  esac
-}
-
-# Capture/Screenshot menu
-show_screenshot_menu() {
-  case $(menu " Screenshot" "󰹑  Full Screen\n󰆞  Selection\n󰍹  Window") in
-    *Full*) niri msg action screenshot-screen ;;
-    *Selection*) niri msg action screenshot ;;
-    *Window*) niri msg action screenshot-window ;;
-    *) back_to show_capture_menu ;;
-  esac
-}
-
-# Capture/Screenrecord menu
-show_screenrecord_menu() {
-  case $(menu " Screenrecord" "With desktop audio\nWith desktop + mic") in
-    *"With desktop audio"*) coffee-cmd-screenrecord --with-desktop-audio ;;
-    *"With desktop + mic"*) coffee-cmd-screenrecord --with-desktop-audio --with-microphone ;;
-    *) back_to show_capture_menu ;;
-  esac
-}
-
-# System menu
-show_system_menu() {
-  case $(menu " System" "  Information\n  Resources\n  Nvidia\n  Snapshots\n󰚰  Update") in
-    *Information*) coffee-launch-about ;;
-    *Resources*) coffee-launch-term-float btop ;;
-    *Nvidia*) coffee-launch-term-float nvtop ;;
-    *Snapshots*) show_snapshot_menu ;;
-    *Update*) coffee-launch-term-float coffee-update ;;
-    *) back_to show_main_menu ;;
-  esac
-}
-
-# System/Snapshots menu
-show_snapshot_menu() {
-  case $(menu " Snapshots" "  Create") in
-    *Create*) coffee-launch-term-float coffee-snapshot create ;;
-    *) back_to show_system_menu ;;
-  esac
-}
-
-# Power menu
-show_power_menu() {
-  case $(menu " Power" "  Lock\n󰜉  Restart\n󰐥  Shutdown") in
-    *Lock*) coffee-lock-screen ;;
-    *Restart*) coffee-cmd-reboot ;;
+  case $(coffee-launch-menu " Power" <<< "$options") in
+    *Lock*)     coffee-lock-screen ;;
+    *Restart*)  coffee-cmd-reboot ;;
     *Shutdown*) coffee-cmd-shutdown ;;
-    *) back_to show_main_menu ;;
   esac
-}
-
-# Setup menu
-show_setup_menu() {
-  case $(menu " Setup" "  Audio\n  Wifi\n󰂯  Bluetooth\n󰀝  Airplane Mode") in
-    *Audio*)     coffee-launch-term-float wiremix ;;
-    *Wifi*)      coffee-launch-wifi ;;
-    *Bluetooth*) coffee-launch-bluetooth ;;
-    *Airplane*)  coffee-toggle-airplane ;;
-    *) back_to show_main_menu ;;
-  esac
-}
-
-# Main navigation
-go_to_menu() {
-  case "${1,,}" in
-    # *install*) show_install_menu ;;
-    *setup*) show_setup_menu ;;
-    *capture*) show_capture_menu ;;
-    *system*) show_system_menu ;;
-    *power*) show_power_menu ;;
-  esac
-}
-
-show_main_menu() {
-  go_to_menu "$(menu " Main menu" "  Capture\n  Setup\n  System\n  Power")"
-}
-
-# Entry point
-if [[ -n "$1" ]]; then
-  BACK_TO_EXIT=true
-  go_to_menu "$1"
-else
-  show_main_menu
+  exit
 fi
+
+options="  Screenrecord (desktop audio)
+  Screenrecord (desktop + mic)
+  Sound
+  Wifi
+  Bluetooth"
+
+case $(coffee-launch-menu " Menu" <<< "$options") in
+  *"desktop + mic"*)  coffee-cmd-screenrecord --with-desktop-audio --with-microphone ;;
+  *"desktop audio"*)  coffee-cmd-screenrecord --with-desktop-audio ;;
+  *Sound*)            coffee-launch-term-float wiremix ;;
+  *Wifi*)             coffee-launch-wifi ;;
+  *Bluetooth*)        coffee-launch-bluetooth ;;
+esac

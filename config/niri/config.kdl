@@ -97,10 +97,6 @@ output "HDMI-A-1" {
     focus-ring {
       off
     }
-
-    border {
-      off
-    }
   }
 }
 

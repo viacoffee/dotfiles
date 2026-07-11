@@ -26,9 +26,6 @@ binds {
   // Open input prompt for claude haiku
   Mod+Shift+Space { spawn "sh" "-c" "coffee-hivemind"; }
 
-  // Clipboard history
-  Mod+v { spawn "sh" "-c" "coffee-clipboard"; }
-
   // Capslock layer: Copy/Paste (terminal)
   ISO_Level5_Shift+c { spawn "sh" "-c" "wtype -M ctrl -k Insert; sleep 0.1; content=$(xclip -selection primary -o 2>/dev/null); [ -n \"$content\" ] && echo \"$content\" | wl-copy"; }
   ISO_Level5_Shift+v { spawn "sh" "-c" "wtype -M shift -k Insert"; }
@@ -58,9 +55,6 @@ binds {
   Mod+j { focus-window-down; }
   Mod+k { focus-window-up; }
   Mod+l { focus-column-right; }
-
-  // Fuzzel to list open windows and change focus to selected
-  Mod+Tab { spawn "coffee-menu-windows"; }
 
   // Cycle workspaces
   Mod+d { focus-workspace-down; }
@@ -141,7 +135,4 @@ binds {
   // Brightness controls
   XF86MonBrightnessUp { spawn "sh" "-c" "swayosd-client --brightness +5"; }
   XF86MonBrightnessDown { spawn "sh" "-c" "swayosd-client --brightness -5"; }
-
-  // Notification history
-  Mod+Alt+n { spawn "coffee-menu-history"; }
 }
