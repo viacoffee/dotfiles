@@ -171,7 +171,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) prompt |
 | **Editor** | [Neovim](https://neovim.io/) via [NvChad](https://nvchad.com/) (lazy.nvim, nvim-lspconfig, nvim-treesitter, conform.nvim) |
 | **Bar** | [Waybar](https://github.com/Alexays/Waybar) |
-| **Launcher** | [fuzzel](https://codeberg.org/dnkl/fuzzel) |
+| **Launcher** | [bemenu](https://github.com/Cloudef/bemenu) |
 | **Notifications** | [mako](https://github.com/emersion/mako) |
 | **Lock screen** | [hyprlock](https://github.com/hyprwm/hyprlock) |
 | **Wallpaper** | [swaybg](https://github.com/swaywm/swaybg) |

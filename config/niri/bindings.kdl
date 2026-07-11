@@ -8,17 +8,17 @@ binds {
     spawn "sh" "-c" "coffee-lock-screen"
   }
 
-  // Power fuzzel dmenu
+  // Power menu
   Mod+Escape {
     spawn "sh" "-c" "coffee-menu power"
   }
 
-  // App fuzzel
+  // App launcher
   Mod+Space {
     spawn "coffee-menu-apps"
   }
 
-  // General fuzzel dmenu
+  // General menu
   Mod+Alt+Space {
     spawn "coffee-menu"
   }
