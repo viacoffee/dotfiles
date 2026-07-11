@@ -6,9 +6,11 @@ set -e
 SCRIPT_DIR="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
 source "$SCRIPT_DIR/lib/helpers.sh"
 
-# Source theme colors
-COLORS="${XDG_CONFIG_HOME:-$HOME/.config}/theme/colors.sh"
-[[ -f "$COLORS" ]] && . "$COLORS"
+# Theme colors (formerly from theme/colors.sh)
+SURFACE="#3e4451"
+FG_ACCENT="#c5c8c6"
+BG_ALT="#21252b"
+CYAN="#56b6c2"
 
 trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m";coffee-snapshot delete' ERR
 
