@@ -2,6 +2,7 @@ alacritty
 base
 base-devel
 bat
+bemenu-wayland
 bluetui
 brightnessctl
 btop
@@ -12,7 +13,6 @@ cryptsetup
 curl
 dust
 fastfetch
-fuzzel
 fzf
 git
 glib2
