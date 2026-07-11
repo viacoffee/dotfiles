@@ -1,5 +1,7 @@
 // Animation Settings
 animations {
+  off
+
   workspace-switch {
     off
   }
