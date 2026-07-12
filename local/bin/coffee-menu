@@ -5,7 +5,7 @@ if [[ "$1" == power ]]; then
   Restart
   Shutdown"
 
-  case $(coffee-launch-menu " Power" <<< "$options") in
+  case $(coffee-launch-menu "" <<< "$options") in
     *Lock*)     coffee-lock-screen ;;
     *Restart*)  coffee-cmd-reboot ;;
     *Shutdown*) coffee-cmd-shutdown ;;
@@ -19,7 +19,7 @@ options="  Screenrecord (desktop audio)
   Wifi
   Bluetooth"
 
-case $(coffee-launch-menu " Menu" <<< "$options") in
+case $(coffee-launch-menu "" <<< "$options") in
   *"desktop + mic"*)  coffee-cmd-screenrecord --with-desktop-audio --with-microphone ;;
   *"desktop audio"*)  coffee-cmd-screenrecord --with-desktop-audio ;;
   *Sound*)            coffee-launch-term-float wiremix ;;
