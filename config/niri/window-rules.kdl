@@ -34,3 +34,14 @@ window-rule {
     match app-id=r#"steam"# title=r#".*(Steam|Friends|Settings|Properties|Path).*"#
     open-floating true
 }
+
+// Window currently being recorded — loud border so it's obvious what's live
+window-rule {
+  match is-window-cast-target=true
+
+  border {
+    width 2
+    active-color "#e06c75"
+    inactive-color "#e06c75"
+  }
+}

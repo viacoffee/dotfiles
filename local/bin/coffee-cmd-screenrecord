@@ -8,12 +8,15 @@ mkdir -p "$OUTPUT_DIR"
 DESKTOP_AUDIO="false"
 MICROPHONE_AUDIO="false"
 STOP_RECORDING="false"
+CAST_TARGET=""
 
 for arg in "$@"; do
   case "$arg" in
     --with-desktop-audio) DESKTOP_AUDIO="true" ;;
     --with-microphone) MICROPHONE_AUDIO="true" ;;
     --stop-recording) STOP_RECORDING="true" ;;
+    --window) CAST_TARGET="set-dynamic-cast-window" ;;
+    --monitor) CAST_TARGET="set-dynamic-cast-monitor" ;;
   esac
 done
 
@@ -32,7 +35,19 @@ start_screenrecording() {
 
   [[ -n "$audio_devices" ]] && audio_args+=(-a "$audio_devices")
 
-  gpu-screen-recorder -w portal -f 60 -fallback-cpu-encoding yes -o "$filename" "${audio_args[@]}" -ac aac &
+  gpu-screen-recorder -w portal -f 60 -restore-portal-session yes \
+    -fallback-cpu-encoding yes -o "$filename" "${audio_args[@]}" -ac aac &
+
+  # Niri starts every new cast EMPTY and only honours a target change once the
+  # cast exists, so this must happen after the recorder is up -- doing it first
+  # is a no-op and gsr then blocks forever on a stream with no frames.
+  #
+  # Fixed sleep, not a stream-ready poll. Portal negotiation is ~ms;
+  # 1.5s is slack for the restore. Raise it if a recording ever hangs.
+  if [[ -n "$CAST_TARGET" ]]; then
+    sleep 1.5
+    niri msg action "$CAST_TARGET"
+  fi
 }
 
 stop_screenrecording() {

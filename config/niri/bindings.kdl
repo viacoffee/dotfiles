@@ -126,6 +126,26 @@ binds {
     screenshot-screen show-pointer=false
   }
 
+  // Screen record focused window (toggle: same key stops an active recording)
+  Mod+v {
+    spawn "coffee-cmd-screenrecord" "--window"
+  }
+
+  // Screen record entire screen (toggle)
+  Mod+Shift+v {
+    spawn "coffee-cmd-screenrecord" "--monitor"
+  }
+
+  // Re-aim an in-progress recording at the focused window
+  Mod+Alt+v {
+    set-dynamic-cast-window
+  }
+
+  // Re-aim an in-progress recording at the focused monitor
+  Mod+Ctrl+v {
+    set-dynamic-cast-monitor
+  }
+
   // Audio controls
   XF86AudioRaiseVolume { spawn "sh" "-c" "swayosd-client --output-volume +3"; }
   XF86AudioLowerVolume { spawn "sh" "-c" "swayosd-client --output-volume -3"; }

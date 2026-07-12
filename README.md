@@ -105,6 +105,19 @@ After archinstall finishes and the system reboots, log in and continue below.
 | `Mod+Shift+P` | Screenshot focused window |
 | `Mod+Alt+P` | Screenshot entire screen |
 
+### Screen Recording
+
+Recordings go to `~/Videos`. `Mod+V` / `Mod+Shift+V` are toggles - the same key stops an active recording. Uses niri's dynamic cast target, so the portal picker only appears once: choose **niri Dynamic Cast Target** (not a window or monitor) and the choice is cached in `~/.config/gpu-screen-recorder/restore_token`.
+
+| Shortcut | Action |
+|---|---|
+| `Mod+V` | Record focused window (toggle) |
+| `Mod+Shift+V` | Record entire screen (toggle) |
+| `Mod+Alt+V` | Re-aim a live recording at the focused window |
+| `Mod+Ctrl+V` | Re-aim a live recording at the focused monitor |
+
+The window being recorded gets a red border. If recordings ever capture the wrong thing, delete `restore_token` and re-pick - a stale token silently overrides everything.
+
 ### Audio
 
 | Shortcut | Action |
