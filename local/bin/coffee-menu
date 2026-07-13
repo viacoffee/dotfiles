@@ -13,15 +13,11 @@ if [[ "$1" == power ]]; then
   exit
 fi
 
-options="  Screenrecord (desktop audio)
-  Screenrecord (desktop + mic)
-  Sound
+options="Sound
   Wifi
   Bluetooth"
 
 case $(coffee-launch-menu "" <<< "$options") in
-  *"desktop + mic"*)  coffee-cmd-screenrecord --with-desktop-audio --with-microphone ;;
-  *"desktop audio"*)  coffee-cmd-screenrecord --with-desktop-audio ;;
   *Sound*)            coffee-launch-term-float wiremix ;;
   *Wifi*)             coffee-launch-wifi ;;
   *Bluetooth*)        coffee-launch-bluetooth ;;
