@@ -39,3 +39,6 @@ bindkey -e
 # History search with arrows
 bindkey '\e[A' history-search-backward
 bindkey '\e[B' history-search-forward
+
+# tmux-sessionizer
+bindkey -s '^F' 'tmux-sessionizer\n'

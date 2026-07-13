@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# fzf a project dir, create/attach a tmux session named after it.
+# Adapted from https://github.com/ThePrimeagen/tmux-sessionizer
+
+if [[ $# -eq 1 ]]; then
+  selected="$1"
+else
+  selected=$( { find ~/Projects ~/Projects/14kb ~/Work -mindepth 1 -maxdepth 1 -type d 2>/dev/null; echo "$HOME/dotfiles"; } | fzf)
+fi
+
+[[ -n $selected ]] || exit 0
+
+name=$(basename "$selected" | tr . _)
+
+if ! tmux has-session -t="$name" 2>/dev/null; then
+  tmux new-session -ds "$name" -c "$selected"
+fi
+
+if [[ -z $TMUX ]]; then
+  tmux attach-session -t "$name"
+else
+  tmux switch-client -t "$name"
+fi
