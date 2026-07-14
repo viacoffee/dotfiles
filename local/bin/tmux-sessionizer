@@ -6,7 +6,7 @@
 if [[ $# -eq 1 ]]; then
   selected="$1"
 else
-  selected=$( { find ~/Projects ~/Projects/14kb ~/Work -mindepth 1 -maxdepth 1 -type d 2>/dev/null; echo "$HOME/dotfiles"; } | fzf)
+  selected=$( { find ~/projects ~/projects/14kb ~/work -mindepth 1 -maxdepth 1 -type d 2>/dev/null; echo "$HOME/dotfiles"; } | fzf)
 fi
 
 [[ -n $selected ]] || exit 0
