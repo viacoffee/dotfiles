@@ -37,6 +37,10 @@ input {
     repeat-rate 50
     numlock
   }
+
+  touchpad {
+    click-method "clickfinger"
+  }
 }
 
 // Cursor
