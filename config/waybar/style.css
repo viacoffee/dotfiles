@@ -70,7 +70,9 @@ window#waybar {
 }
 
 #workspaces button.urgent {
-  color: #e06c75;
+  color: #1e2229;
+  background: #e06c75;
+  padding: 4px 0;
 }
 
 #battery.critical {
