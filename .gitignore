@@ -6,4 +6,3 @@ lazy-lock.json
 *.git-credentials
 .stow-local-ignore
 !config/.stow-local-ignore
-config/theme/colors.sh
