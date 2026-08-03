@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Themed bemenu picker. Reads newline-separated items on stdin, prints the pick.
-# Usage: printf 'a\nb\n' | coffee-launch-menu "Prompt"
-
 exec bemenu \
   --prompt "$1" \
   --ignorecase \
@@ -12,9 +9,9 @@ exec bemenu \
   --no-overlap \
   --border 0 \
   --border-radius 0 \
-  --nb '#000000ff' --nf '#cfd8dc' \
-  --tb '#000000ff' --tf '#61afef' \
-  --fb '#000000ff' --ff '#cfd8dc' \
-  --hb '#000000ff' --hf '#56b6c2' \
-  --sb '#000000ff' --sf '#56b6c2' \
-  --bdr '#0f0f0f'
+  --nb '#1b212aff' --nf '#c9cfda' \
+  --tb '#1b212aff' --tf '#d9a86c' \
+  --fb '#1b212aff' --ff '#c9cfda' \
+  --hb '#1b212aff' --hf '#d9a86c' \
+  --sb '#1b212aff' --sf '#d9a86c' \
+  --ab '#1b212aff' --af '#c9cfda'

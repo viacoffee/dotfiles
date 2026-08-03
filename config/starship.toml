@@ -15,7 +15,7 @@ $python\
 $character"""
 
 [directory]
-style = "#c5c8c6"
+style = "bright-white"
 truncation_length = 0
 truncate_to_repo = false
 
@@ -26,12 +26,12 @@ vimcmd_symbol  = "[∷](green)"
 
 [fill]
 symbol = "─"
-style = "black"
+style = "#212831"
 
 [git_branch]
 symbol = ""
 format = "[$symbol $branch]($style)"
-style = "bright-black"
+style = "#88929f"
 
 [git_status]
 format = " [$ahead_behind$stashed $all_status]($style) "

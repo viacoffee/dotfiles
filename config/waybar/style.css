@@ -9,10 +9,10 @@
 }
 
 window#waybar {
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(27, 33, 42, 1);
   border-radius: 0;
   box-shadow: none;
-  color: #abb2bf;
+  color: #98a2b0;
   font-family: "Mononoki Nerd Font", monospace, sans-serif;
   font-size: 13.5px;
 }
@@ -35,7 +35,7 @@ window#waybar {
 #bluetooth,
 #battery {
   opacity: 0.7;
-  color: #9aa2ad;
+  color: #98a2b0;
   padding: 5px 0;
 }
 
@@ -44,7 +44,7 @@ window#waybar {
 }
 
 #tray menu {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(27, 33, 42, 0.95);
 }
 
 #network {
@@ -53,16 +53,16 @@ window#waybar {
 
 #workspaces button {
   font-size: 14.5px;
-  color: #abb2bf;
+  color: #98a2b0;
   padding: 0;
 }
 
 #workspaces button.focused {
-  color: #56b6c2;
+  color: #d9a86c;
 }
 
 #workspaces button.active {
-  color: #56b6c2;
+  color: #d9a86c;
 }
 
 #workspaces button.empty {
@@ -70,21 +70,21 @@ window#waybar {
 }
 
 #workspaces button.urgent {
-  color: #1e2229;
-  background: #e06c75;
+  color: #12161c;
+  background: #d9a86c;
   padding: 4px 0;
 }
 
 #battery.critical {
-  color: #e06c75;
+  color: #d26f66;
 }
 
 tooltip {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(27, 33, 42, 0.95);
 }
 
 tooltip * {
-  color: #c5c8c6;
+  color: #e0e5ec;
   margin: 0 0 0 10px;
 }
 
@@ -92,49 +92,49 @@ tooltip * {
   margin-top: 10px;
   font-size: 10px;
   opacity: 0.7;
-  color: #9aa2ad;
+  color: #98a2b0;
 }
 
 #custom-airplane-indicator {
   margin: 10px 0 0 -2px;
   font-size: 15px;
   opacity: 0.7;
-  color: #9aa2ad;
+  color: #98a2b0;
 }
 
 #custom-screenrecord-indicator {
   margin-top: 10px;
   font-size: 10px;
-  color: #e06c75;
+  color: #d26f66;
 }
 
 #custom-webcam-indicator {
   margin: 10px 0 0 -2px;
   font-size: 10px;
-  color: #e06c75;
+  color: #d26f66;
 }
 
 #custom-screenshare-indicator {
   margin-top: 10px;
   font-size: 12px;
-  color: #e06c75;
+  color: #d26f66;
 }
 
 #custom-microphone-indicator {
   margin-top: 10px;
   font-size: 14.5px;
-  color: #98c379;
+  color: #8fb46a;
 }
 
 #custom-notifications {
   margin-top: 10px;
   font-size: 12px;
-  color: #e06c75;
+  color: #d26f66;
 }
 
 #custom-dnd {
   margin: 10px 0 0 -3px;
   font-size: 13px;
   opacity: 0.7;
-  color: #9aa2ad;
+  color: #98a2b0;
 }

@@ -5,11 +5,11 @@ TERM = "xterm-256color"
 normal = { family = "SpaceMono Nerd Font Mono" }
 bold = { family = "SpaceMono Nerd Font Mono" }
 italic = { family = "SpaceMono Nerd Font Mono" }
-size = 11
+size = 16
 
 [font.offset]
 x = 0
-y = 0
+y = 2
 
 [font.glyph_offset]
 x = 0
@@ -31,74 +31,77 @@ bindings = [
 [cursor]
 thickness = 0.20
 
+[colors]
+draw_bold_text_with_bright_colors = false
+
 [colors.primary]
-foreground = "#abb2bf"
-background = "#1e2229"
-dim_foreground = "#5c6370"
-bright_foreground = "#c8ccd4"
+foreground = "#a1aab7"
+background = "#1b212a"
+dim_foreground = "#88929f"
+bright_foreground = "#c9cfda"
 
 [colors.cursor]
-text = "#282c34"
-cursor = "#abb2bf"
+text = "#1b212a"
+cursor = "#a1aab7"
 
 [colors.vi_mode_cursor]
-text = "#282c34"
-cursor = "#61afef"
+text = "#12161c"
+cursor = "#6e99c3"
 
 [colors.search.matches]
-foreground = "#abb2bf"
-background = "#3e4451"
+foreground = "#c9cfda"
+background = "#3f4751"
 
 [colors.search.focused_match]
-foreground = "#282c34"
-background = "#e5c07b"
+foreground = "#12161c"
+background = "#d9a86c"
 
 [colors.hints.start]
-foreground = "#abb2bf"
-background = "#3e4451"
+foreground = "#12161c"
+background = "#d9a86c"
 
 [colors.hints.end]
-foreground = "#c8ccd4"
-background = "#3e4451"
+foreground = "#c9cfda"
+background = "#3f4751"
 
 [colors.line_indicator]
 foreground = "None"
 background = "None"
 
 [colors.footer_bar]
-foreground = "#abb2bf"
-background = "#21252b"
+foreground = "#88929f"
+background = "#191d24"
 
 [colors.selection]
-text = "#abb2bf"
-background = "#3e4451"
+text = "#c9cfda"
+background = "#3f4751"
 
 [colors.normal]
-black   = "#282c34"
-red     = "#e06c75"
-green   = "#98c379"
-yellow  = "#e5c07b"
-blue    = "#61afef"
-magenta = "#c678dd"
-cyan    = "#56b6c2"
-white   = "#abb2bf"
+black   = "#12161c"
+red     = "#d77c73"
+green   = "#99bc76"
+yellow  = "#d9a86c"
+blue    = "#6e99c3"
+magenta = "#b887c0"
+cyan    = "#70b6b9"
+white   = "#88929f"
 
 [colors.bright]
-black   = "#5c6370"
-red     = "#e06c75"
-green   = "#98c379"
-yellow  = "#e5c07b"
-blue    = "#61afef"
-magenta = "#c678dd"
-cyan    = "#56b6c2"
-white   = "#c8ccd4"
+black   = "#79838f"
+red     = "#df9792"
+green   = "#abcc8a"
+yellow  = "#eac390"
+blue    = "#87aed6"
+magenta = "#c99dd2"
+cyan    = "#86c8cc"
+white   = "#c9cfda"
 
 [colors.dim]
-black   = "#21252b"
-red     = "#be5046"
-green   = "#7da869"
-yellow  = "#d19a66"
-blue    = "#528bff"
-magenta = "#a678dd"
-cyan    = "#4aa5b7"
-white   = "#9aa2ad"
+black   = "#0e1116"
+red     = "#ba5e56"
+green   = "#7e9963"
+yellow  = "#b39065"
+blue    = "#5c7ea0"
+magenta = "#966f9e"
+cyan    = "#5c9599"
+white   = "#6d7681"

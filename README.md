@@ -4,14 +4,10 @@
 
 ## Screenshots
 
-![Floating windows](/.github/assets/floats.png)
-
 | | |
 |---|---|
-| ![Main menu](/.github/assets/menu-main.png) | ![Power menu](/.github/assets/menu-power.png) |
-| ![Applications menu](/.github/assets/menu-applications.png) | ![Hyprlock](/.github/assets/hyprlock.png) |
-| ![Indicators](/.github/assets/indicators.png) | ![Notifications](/.github/assets/notification.png) |
-| ![Plymouth](/.github/assets/plymouth.png) | |
+| ![Desktop](/.github/assets/desktop.png) | ![Editor](/.github/assets/editor.png) |
+| ![Hyprlock](/.github/assets/hyprlock.png) | ![Plymouth](/.github/assets/plymouth.png) |
 
 ## Installation
 
@@ -148,7 +144,6 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | Command | Description |
 |---|---|
 | `coffee-theme-background` | Set desktop wallpaper from a file path or URL |
-| `coffee-theme-refresh` | Rebuild themed configs from `palette.toml` + templates |
 
 ## Aliases
 

@@ -8,15 +8,16 @@ width=420
 
 # Styling
 font=InputMono Nerd Font 10
-background-color=#000000d0
-text-color=#cfd8dcff
-border-color=#21252b00
+background-color=#2c3540ff
+text-color=#c9cfdaff
+border-color=#4d5765ff
 border-size=1
-border-radius=4
+border-radius=0
 width=300
 padding=15
 max-icon-size=32
-outer-margin=20
+outer-margin=0
+margin=5
 
 # Formatting
 format=<b>%s</b>\n<i>%b</i>
@@ -32,5 +33,5 @@ invisible=1
 
 [urgency=critical]
 default-timeout=0
-text-color=#e06c75
+text-color=#d77c73
 #layer=overlay
