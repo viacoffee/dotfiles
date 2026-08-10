@@ -1,6 +1,11 @@
 // Laptop overrides — uncomment include in config.kdl to activate
 
 window-rule {
+  match app-id="Alacritty"
+  open-maximized-to-edges true
+}
+
+window-rule {
   match app-id="coffee.about"
   match app-id="coffee.float"
   match app-id="coffee.float-tui"
