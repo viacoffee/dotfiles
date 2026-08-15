@@ -1,8 +1,0 @@
-#!/bin/zsh
-
-# Include niri helpers
-SCRIPT_DIR="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
-source "$SCRIPT_DIR/lib/niri-helpers.sh"
-
-niri_focus_or_spawn "coffee.about" \
-  xdg-terminal-exec --app-id=coffee.about -e zsh -c 'fastfetch; read -n 1 -s'
