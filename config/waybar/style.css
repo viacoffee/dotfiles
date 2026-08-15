@@ -95,13 +95,6 @@ tooltip * {
   color: #98a2b0;
 }
 
-#custom-airplane-indicator {
-  margin: 10px 0 0 -2px;
-  font-size: 15px;
-  opacity: 0.7;
-  color: #98a2b0;
-}
-
 #custom-screenrecord-indicator {
   margin-top: 10px;
   font-size: 10px;
