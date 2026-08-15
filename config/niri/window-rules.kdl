@@ -1,9 +1,3 @@
-// Unfocused window transparency
-window-rule {
-  match is-focused=false
-  opacity 0.97
-}
-
 // For floating windows and misc system/about tuis
 window-rule {
   match app-id="coffee.about"
