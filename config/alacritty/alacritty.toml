@@ -23,7 +23,8 @@ decorations = "None"
 
 [keyboard]
 bindings = [
-  { key = "Return", mods = "Shift", chars = "\u001B\r"},
+  # CSI-u Shift+Enter, preserved through tmux
+  { key = "Return", mods = "Shift", chars = "\u001B[13;2u"},
   { key = "Insert", mods = "Shift", action = "Paste" },
   { key = "Insert", mods = "Control", action = "Copy" }
 ]
