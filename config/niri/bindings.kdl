@@ -23,7 +23,7 @@ binds {
     spawn "coffee-menu"
   }
 
-  // Open input prompt for claude haiku
+  // Open input prompt for the Hivemind
   Mod+Shift+Space { spawn "sh" "-c" "coffee-hivemind"; }
 
   // Capslock layer: Copy/Paste (terminal)
