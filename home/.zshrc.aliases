@@ -1,7 +1,6 @@
 # Stats
 alias top='btop'
 alias htop='btop'
-alias ping='prettyping --nolegend'
 
 # Vim
 alias vim='nvim'
@@ -16,7 +15,7 @@ alias lt='lsd --tree'
 # Git
 alias gs='git status'
 alias gl='git log --oneline --graph --decorate'
-alias gp='git pull'
+alias gp='git push'
 alias gd='git diff'
 alias gc='git commit'
 
@@ -26,10 +25,6 @@ alias c='clear'
 # Navigation
 alias ...='cd ../..'
 alias ....='cd ../../..'
-
-# Agents
-alias cc='claude'
-alias oc='opencode'
 
 # Quick open
 ## Firefox
