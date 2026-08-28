@@ -55,12 +55,10 @@ wget -qO- https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.
 | `Mod+Space` | Application launcher |
 | `Mod+Alt+Space` | General menu |
 | `Mod+Shift+Space` | Quick AI prompt (Claude) |
-| `Mod+V` | Clipboard history |
 | `Mod+Shift+F` | File browser (Nautilus) |
 | `Mod+Shift+T` | System monitor (btop) in floating terminal |
 | `Mod+Alt+D` | Toggle do-not-disturb |
 | `Mod+Alt+I` | Toggle idle/screen lock |
-| `Mod+Alt+N` | Notification history |
 
 ### Window Management
 
@@ -119,6 +117,9 @@ The window being recorded gets a red border. If recordings ever capture the wron
 | `XF86AudioLowerVolume` | Volume down |
 | `XF86AudioMute` | Mute/unmute output |
 | `XF86AudioMicMute` | Mute/unmute microphone |
+| `XF86AudioPlay` / `XF86AudioPause` | Play/pause media |
+| `XF86AudioNext` | Next track |
+| `XF86AudioPrev` | Previous track |
 
 ### Brightness
 
