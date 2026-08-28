@@ -7,7 +7,6 @@ window-rule {
 
 window-rule {
   match app-id="coffee.float"
-  match app-id="coffee.float-tui"
   match app-id="org.gnome.Nautilus"
   match app-id="mpv"
   match app-id="imv"
