@@ -7,7 +7,7 @@ Requisite=graphical-session.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/swayidle \
-  timeout 300 "coffee-lock-screen" \
+  timeout 300 "dot-lock-screen" \
   timeout 600 "niri msg action power-off-monitors"
 Restart=on-failure
 RestartSec=5

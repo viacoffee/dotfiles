@@ -1,0 +1,4 @@
+#!/bin/bash
+
+query=$(dot-launch-menu " Ask the hivemind…" < /dev/null)
+[[ -n "$query" ]] && dot-launch-term-float dot-hivemind-run "$query"

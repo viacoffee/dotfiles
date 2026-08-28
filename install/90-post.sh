@@ -19,7 +19,7 @@ enable_user_services \
   swaybg \
   swayidle \
   swayosd \
-  coffee-first-login
+  dot-first-login
 
 log "Creating default home directories"
 DEFAULT_DIRS=(

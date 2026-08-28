@@ -2,7 +2,7 @@
 
 set -e
 
-trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m";coffee-snapshot delete' ERR
+trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m";dot-snapshot delete' ERR
 
 confirm() {
   local prompt="$1"
@@ -25,9 +25,9 @@ if ! confirm "Continue with update?"; then
   exit 1
 fi
 
-update_log="/tmp/coffee-update.log"
+update_log="/tmp/dot-update.log"
 # Create snapshot before update
-coffee-snapshot create || [ $? -eq 127 ]
+dot-snapshot create || [ $? -eq 127 ]
 
 exec > >(tee "$update_log") 2>&1
 
@@ -64,5 +64,5 @@ fi
 echo ""
 echo ""
 if confirm "Would you like to reboot now?"; then
-  coffee-cmd-reboot
+  dot-cmd-reboot
 fi

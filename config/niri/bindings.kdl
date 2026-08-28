@@ -1,30 +1,30 @@
 // System
 binds {
   // Spawn terminal
-  Mod+Return { spawn "sh" "-c" "coffee-launch-term-cwd"; }
+  Mod+Return { spawn "sh" "-c" "dot-launch-term-cwd"; }
 
   // Lock
   Mod+Shift+q {
-    spawn "sh" "-c" "coffee-lock-screen"
+    spawn "sh" "-c" "dot-lock-screen"
   }
 
   // Power menu
   Mod+Escape {
-    spawn "sh" "-c" "coffee-menu power"
+    spawn "sh" "-c" "dot-menu power"
   }
 
   // App launcher
   Mod+Space {
-    spawn "coffee-menu-apps"
+    spawn "dot-menu-apps"
   }
 
   // General menu
   Mod+Alt+Space {
-    spawn "coffee-menu"
+    spawn "dot-menu"
   }
 
   // Open input prompt for the Hivemind
-  Mod+Shift+Space { spawn "sh" "-c" "coffee-hivemind"; }
+  Mod+Shift+Space { spawn "sh" "-c" "dot-hivemind"; }
 
   // Capslock layer: Copy/Paste (terminal)
   ISO_Level5_Shift+c { spawn "sh" "-c" "wtype -M ctrl -k Insert; sleep 0.1; content=$(xclip -selection primary -o 2>/dev/null); [ -n \"$content\" ] && echo \"$content\" | wl-copy"; }
@@ -37,17 +37,17 @@ binds {
 
   // Btop
   Mod+Shift+t {
-    spawn "sh" "-c" "coffee-launch-term-float btop"
+    spawn "sh" "-c" "dot-launch-term-float btop"
   }
 
   // DND toggle
   Mod+Alt+d {
-    spawn "sh" "-c" "coffee-toggle-dnd"
+    spawn "sh" "-c" "dot-toggle-dnd"
   }
 
   // Swayidle toggle
   Mod+Alt+i {
-    spawn "sh" "-c" "coffee-toggle-idle"
+    spawn "sh" "-c" "dot-toggle-idle"
   }
 
   // Window focus
@@ -86,7 +86,7 @@ binds {
 
   // Close all but the focused window on the focused window's workspace
   Mod+Shift+W {
-    spawn "sh" "-c" "coffee-clear-workspace --unfocused"
+    spawn "sh" "-c" "dot-clear-workspace --unfocused"
   }
 
   // Workspaces
@@ -128,12 +128,12 @@ binds {
 
   // Screen record focused window (toggle: same key stops an active recording)
   Mod+v {
-    spawn "coffee-cmd-screenrecord" "--window"
+    spawn "dot-cmd-screenrecord" "--window"
   }
 
   // Screen record entire screen (toggle)
   Mod+Shift+v {
-    spawn "coffee-cmd-screenrecord" "--monitor"
+    spawn "dot-cmd-screenrecord" "--monitor"
   }
 
   // Re-aim an in-progress recording at the focused window

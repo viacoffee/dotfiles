@@ -32,8 +32,8 @@
     "tooltip-format-disconnected": "Disconnected",
     "interval": 3,
     "spacing": 1,
-    "on-click": "coffee-launch-wifi",
-    "on-click-right": "coffee-toggle-wifi"
+    "on-click": "dot-launch-wifi",
+    "on-click-right": "dot-toggle-wifi"
   },
   "battery": {
     "format": "{capacity}% {icon}",
@@ -48,7 +48,7 @@
     "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
     "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
     "interval": 5,
-    "on-click": "coffee-menu power",
+    "on-click": "dot-menu power",
     "states": {
       "warning": 20,
       "critical": 10
@@ -60,8 +60,8 @@
     "format-connected": "",
     "format-no-controller": "",
     "tooltip-format": "Devices connected: {num_connections}",
-    "on-click": "coffee-launch-bluetooth",
-    "on-click-right": "coffee-toggle-bluetooth"
+    "on-click": "dot-launch-bluetooth",
+    "on-click-right": "dot-toggle-bluetooth"
   },
   "group/tray-expander": {
     "orientation": "inherit",
@@ -86,13 +86,13 @@
     "on-scroll-right": ""
   },
   "custom/idle-indicator": {
-    "on-click": "coffee-toggle-idle",
+    "on-click": "dot-toggle-idle",
     "exec": "$HOME/.config/waybar/indicators/idle.sh",
     "signal": 10,
     "return-type": "json"
   },
   "custom/screenrecord-indicator": {
-    "on-click": "coffee-cmd-screenrecord",
+    "on-click": "dot-cmd-screenrecord",
     "exec": "$HOME/.config/waybar/indicators/screenrecord.sh",
     "interval": 3,
     "return-type": "json"
@@ -108,7 +108,7 @@
     "interval": 3
   },
   "custom/dnd": {
-    "on-click": "coffee-toggle-dnd",
+    "on-click": "dot-toggle-dnd",
     "exec": "$HOME/.config/waybar/indicators/dnd.sh",
     "signal": 8,
     "return-type": "json"

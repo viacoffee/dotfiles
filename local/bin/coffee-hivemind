@@ -1,4 +1,0 @@
-#!/bin/bash
-
-query=$(coffee-launch-menu " Ask the hivemind…" < /dev/null)
-[[ -n "$query" ]] && coffee-launch-term-float coffee-hivemind-run "$query"

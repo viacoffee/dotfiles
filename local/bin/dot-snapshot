@@ -4,7 +4,7 @@ set -euo pipefail
 COMMAND="${1:-}"
 
 if [[ -z $COMMAND ]]; then
-  echo "Usage: coffee-snapshot <create|restore|delete>" >&2
+  echo "Usage: dot-snapshot <create|restore|delete>" >&2
   exit 1
 fi
 

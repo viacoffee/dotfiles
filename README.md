@@ -140,7 +140,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 
 | Command | Description |
 |---|---|
-| `coffee-theme-background` | Set desktop wallpaper from a file path or URL |
+| `dot-theme-background` | Set desktop wallpaper from a file path or URL |
 
 ## Aliases
 

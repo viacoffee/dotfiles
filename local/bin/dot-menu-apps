@@ -19,7 +19,7 @@ for d in "${dirs[@]}"; do
   done
 done
 
-choice=$(printf '%s\n' "${!APPS[@]}" | sort | coffee-launch-menu "")
+choice=$(printf '%s\n' "${!APPS[@]}" | sort | dot-launch-menu "")
 [[ -n $choice ]] || exit 0
 
 # Strip freedesktop field codes (%f %U %i …) and launch detached via uwsm.

@@ -30,6 +30,6 @@ log "stowing local"
 stow --no-folding -t "$USER_HOME/.local" local
 
 log "Generating themed configs"
-"$USER_HOME/.local/bin/coffee-theme-refresh"
+"$USER_HOME/.local/bin/dot-theme-refresh"
 
 success "Dotfiles stowed"

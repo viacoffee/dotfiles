@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# coffee-theme-background — Set desktop wallpaper from a URL or file path
+# dot-theme-background — Set desktop wallpaper from a URL or file path
 #
 # Usage:
-#   coffee-theme-background <url-or-path>
+#   dot-theme-background <url-or-path>
 #
 # Copies or downloads the image to ~/background.jpg (always .jpg),
 # then restarts swaybg. Hyprlock picks it up automatically on next lock.
@@ -13,7 +13,7 @@ set -euo pipefail
 TARGET="$HOME/background.jpg"
 
 usage() {
-  echo "Usage: coffee-theme-background <url-or-path>"
+  echo "Usage: dot-theme-background <url-or-path>"
   echo "  Sets the desktop wallpaper from a URL or local file."
   exit 1
 }

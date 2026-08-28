@@ -5,7 +5,7 @@ ConditionPathExists=%h/.first-login
 
 [Service]
 Type=oneshot
-ExecStart=%h/.local/bin/coffee-first-login
+ExecStart=%h/.local/bin/dot-first-login
 RemainAfterExit=yes
 
 [Install]
