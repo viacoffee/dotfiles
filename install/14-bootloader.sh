@@ -19,7 +19,7 @@ fi
 # Step 1: Extract existing kernel command line from bootloader config
 log "Extracting kernel command line from existing bootloader config..."
 
-sudo tee /etc/mkinitcpio.conf.d/coffee_hooks.conf <<EOF >/dev/null
+sudo tee /etc/mkinitcpio.conf.d/dot_hooks.conf <<EOF >/dev/null
 HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap block encrypt filesystems btrfs-overlayfs)
 EOF
 
@@ -102,11 +102,11 @@ sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/modprobe/nowatchdog.conf" /etc/modprobe
 
 log "Checking plymouth theme configuration..."
 run_logged "Copying plymouth theme" \
-  sudo cp -r "$DOTFILES_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
+  sudo cp -r "$DOTFILES_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/dot/
 
-if [[ "$(plymouth-set-default-theme)" != "coffee" ]]; then
+if [[ "$(plymouth-set-default-theme)" != "dot" ]]; then
   run_logged "Setting default theme" \
-    sudo plymouth-set-default-theme coffee
+    sudo plymouth-set-default-theme dot
 fi
 success "Plymouth theme configuration is set"
 

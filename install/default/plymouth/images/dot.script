@@ -1,5 +1,5 @@
-# Coffee Plymouth theme — Arch logo, LUKS password dialog, progress bar
-# Colors: coffee palette (static, no template generation)
+# Dot Plymouth theme — Arch logo, LUKS password dialog, progress bar
+# Colors: dot palette (static, no template generation)
 
 # Background: solid #1e2229
 Window.SetBackgroundTopColor(0.118, 0.133, 0.161);
