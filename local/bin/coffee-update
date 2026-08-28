@@ -2,27 +2,25 @@
 
 set -e
 
-# Include helpers for uniformed gum functions
-SCRIPT_DIR="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
-source "$SCRIPT_DIR/lib/helpers.sh"
-
-# Theme colors (formerly from theme/colors.sh)
-SURFACE="#4d5765"
-FG_ACCENT="#c9cfda"
-BG_ALT="#1b212a"
-ACCENT="#d9a86c"
-
 trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m";coffee-snapshot delete' ERR
 
-gum style --border rounded --border-foreground="$SURFACE" --padding "1 2" \
-  "Ready to update?" \
-  "" \
-  "• You cannot stop the update once you start!" \
-  "• Make sure you're connected to power or have a full battery" \
+confirm() {
+  local prompt="$1"
+  local answer
+
+  read -r -p "$prompt [y/N] " answer
+  [[ "$answer" =~ ^[Yy]([Ee][Ss])?$ ]]
+}
+
+cat <<'EOF'
+Ready to update?
+
+• You cannot stop the update once you start.
+• Make sure you're connected to power or have a full battery.
+EOF
 
 echo
-
-if ! gum confirm --prompt.foreground="$FG_ACCENT" --unselected.background="" --selected.foreground="$BG_ALT" --selected.background="$ACCENT" "Continue with update?"; then
+if ! confirm "Continue with update?"; then
   echo "Update cancelled"
   exit 1
 fi
@@ -65,4 +63,6 @@ fi
 
 echo ""
 echo ""
-gum confirm --prompt.foreground="$FG_ACCENT" --unselected.background="" --selected.foreground="$BG_ALT" --selected.background="$ACCENT" "Would you like to reboot now?" && coffee-cmd-reboot
+if confirm "Would you like to reboot now?"; then
+  coffee-cmd-reboot
+fi
