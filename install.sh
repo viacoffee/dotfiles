@@ -83,7 +83,7 @@ run_phase "00-preflight.sh"
 echo ""
 success "Preflight checks completed"
 
-# System phase - verify and install required base packages
+# System phase - install required packages
 section "System management"
 run_phase "10-system.sh"
 run_phase "11-user.sh"

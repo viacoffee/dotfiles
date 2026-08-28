@@ -1,6 +1,6 @@
 #!/bin/bash
 
-log "Update system, and verify/install base packages..."
+log "Updating system and installing required packages..."
 
 # Update our pacman.conf
 PACMAN_CONF="/etc/pacman.conf"
@@ -18,20 +18,19 @@ fi
 # Update system
 log "Updating system..."
 if ! sudo pacman -Syu --noconfirm; then
-  error "Failed to update base packages"
+  error "Failed to update system"
   return 1
 fi
 
-# Install required base packages
-log "Getting list of required base packages..."
-if [[ ! -f "$COFFEE_INSTALL/base.packages" ]]; then
-  error "Package list not found: $COFFEE_INSTALL/base.packages"
+# Install required packages
+log "Getting list of required packages..."
+if [[ ! -f "$COFFEE_INSTALL/packages" ]]; then
+  error "Package list not found: $COFFEE_INSTALL/packages"
   return 1
 fi
 
-# Array to track packages that need installation
-declare -a base_packages=()
-mapfile -t base_packages < <(
-  grep -Ev '^(#|$)' "$COFFEE_INSTALL/base.packages" || true
+declare -a required_packages=()
+mapfile -t required_packages < <(
+  grep -Ev '^(#|$)' "$COFFEE_INSTALL/packages" || true
 )
-install_missing_packages "${base_packages[@]}"
+install_missing_packages "${required_packages[@]}"

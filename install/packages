@@ -11,8 +11,12 @@ clang
 cliphist
 cryptsetup
 curl
+docker
+docker-buildx
+docker-compose
 dust
 fastfetch
+firefox
 fzf
 git
 glib2
@@ -46,11 +50,11 @@ playerctl
 plymouth
 polkit-gnome
 power-profiles-daemon
-prettyping
 python-gobject
 qt5-wayland
 qt6-wayland
 ripgrep
+rust
 slurp
 snapper
 starship
