@@ -1,6 +1,6 @@
 # :rocket: dotfiles
 
-> **Disclaimer:** This is very much a "works for me" project. It's opinionated, occasionally held together with duct tape, and makes no guarantees about working on your machine. Use at your own risk — and if you build something cool with it, let me know!
+> **Disclaimer:** This is very much a "works for me" project. It's opinionated, occasionally held together with duct tape, and makes no guarantees about working on your machine. Use at your own risk!
 
 ## Screenshots
 
@@ -11,7 +11,7 @@
 
 ## Installation
 
-This is an Arch Linux setup. The initial system is bootstrapped with [archinstall](https://wiki.archlinux.org/title/Archinstall), then the dotfiles `install.sh` handles the rest.
+This is an Arch Linux setup. Start with [archinstall](https://wiki.archlinux.org/title/Archinstall), then run the bootstrap command below after the first reboot. It installs Git when needed, clones this repository, and starts `install.sh` after confirmation.
 
 ### Initial setup (archinstall)
 
@@ -27,22 +27,19 @@ After archinstall finishes and the system reboots, log in and continue below.
 
 ### Post-reboot
 
-1. **Install git and a downloader**:
+Run the bootstrap script:
 
-   ```bash
-   sudo pacman -S --noconfirm git curl
-   ```
+```bash
+wget -qO- https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh | bash
+```
 
-2. **Run the bootstrap script**:
+The script clones the repository to `~/dotfiles`, shows a warning before making system changes, and then runs the installer.
 
-   ```bash
-   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh)
-   ```
+To install a specific branch:
 
-   To install a specific branch, pass `-b`:
-   ```bash
-   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh) -b back_to_arch
-   ```
+```bash
+wget -qO- https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh | bash -s -- -b back_to_arch
+```
 
 ## Keyboard Shortcuts
 
@@ -150,7 +147,6 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | Alias | Expands to |
 |---|---|
 | `top`, `htop` | `btop` |
-| `ping` | `prettyping --nolegend` |
 | `vim` | `nvim` |
 | `l` | `lsd -a1` |
 | `la` | `lsd -la` |
@@ -159,14 +155,12 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | `lt` | `lsd --tree` |
 | `gs` | `git status` |
 | `gl` | `git log --oneline --graph --decorate` |
-| `gp` | `git pull` |
+| `gp` | `git push` |
 | `gd` | `git diff` |
 | `gc` | `git commit` |
 | `c` | `clear` |
 | `...` | `cd ../..` |
 | `....` | `cd ../../..` |
-| `cc` | `claude` |
-| `oc` | `opencode` |
 
 ## Stack
 
@@ -177,7 +171,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | **Login manager** | [greetd](https://sr.ht/~kennylevinsen/greetd/) |
 | **Terminal** | [Alacritty](https://alacritty.org/) |
 | **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) prompt |
-| **Editor** | [Neovim](https://neovim.io/) via [NvChad](https://nvchad.com/) (lazy.nvim, nvim-lspconfig, nvim-treesitter, conform.nvim) |
+| **Editor** | [Neovim](https://neovim.io/) ([configuration](https://github.com/viacoffee/nvim)) |
 | **Bar** | [Waybar](https://github.com/Alexays/Waybar) |
 | **Launcher** | [bemenu](https://github.com/Cloudef/bemenu) |
 | **Notifications** | [mako](https://github.com/emersion/mako) |
