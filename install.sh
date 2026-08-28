@@ -2,32 +2,32 @@
 
 set -eEuo pipefail
 
-if [[ -z "${COFFEE_PATH:-}" ]]; then
-  export COFFEE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -z "${DOTFILES_PATH:-}" ]]; then
+  export DOTFILES_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
-if [[ "$(pwd)" != "$COFFEE_PATH" ]]; then
-  echo "Error: install.sh must be run from the dotfiles root ($COFFEE_PATH)"
+if [[ "$(pwd)" != "$DOTFILES_PATH" ]]; then
+  echo "Error: install.sh must be run from the dotfiles root ($DOTFILES_PATH)"
   exit 1
 fi
 
-if [[ -z "${COFFEE_INSTALL:-}" ]]; then
-  export COFFEE_INSTALL="$COFFEE_PATH/install"
+if [[ -z "${DOTFILES_INSTALL:-}" ]]; then
+  export DOTFILES_INSTALL="$DOTFILES_PATH/install"
 fi
 
-export COFFEE_INSTALL_DEFAULTS_PATH="$COFFEE_INSTALL/default"
-export COFFEE_INSTALL_LOG_FILE="${COFFEE_INSTALL_LOG_FILE:-$HOME/.local/state/coffee/install.log}"
+export DOTFILES_INSTALL_DEFAULTS_PATH="$DOTFILES_INSTALL/default"
+export DOTFILES_INSTALL_LOG_FILE="${DOTFILES_INSTALL_LOG_FILE:-$HOME/.local/state/dotfiles/install.log}"
 
 # Ensure log file exists
-mkdir -p "$(dirname "$COFFEE_INSTALL_LOG_FILE")" 2>/dev/null || true
-touch "$COFFEE_INSTALL_LOG_FILE"
+mkdir -p "$(dirname "$DOTFILES_INSTALL_LOG_FILE")" 2>/dev/null || true
+touch "$DOTFILES_INSTALL_LOG_FILE"
 
 # Source helper functions FIRST (before any function calls)
-if [[ ! -f "$COFFEE_INSTALL/lib/helpers.sh" ]]; then
-  echo "Error: Helper functions not found at $COFFEE_INSTALL/lib/helpers.sh"
+if [[ ! -f "$DOTFILES_INSTALL/lib/helpers.sh" ]]; then
+  echo "Error: Helper functions not found at $DOTFILES_INSTALL/lib/helpers.sh"
   exit 1
 fi
-source "$COFFEE_INSTALL/lib/helpers.sh"
+source "$DOTFILES_INSTALL/lib/helpers.sh"
 
 # Restore mkinitcpio hooks if install fails between preflight and bootloader phases
 _restore_mkinitcpio_hooks() {
@@ -42,7 +42,7 @@ trap _restore_mkinitcpio_hooks EXIT
 
 # Source a numbered install phase script or exit
 run_phase() {
-  local script="$COFFEE_INSTALL/$1"
+  local script="$DOTFILES_INSTALL/$1"
   local title="${2:-$1}"
   if [[ ! -f "$script" ]]; then
     error "Phase script not found: $script"
@@ -68,14 +68,14 @@ cat <<'EOF'
 
 EOF
 
-info "Installing system from: $COFFEE_PATH"
-important "Logfile: $COFFEE_INSTALL_LOG_FILE"
+info "Installing system from: $DOTFILES_PATH"
+important "Logfile: $DOTFILES_INSTALL_LOG_FILE"
 log <<EOF
 Vars log:
-  + COFFEE_PATH=$COFFEE_PATH
-  + COFFEE_INSTALL=$COFFEE_INSTALL 
-  + COFFEE_INSTALL_LOG_FILE=$COFFEE_INSTALL_LOG_FILE
-  + COFFEE_INSTALL_DEFAULTS_PATH=$COFFEE_INSTALL_DEFAULTS_PATH
+  + DOTFILES_PATH=$DOTFILES_PATH
+  + DOTFILES_INSTALL=$DOTFILES_INSTALL
+  + DOTFILES_INSTALL_LOG_FILE=$DOTFILES_INSTALL_LOG_FILE
+  + DOTFILES_INSTALL_DEFAULTS_PATH=$DOTFILES_INSTALL_DEFAULTS_PATH
 EOF
 log "Installation started at: $(date '+%Y-%m-%d %H:%M:%S')"
 
@@ -89,14 +89,14 @@ section "System management"
 run_phase "10-system.sh" "Packages and repositories"
 run_phase "11-user.sh" "User account"
 
-# Log vars after user phase adds COFFEE_DEFAULT_USER
+# Log vars after user phase adds DOTFILES_DEFAULT_USER
 log <<EOF
 Vars log:
-    COFFEE_PATH=$COFFEE_PATH
-    COFFEE_INSTALL=$COFFEE_INSTALL 
-    COFFEE_INSTALL_LOG_FILE=$COFFEE_INSTALL_LOG_FILE
-    COFFEE_INSTALL_DEFAULTS_PATH=$COFFEE_INSTALL_DEFAULTS_PATH
-  + COFFEE_DEFAULT_USER=${COFFEE_DEFAULT_USER:-}
+    DOTFILES_PATH=$DOTFILES_PATH
+    DOTFILES_INSTALL=$DOTFILES_INSTALL
+    DOTFILES_INSTALL_LOG_FILE=$DOTFILES_INSTALL_LOG_FILE
+    DOTFILES_INSTALL_DEFAULTS_PATH=$DOTFILES_INSTALL_DEFAULTS_PATH
+  + DOTFILES_DEFAULT_USER=${DOTFILES_DEFAULT_USER:-}
 EOF
 
 run_phase "12-nvidia.sh" "NVIDIA drivers"
@@ -116,4 +116,4 @@ run_phase "92-firewall.sh" "Firewall"
 
 success "Installation completed"
 info "Reboot to start the configured desktop session."
-info "Installation log: $COFFEE_INSTALL_LOG_FILE"
+info "Installation log: $DOTFILES_INSTALL_LOG_FILE"

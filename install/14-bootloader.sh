@@ -59,7 +59,7 @@ fi
 log "Limine cmdline: $CMDLINE"
 
 CMDLINE_ESCAPED=$(printf '%s\n' "$CMDLINE" | sed 's/[&\\]/\\&/g')
-sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/limine/default.conf" /etc/default/limine
+sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/limine/default.conf" /etc/default/limine
 sudo sed -i "s|@@CMDLINE@@|$CMDLINE_ESCAPED|g" /etc/default/limine
 
 # Remove the original config file if it's not /boot/limine.conf
@@ -68,7 +68,7 @@ if [[ "$limine_config" != "/boot/limine.conf" ]] && [[ -f "$limine_config" ]]; t
 fi
 
 # We overwrite the whole thing knowing the limine-update will add the entries for us
-sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/limine/limine.conf" /boot/limine.conf
+sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/limine/limine.conf" /boot/limine.conf
 
 # Match Snapper configs
 if ! sudo snapper list-configs 2>/dev/null | grep -q "root"; then
@@ -98,11 +98,11 @@ sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,h
 # Blacklist hardware watchdog modules (desktop, not needed)
 log "Blacklisting hardware watchdog modules..."
 sudo mkdir -p /etc/modprobe.d
-sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/modprobe/nowatchdog.conf" /etc/modprobe.d/nowatchdog.conf
+sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/modprobe/nowatchdog.conf" /etc/modprobe.d/nowatchdog.conf
 
 log "Checking plymouth theme configuration..."
 run_logged "Copying plymouth theme" \
-  sudo cp -r "$COFFEE_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
+  sudo cp -r "$DOTFILES_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/coffee/
 
 if [[ "$(plymouth-set-default-theme)" != "coffee" ]]; then
   run_logged "Setting default theme" \

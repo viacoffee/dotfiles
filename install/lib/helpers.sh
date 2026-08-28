@@ -37,7 +37,7 @@ _log() {
   fi
 
   printf '[%s] %s\n' "$(date '+%F %T')" "$message" \
-    >> "$COFFEE_INSTALL_LOG_FILE"
+    >> "$DOTFILES_INSTALL_LOG_FILE"
 }
 
 log() { _log "" "" "$@"; }
@@ -55,7 +55,7 @@ run_logged() {
 
   log "$description"
 
-  if "$@" 2>&1 | tee -a "$COFFEE_INSTALL_LOG_FILE"; then
+  if "$@" 2>&1 | tee -a "$DOTFILES_INSTALL_LOG_FILE"; then
     success "$description completed"
     return 0
   else

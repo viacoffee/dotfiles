@@ -28,7 +28,7 @@ if [[ "$LOGIN_USER" = "root" ]]; then
 fi
 
 # Export the username for use in subsequent scripts
-export COFFEE_DEFAULT_USER="$LOGIN_USER"
+export DOTFILES_DEFAULT_USER="$LOGIN_USER"
 
 success "User verification completed"
-log "Default login user: $COFFEE_DEFAULT_USER"
+log "Default login user: $DOTFILES_DEFAULT_USER"

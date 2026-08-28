@@ -9,8 +9,8 @@ if ! grep -q "omarchy" "$PACMAN_CONF"; then
   run_logged "Creating pacman.conf backup: $PACMAN_CONF.bak" \
     sudo mv "$PACMAN_CONF" "$PACMAN_CONF.bak"
 
-  run_logged "Copying from: $COFFEE_INSTALL_DEFAULTS_PATH/pacman/pacman.conf to: $PACMAN_CONF" \
-    sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/pacman/pacman.conf" "$PACMAN_CONF"
+  run_logged "Copying from: $DOTFILES_INSTALL_DEFAULTS_PATH/pacman/pacman.conf to: $PACMAN_CONF" \
+    sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/pacman/pacman.conf" "$PACMAN_CONF"
 else
   log "omarchy found in $PACMAN_CONF"
 fi
@@ -24,13 +24,13 @@ fi
 
 # Install required packages
 log "Getting list of required packages..."
-if [[ ! -f "$COFFEE_INSTALL/packages" ]]; then
-  error "Package list not found: $COFFEE_INSTALL/packages"
+if [[ ! -f "$DOTFILES_INSTALL/packages" ]]; then
+  error "Package list not found: $DOTFILES_INSTALL/packages"
   return 1
 fi
 
 declare -a required_packages=()
 mapfile -t required_packages < <(
-  grep -Ev '^(#|$)' "$COFFEE_INSTALL/packages" || true
+  grep -Ev '^(#|$)' "$DOTFILES_INSTALL/packages" || true
 )
 install_missing_packages "${required_packages[@]}"

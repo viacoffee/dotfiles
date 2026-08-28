@@ -42,5 +42,5 @@ tldr --update || true
 
 # Set shell
 log "Changing default shell..."
-sudo usermod -s /bin/zsh "$COFFEE_DEFAULT_USER"
+sudo usermod -s /bin/zsh "$DOTFILES_DEFAULT_USER"
 success "Post-install user setup complete"

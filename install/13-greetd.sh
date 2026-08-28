@@ -17,16 +17,16 @@ source_profile = true
 
 [initial_session]
 command = "uwsm start niri-session"
-user = "$COFFEE_DEFAULT_USER"
+user = "$DOTFILES_DEFAULT_USER"
 
 [default_session]
 command = "/bin/sh"
-user = "$COFFEE_DEFAULT_USER"
+user = "$DOTFILES_DEFAULT_USER"
 EOF
 
 # Prevent niri.service from auto-starting via default.target (uwsm manages it)
-run_logged "Disable niri.service user unit" sudo -u "$COFFEE_DEFAULT_USER" \
+run_logged "Disable niri.service user unit" sudo -u "$DOTFILES_DEFAULT_USER" \
   systemctl --user disable niri.service || true
 
 success "greetd configuration complete"
-log "Auto-login user: $COFFEE_DEFAULT_USER"
+log "Auto-login user: $DOTFILES_DEFAULT_USER"

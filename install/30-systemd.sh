@@ -21,11 +21,11 @@ fi
 
 # Use iwd's built-in DHCP client for WiFi
 sudo mkdir -p /etc/iwd
-sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/iwd/main.conf" /etc/iwd/main.conf
+sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/iwd/main.conf" /etc/iwd/main.conf
 
 # Keep systemd-networkd for ethernet only — mask WiFi/WWAN .network files
 # so networkd doesn't compete with iwd for DHCP on wireless interfaces
-sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/networkd/20-ethernet.network" /etc/systemd/network/20-ethernet.network
+sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/networkd/20-ethernet.network" /etc/systemd/network/20-ethernet.network
 for net in 20-wlan.network 20-wwan.network; do
   if [[ -f "/etc/systemd/network/$net" ]] && [[ ! -L "/etc/systemd/network/$net" ]]; then
     sudo ln -sf /dev/null "/etc/systemd/network/$net"
@@ -51,7 +51,7 @@ fi
 
 # IP forwarding for Docker
 sudo mkdir -p /etc/sysctl.d
-sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/sysctl/99-docker.conf" /etc/sysctl.d/99-docker.conf
+sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/sysctl/99-docker.conf" /etc/sysctl.d/99-docker.conf
 
 # Disable NVIDIA suspend/hibernate services
 # NOTE-david possibly revisit this after laptop testing
@@ -88,7 +88,7 @@ fi
 
 # Faster shutdown
 sudo mkdir -p "/etc/systemd/system.conf.d"
-sudo cp "$COFFEE_INSTALL_DEFAULTS_PATH/systemd/faster-shutdown.conf" /etc/systemd/system.conf.d/10-faster-shutdown.conf
+sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/systemd/faster-shutdown.conf" /etc/systemd/system.conf.d/10-faster-shutdown.conf
 
 # Ensure .local/bin gets added to the environment path
 path_conf="$HOME/.config/environment.d/10-path.conf"
