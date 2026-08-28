@@ -85,6 +85,7 @@ section() {
   printf '%b\n' "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
   printf '%b\n' "${BLUE}${NC} $title"
   printf '%b\n' "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  log "Starting: $title"
   echo ""
 }
 
@@ -117,24 +118,22 @@ install_missing_packages() {
   local packages=("$@")
   local missing=()
 
-  log "Checking which packages need to be installed..."
+  info "Checking ${#packages[@]} required packages..."
 
   for pkg in "${packages[@]}"; do
     if ! package_installed "$pkg"; then
       missing+=("$pkg")
-      warn "Missing: $pkg"
     fi
   done
 
   if (( ${#missing[@]} > 0 )); then
+    info "Installing ${#missing[@]} missing package(s): ${missing[*]}"
     log "Installing missing packages..."
 
     run_logged "Installing missing packages: ${missing[*]}" \
       sudo pacman -S --noconfirm --needed "${missing[@]}"
 
-    success "Package installation completed"
-
-    log "Verifying all packages again..."
+    info "Verifying installed packages..."
     local verify_failed=0
     for pkg in "${packages[@]}"; do
       if ! package_installed "$pkg"; then
@@ -147,5 +146,8 @@ install_missing_packages() {
     fi
   fi
 
-  success "All packages installed and verified"
+  if (( ${#missing[@]} == 0 )); then
+    info "All required packages were already installed."
+  fi
+  success "Required packages are installed and verified"
 }

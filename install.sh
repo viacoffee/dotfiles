@@ -16,7 +16,7 @@ if [[ -z "${COFFEE_INSTALL:-}" ]]; then
 fi
 
 export COFFEE_INSTALL_DEFAULTS_PATH="$COFFEE_INSTALL/default"
-export COFFEE_INSTALL_LOG_FILE="${COFFEE_INSTALL_LOG_FILE:-~/.local/state/coffee/install.log}"
+export COFFEE_INSTALL_LOG_FILE="${COFFEE_INSTALL_LOG_FILE:-$HOME/.local/state/coffee/install.log}"
 
 # Ensure log file exists
 mkdir -p "$(dirname "$COFFEE_INSTALL_LOG_FILE")" 2>/dev/null || true
@@ -43,11 +43,15 @@ trap _restore_mkinitcpio_hooks EXIT
 # Source a numbered install phase script or exit
 run_phase() {
   local script="$COFFEE_INSTALL/$1"
+  local title="${2:-$1}"
   if [[ ! -f "$script" ]]; then
-    error "$1 not found"
+    error "Phase script not found: $script"
     exit 1
   fi
+  section "$title"
+  info "Running $1"
   source "$script"
+  success "$title complete"
 }
 
 section "https://github.com/viacoffee/dotfiles"
@@ -78,15 +82,12 @@ log "Installation started at: $(date '+%Y-%m-%d %H:%M:%S')"
 echo ""
 log "Starting installation phases..."
 
-section "Preflight checks"
-run_phase "00-preflight.sh"
-echo ""
-success "Preflight checks completed"
+run_phase "00-preflight.sh" "Preflight checks"
 
 # System phase - install required packages
 section "System management"
-run_phase "10-system.sh"
-run_phase "11-user.sh"
+run_phase "10-system.sh" "Packages and repositories"
+run_phase "11-user.sh" "User account"
 
 # Log vars after user phase adds COFFEE_DEFAULT_USER
 log <<EOF
@@ -98,45 +99,21 @@ Vars log:
   + COFFEE_DEFAULT_USER=${COFFEE_DEFAULT_USER:-}
 EOF
 
-run_phase "12-nvidia.sh"
-run_phase "13-greetd.sh"
-run_phase "14-bootloader.sh"
-echo ""
-success "System management phase complete"
+run_phase "12-nvidia.sh" "NVIDIA drivers"
+run_phase "13-greetd.sh" "Display manager"
+run_phase "14-bootloader.sh" "Bootloader and boot process"
+success "System management complete"
 
 # Dotfiles phase - stowing dotfiles
-section "Dotfiles"
-run_phase "20-dotfiles.sh"
-echo ""
-success "Dotfiles phase complete"
+run_phase "20-dotfiles.sh" "Dotfiles"
 
 # Systemd phase - starting systemd services
-section "Systemd"
-run_phase "30-systemd.sh"
+run_phase "30-systemd.sh" "System services"
 
-# Post-installation
-section "Post-installation"
-run_phase "90-post.sh"
-echo ""
-run_phase "91-mimes.sh"
-run_phase "92-firewall.sh"
-echo ""
-success "Post-installation phase complete"
+run_phase "90-post.sh" "User services and directories"
+run_phase "91-mimes.sh" "Desktop defaults"
+run_phase "92-firewall.sh" "Firewall"
 
-important "Installation completed at: $(date '+%Y-%m-%d %H:%M:%S')"
-
-section "Overview"
-cat <<EOF
-  ✓ Bootloader (Limine) verified
-  ✓ Boot splash (Plymouth) configured
-  ✓ Snapshot management (Snapper) verified
-  ✓ Display manager (greetd) configured with autologin
-  ✓ Niri session configured
-  ✓ Dotfiles stowed
-
-Next Steps:
-  1. Reboot
-
-For more details, see:
-  - Logs: $COFFEE_INSTALL_LOG_FILE
-EOF
+success "Installation completed"
+info "Reboot to start the configured desktop session."
+info "Installation log: $COFFEE_INSTALL_LOG_FILE"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+info "Configuring UFW: deny unsolicited incoming traffic and allow outgoing traffic..."
+
 # Allow nothing in, everything out
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
@@ -19,8 +21,11 @@ sudo systemctl enable ufw
 
 # Turn on Docker protections
 if command_exists ufw-docker; then
+  info "Enabling Docker firewall protections..."
   sudo ufw-docker install
   sudo ufw reload
 else
-  warn "ufw-docker not found, skipping Docker firewall protections"
+  warn "ufw-docker not found; Docker firewall protections were skipped"
 fi
+
+success "Firewall configured and enabled"

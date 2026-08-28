@@ -1,5 +1,7 @@
 #!/bin/bash
 
+info "Configuring networking, system services, and user PATH..."
+
 # Bluetooth
 if ! systemctl is-enabled --quiet bluetooth.service; then
   run_logged "Enable bluetooth service" \
@@ -95,5 +97,6 @@ if [[ ! -f "$path_conf" ]] || ! grep -q '.local/bin' "$path_conf"; then
   echo 'PATH=$HOME/.local/bin:$PATH' >> "$path_conf"
 fi
 
-run_logged "Reloading daemon" \
+run_logged "Reloading systemd manager" \
   sudo systemctl daemon-reload
+success "System services configured"

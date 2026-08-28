@@ -54,11 +54,17 @@ EOF
 
 echo "https://github.com/viacoffee/dotfiles"
 echo ""
+echo "Bootstrap will clone the dotfiles and start the Arch installation."
+echo "Target directory: $CLONE_DIR"
+[[ -n "$BRANCH" ]] && echo "Requested branch: $BRANCH"
+echo ""
 
 # ensure git is available
 if ! command -v git &>/dev/null; then
-  echo "git is not installed, attempting to install via pacman..."
+  echo "[1/3] Git is not installed; installing it with pacman..."
   sudo pacman -S --noconfirm git
+else
+  echo "[1/3] Git is available."
 fi
 
 # guard against clobbering an existing clone
@@ -76,9 +82,10 @@ else
   echo "Cloning default branch"
 fi
 
+echo "[2/3] Cloning repository..."
 git clone "${clone_args[@]}" "$REPO_URL" "$CLONE_DIR"
-echo ""
 echo "Repository cloned to $CLONE_DIR"
+echo ""
 
 # confirm before install
 echo ""
@@ -91,7 +98,8 @@ EOF
 printf '\033[0m'
 echo ""
 
-read -rp "Continue with installation? [y/N] " answer
+printf 'This will make system-wide changes and may take some time.\n'
+read -rp "[3/3] Start the installation now? [y/N] " answer
 if [[ ! "$answer" =~ ^[Yy]$ ]]; then
   echo "Aborted. You can run it later with: bash $CLONE_DIR/install.sh"
   exit 0
@@ -102,4 +110,5 @@ if ! cd "$CLONE_DIR"; then
   exit 1
 fi
 
+echo "Starting installer..."
 exec bash install.sh
