@@ -183,7 +183,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | **Idle management** | [swayidle](https://github.com/swaywm/swayidle) |
 | **OSD overlays** | [swayosd](https://github.com/ErikReider/SwayOSD) |
 | **Boot splash** | [plymouth](https://gitlab.freedesktop.org/plymouth/plymouth) |
-| **Clipboard** | [cliphist](https://github.com/sentriz/cliphist) + wl-clipboard |
+| **Clipboard** | wl-clipboard |
 | **Screenshots** | [grim](https://sr.ht/~emersion/grim/) + [slurp](https://github.com/emersion/slurp) |
 | **Screen recording** | [gpu-screen-recorder](https://git.dec05eba.com/gpu-screen-recorder/) |
 | **File manager** | [Nautilus](https://apps.gnome.org/Nautilus/) |
