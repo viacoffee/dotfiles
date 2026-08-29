@@ -13,13 +13,11 @@ curl
 docker
 docker-buildx
 docker-compose
-dust
 fastfetch
 firefox
 fzf
 git
 glib2
-glow
 gnome-themes-extra
 gpu-screen-recorder
 greetd
@@ -53,7 +51,6 @@ python-gobject
 qt5-wayland
 qt6-wayland
 ripgrep
-rust
 slurp
 snapper
 starship
