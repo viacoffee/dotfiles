@@ -99,7 +99,12 @@ printf '\033[0m'
 echo ""
 
 printf 'This will make system-wide changes and may take some time.\n'
-read -rp "[3/3] Start the installation now? [y/N] " answer
+answer=""
+if [[ -r /dev/tty ]]; then
+  read -rp "[3/3] Start the installation now? [y/N] " answer </dev/tty || true
+else
+  read -rp "[3/3] Start the installation now? [y/N] " answer || true
+fi
 if [[ ! "$answer" =~ ^[Yy]$ ]]; then
   echo "Aborted. You can run it later with: bash $CLONE_DIR/install.sh"
   exit 0
