@@ -62,6 +62,14 @@ if [[ -z "$CMDLINE" ]]; then
 fi
 log "Limine cmdline: $CMDLINE"
 
+# The managed arguments are appended by the template below. Remove existing
+# occurrences first so repeated installer runs do not grow the command line.
+for managed_arg in quiet splash nowatchdog plymouth.ignore-serial-consoles; do
+  escaped_arg=$(printf '%s\n' "$managed_arg" | sed 's/[][\\/.^$*+?{}()|]/\\&/g')
+  CMDLINE=$(printf '%s\n' "$CMDLINE" | sed -E \
+    "s/(^|[[:space:]])${escaped_arg}([[:space:]]|$)/\\1\\2/g; s/[[:space:]]+/ /g; s/^ //; s/ $//")
+done
+
 CMDLINE_ESCAPED=$(printf '%s\n' "$CMDLINE" | sed 's/[&\\]/\\&/g')
 sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/limine/default.conf" /etc/default/limine
 sudo sed -i "s|@@CMDLINE@@|$CMDLINE_ESCAPED|g" /etc/default/limine
@@ -105,8 +113,15 @@ sudo mkdir -p /etc/modprobe.d
 sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/modprobe/nowatchdog.conf" /etc/modprobe.d/nowatchdog.conf
 
 log "Checking plymouth theme configuration..."
-run_logged "Copying plymouth theme" \
-  sudo cp -r "$DOTFILES_INSTALL_DEFAULTS_PATH/plymouth" /usr/share/plymouth/themes/dot/
+plymouth_theme_dir=/usr/share/plymouth/themes/dot
+if sudo test -d "$plymouth_theme_dir/plymouth"; then
+  run_logged "Removing nested Plymouth theme directory" \
+    sudo rm -rf "$plymouth_theme_dir/plymouth"
+fi
+run_logged "Creating Plymouth theme directory" \
+  sudo install -d "$plymouth_theme_dir"
+run_logged "Copying Plymouth theme contents" \
+  sudo cp -a "$DOTFILES_INSTALL_DEFAULTS_PATH/plymouth/." "$plymouth_theme_dir/"
 
 if [[ "$(plymouth-set-default-theme)" != "dot" ]]; then
   run_logged "Setting default theme" \
