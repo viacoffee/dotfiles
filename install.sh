@@ -111,11 +111,11 @@ echo ""
 log "Starting installation phases..."
 
 run_phase "00-preflight.sh" "Preflight checks"
+readonly DOTFILES_DEFAULT_USER DOTFILES_DEFAULT_UID DOTFILES_USER_HOME
 
 # System phase - install required packages
 section "System management"
 run_phase "10-system.sh" "Packages and repositories"
-run_phase "11-user.sh" "User account"
 
 # Log the user identity established during preflight.
 log <<EOF
