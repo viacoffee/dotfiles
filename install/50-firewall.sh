@@ -13,6 +13,13 @@ sudo ufw allow 53317/tcp
 # Allow Docker containers to use DNS on host
 sudo ufw allow in proto udp from 172.16.0.0/12 to 172.17.0.1 port 53 comment 'allow-docker-dns'
 
+# Keep host-side automation reachable only on explicitly marked test VMs.
+if [[ -f /etc/dotfiles-test-vm && -n ${SSH_CONNECTION:-} ]]; then
+  ssh_client_ip=${SSH_CONNECTION%% *}
+  sudo ufw allow from "$ssh_client_ip" to any port 22 proto tcp \
+    comment 'allow-dotfiles-test-host-ssh'
+fi
+
 # Turn on the firewall
 sudo ufw --force enable
 

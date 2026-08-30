@@ -3,8 +3,8 @@ set -euo pipefail
 
 # Curl-able bootstrap for viacoffee/dotfiles
 # Usage:
-#   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/main/bootstrap.sh)
-#   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/main/bootstrap.sh) -b back_to_arch
+#   sudo pacman -S --needed curl && bash <(curl -fsSL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh)
+#   sudo pacman -S --needed curl && bash <(curl -fsSL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh) -b back_to_arch
 
 REPO_URL="https://github.com/viacoffee/dotfiles.git"
 CLONE_DIR="$HOME/dotfiles"
@@ -99,7 +99,12 @@ printf '\033[0m'
 echo ""
 
 printf 'This will make system-wide changes and may take some time.\n'
-read -rp "[3/3] Start the installation now? [y/N] " answer
+answer=""
+if [[ -r /dev/tty ]]; then
+  read -rp "[3/3] Start the installation now? [y/N] " answer </dev/tty || true
+else
+  read -rp "[3/3] Start the installation now? [y/N] " answer || true
+fi
 if [[ ! "$answer" =~ ^[Yy]$ ]]; then
   echo "Aborted. You can run it later with: bash $CLONE_DIR/install.sh"
   exit 0

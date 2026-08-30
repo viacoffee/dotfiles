@@ -14,6 +14,11 @@ if systemctl is-enabled --quiet NetworkManager; then
     sudo systemctl disable NetworkManager
 fi
 
+if ! systemctl is-enabled --quiet systemd-networkd.service; then
+  run_logged "Enable systemd-networkd service" \
+    sudo systemctl enable systemd-networkd.service
+fi
+
 if ! systemctl is-enabled --quiet iwd && ! systemctl is-enabled --quiet NetworkManager; then
   run_logged "Enable iwd service" \
     sudo systemctl enable iwd.service
@@ -94,8 +99,10 @@ sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/systemd/faster-shutdown.conf" /etc/syst
 path_conf="$HOME/.config/environment.d/10-path.conf"
 mkdir -p "$HOME/.config/environment.d"
 if [[ ! -f "$path_conf" ]] || ! grep -q '.local/bin' "$path_conf"; then
+  # shellcheck disable=SC2016 # variables must expand in the future user session
   echo 'PATH=$HOME/.local/bin:$PATH' >> "$path_conf"
 fi
+verify_user_ownership "$HOME/.config/environment.d" "$path_conf"
 
 run_logged "Reloading systemd manager" \
   sudo systemctl daemon-reload

@@ -25,8 +25,12 @@ user = "$DOTFILES_DEFAULT_USER"
 EOF
 
 # Prevent niri.service from auto-starting via default.target (uwsm manages it)
-run_logged "Disable niri.service user unit" sudo -u "$DOTFILES_DEFAULT_USER" \
-  systemctl --user disable niri.service || true
+if systemctl --user is-enabled niri.service >/dev/null 2>&1; then
+  run_logged "Disable niri.service user unit" \
+    systemctl --user disable niri.service
+else
+  info "niri.service user unit is already disabled"
+fi
 
 success "greetd configuration complete"
 log "Auto-login user: $DOTFILES_DEFAULT_USER"
