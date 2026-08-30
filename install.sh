@@ -115,7 +115,7 @@ readonly DOTFILES_DEFAULT_USER DOTFILES_DEFAULT_UID DOTFILES_USER_HOME
 
 # System phase - install required packages
 section "System management"
-run_phase "10-system.sh" "Packages and repositories"
+run_phase "10-packages.sh" "Packages and repositories"
 
 # Log the user identity established during preflight.
 log <<EOF
@@ -129,18 +129,18 @@ Vars log:
   + DOTFILES_USER_HOME=${DOTFILES_USER_HOME:-}
 EOF
 
-run_phase "12-nvidia.sh" "NVIDIA drivers"
-run_phase "13-greetd.sh" "Display manager"
-run_phase "14-bootloader.sh" "Bootloader and boot process"
+run_phase "11-nvidia.sh" "NVIDIA drivers"
+run_phase "12-greetd.sh" "Display manager"
+run_phase "13-bootloader.sh" "Bootloader and boot process"
 success "System management complete"
 
 # Dotfiles phase - stowing dotfiles
 run_phase "20-dotfiles.sh" "Dotfiles"
 
 # Systemd phase - starting systemd services
-run_phase "30-systemd.sh" "System services"
+run_phase "30-system-services.sh" "System services"
 
-run_phase "90-post.sh" "User services and directories"
+run_phase "40-user-setup.sh" "User services and directories"
 log "Checking ownership of installer-managed user state"
 verify_user_ownership \
   "$HOME/.config" \
@@ -150,7 +150,7 @@ verify_user_ownership \
   "$HOME/notes" \
   "$HOME/projects" \
   "$HOME/work"
-run_phase "92-firewall.sh" "Firewall"
+run_phase "50-firewall.sh" "Firewall"
 
 export DOTFILES_CURRENT_PHASE="complete"
 success "Installation completed"
