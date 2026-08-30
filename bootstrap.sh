@@ -3,8 +3,8 @@ set -euo pipefail
 
 # Curl-able bootstrap for viacoffee/dotfiles
 # Usage:
-#   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/main/bootstrap.sh)
-#   bash <(curl -sL https://raw.githubusercontent.com/viacoffee/dotfiles/main/bootstrap.sh) -b back_to_arch
+#   sudo pacman -S --needed curl && bash <(curl -fsSL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh)
+#   sudo pacman -S --needed curl && bash <(curl -fsSL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh) -b back_to_arch
 
 REPO_URL="https://github.com/viacoffee/dotfiles.git"
 CLONE_DIR="$HOME/dotfiles"
