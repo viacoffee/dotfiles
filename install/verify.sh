@@ -135,7 +135,7 @@ main() {
   fi
 
   local script_dir repo_root package_file repository repositories command_line
-  local package missing_packages failed_units root_owned initramfs_listing ufw_status
+  local package missing_packages failed_units root_owned initramfs_listing ufw_status session_errors
   local uki=/boot/EFI/Linux/dot_linux.efi
 
   script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
@@ -144,7 +144,7 @@ main() {
 
   printf 'Dotfiles installation verification\n'
   printf 'Date: %s\n' "$(date --iso-8601=seconds)"
-  printf 'Host: %s\n' "$(hostname)"
+  printf 'Host: %s\n' "$(uname -n)"
   printf 'User: %s uid=%s home=%s\n' "$(id -un)" "$(id -u)" "$HOME"
   printf 'Repository: %s\n' "$repo_root"
   if command -v git >/dev/null 2>&1 && git -C "$repo_root" rev-parse HEAD >/dev/null 2>&1; then
@@ -275,6 +275,15 @@ main() {
     pass "no failed user units"
   else
     fail "no failed user units" "$failed_units"
+  fi
+
+  session_errors=$(journalctl --user -b --no-pager 2>/dev/null \
+    | grep -E 'failed to initialize renderer|no allocator available' \
+    || true)
+  if [[ -z $session_errors ]]; then
+    pass "graphical session has no known renderer errors"
+  else
+    fail "graphical session has no known renderer errors" "$session_errors"
   fi
 
   check_command "systemd-resolved owns resolv.conf" resolved_owns_resolv_conf
