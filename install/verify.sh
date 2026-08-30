@@ -102,6 +102,18 @@ limine_hook_has_expected_owner() {
   [[ $(pacman -Qqo /etc/pacman.d/hooks/90-mkinitcpio-install.hook) == limine-mkinitcpio-hook ]]
 }
 
+limine_recovery_configs_removed() {
+  local candidate
+
+  for candidate in \
+    /boot/EFI/arch-limine/limine.conf \
+    /boot/EFI/BOOT/limine.conf \
+    /boot/EFI/limine/limine.conf \
+    /boot/limine/limine.conf; do
+    sudo test ! -e "$candidate" || return 1
+  done
+}
+
 root_is_encrypted_btrfs() {
   [[ $(findmnt -n -o FSTYPE /) == btrfs && $(findmnt -n -o SOURCE /) == /dev/mapper/* ]]
 }
@@ -253,11 +265,19 @@ main() {
   check_command "Limine configuration exists and is nonempty" sudo test -s /boot/limine.conf
   check_command "Limine configuration references the expected UKI" \
     sudo grep -Fq 'dot_linux.efi' /boot/limine.conf
+  check_command "last known-working Limine configuration is retained" \
+    sudo test -s /boot/limine.conf.dotfiles-last-known-good
+  check_command "temporary Limine recovery configuration was removed" \
+    limine_recovery_configs_removed
   if sudo test -s "$uki"; then
     printf 'UKI SHA256: %s\n' "$(sudo sha256sum "$uki" | awk '{print $1}')"
   fi
   if sudo test -s /boot/limine.conf; then
     printf 'Limine config SHA256: %s\n' "$(sudo sha256sum /boot/limine.conf | awk '{print $1}')"
+  fi
+  if sudo test -s /boot/limine.conf.dotfiles-last-known-good; then
+    printf 'Last known-working Limine config SHA256: %s\n' \
+      "$(sudo sha256sum /boot/limine.conf.dotfiles-last-known-good | awk '{print $1}')"
   fi
   printf 'mkinitcpio hook SHA256: %s\n' \
     "$(sha256sum /etc/mkinitcpio.conf.d/dot_hooks.conf 2>/dev/null | awk '{print $1}')"

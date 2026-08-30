@@ -75,16 +75,34 @@ for managed_arg in quiet splash nowatchdog plymouth.ignore-serial-consoles; do
 done
 
 CMDLINE_ESCAPED=$(printf '%s\n' "$CMDLINE" | sed 's/[&\\]/\\&/g')
-sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/limine/default.conf" /etc/default/limine
-sudo sed -i "s|@@CMDLINE@@|$CMDLINE_ESCAPED|g" /etc/default/limine
+staged_limine_defaults=$(mktemp)
+cp "$DOTFILES_INSTALL_DEFAULTS_PATH/limine/default.conf" "$staged_limine_defaults"
+sed -i "s|@@CMDLINE@@|$CMDLINE_ESCAPED|g" "$staged_limine_defaults"
+sudo install -m 644 "$staged_limine_defaults" /etc/default/limine.dotfiles-new
+sudo mv /etc/default/limine.dotfiles-new /etc/default/limine
+rm -f "$staged_limine_defaults"
 
-# Remove the original config file if it's not /boot/limine.conf
-if [[ "$limine_config" != "/boot/limine.conf" ]] && sudo test -f "$limine_config"; then
-  sudo rm "$limine_config"
+# Keep a boot-discoverable recovery configuration in place while
+# /boot/limine.conf is regenerated. If the current configuration is already at
+# another Limine search path, leave it there until the new artifacts validate.
+last_known_limine_config=/boot/limine.conf.dotfiles-last-known-good
+sudo cp "$limine_config" "${last_known_limine_config}.dotfiles-new"
+sudo mv "${last_known_limine_config}.dotfiles-new" "$last_known_limine_config"
+
+recovery_limine_config=$limine_config
+if [[ $limine_config == /boot/limine.conf ]]; then
+  recovery_limine_config=/boot/EFI/BOOT/limine.conf
+  sudo install -d "$(dirname "$recovery_limine_config")"
+  sudo cp "$limine_config" "${recovery_limine_config}.dotfiles-new"
+  sudo mv "${recovery_limine_config}.dotfiles-new" "$recovery_limine_config"
 fi
+success "Last known-working Limine configuration retained at $recovery_limine_config"
 
-# We overwrite the whole thing knowing the limine-update will add the entries for us
-sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/limine/limine.conf" /boot/limine.conf
+# limine-update writes generated entries to /boot/limine.conf. The recovery
+# configuration above has higher search priority until validation completes.
+sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/limine/limine.conf" \
+  /boot/limine.conf.dotfiles-new
+sudo mv /boot/limine.conf.dotfiles-new /boot/limine.conf
 
 # Match Snapper configs
 if ! sudo snapper list-configs 2>/dev/null | grep -q "root"; then
@@ -153,6 +171,7 @@ for stale in /boot/EFI/Linux/arch-linux.efi /boot/EFI/Linux/arch-linux-fallback.
 done
 
 expected_uki=/boot/EFI/Linux/dot_linux.efi
+inject_install_failure during-final-limine-update
 limine_output=$(mktemp)
 if run_logged "Running authoritative final Limine generation" \
   sudo limine-update | tee "$limine_output"; then
@@ -200,6 +219,18 @@ if [[ -f /etc/mkinitcpio.conf.d/nvidia.conf ]]; then
   done
 fi
 success "Final Limine configuration and UKI validated"
+
+# Commit the generated configuration only after all checks pass. Removing the
+# recovery copy makes /boot/limine.conf authoritative again.
+if ! sudo test -s "$last_known_limine_config"; then
+  error "Last known-working Limine configuration is missing or empty"
+  return 1
+fi
+if [[ $recovery_limine_config != /boot/limine.conf ]]; then
+  run_logged "Committing generated Limine configuration" \
+    sudo rm -f -- "$recovery_limine_config"
+fi
+success "Generated Limine configuration committed"
 
 remove_pacman_generation_override
 inject_install_failure after-final-generation
