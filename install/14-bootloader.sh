@@ -153,9 +153,21 @@ for stale in /boot/EFI/Linux/arch-linux.efi /boot/EFI/Linux/arch-linux-fallback.
 done
 
 expected_uki=/boot/EFI/Linux/dot_linux.efi
-uki_state_before=$(sudo stat -c '%s:%y' "$expected_uki" 2>/dev/null || true)
-run_logged "Running authoritative final Limine generation" \
-  sudo limine-update
+limine_output=$(mktemp)
+if run_logged "Running authoritative final Limine generation" \
+  sudo limine-update | tee "$limine_output"; then
+  :
+else
+  rm -f "$limine_output"
+  return 1
+fi
+
+if ! grep -Fq 'Unified kernel image generation successful' "$limine_output"; then
+  rm -f "$limine_output"
+  error "Final Limine generation did not report a successful UKI build"
+  return 1
+fi
+rm -f "$limine_output"
 inject_install_failure after-final-limine-update
 
 log "Validating final Limine and UKI artifacts"
@@ -171,12 +183,6 @@ if ! sudo test -s "$expected_uki"; then
   error "Expected UKI is missing or empty: $expected_uki"
   return 1
 fi
-uki_state_after=$(sudo stat -c '%s:%y' "$expected_uki")
-if [[ -n $uki_state_before && $uki_state_after == "$uki_state_before" ]]; then
-  error "Final Limine generation did not refresh the expected UKI"
-  return 1
-fi
-
 initramfs_listing=$(sudo lsinitcpio -l "$expected_uki")
 for required_command in cryptsetup plymouth btrfs; do
   if ! grep -Eq "(^|/)${required_command}$" <<< "$initramfs_listing"; then
