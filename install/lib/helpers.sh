@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 _read_message() {
-  if [[ -t 0 ]]; then
+  if (($#)); then
     printf '%s' "$*"
   else
     cat
@@ -51,9 +51,11 @@ error() { _log "ERROR" "$RED" "$@"; }
 # Usage: run_logged "description" command arg1 arg2 ...
 run_logged() {
   local description="$1"; shift
-  local exit_code
+  local exit_code command_string
 
+  printf -v command_string '%q ' "$@"
   log "$description"
+  log "Command: ${command_string% }"
 
   if "$@" 2>&1 | tee -a "$DOTFILES_INSTALL_LOG_FILE"; then
     success "$description completed"
