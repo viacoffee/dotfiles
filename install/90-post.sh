@@ -12,6 +12,12 @@ enable_user_services() {
 log "Creating zsh cache directory..."
 mkdir -p "$HOME/.cache/zsh"
 
+# Schedule first-login setup only until it has completed once. The service
+# remains enabled afterward, with its marker condition preventing reruns.
+if ! systemctl --user is-enabled --quiet dot-first-login.service; then
+  touch "$HOME/.first-login"
+fi
+
 # Enable session services
 enable_user_services \
   waybar \
@@ -33,9 +39,6 @@ done
 
 # Refresh font cache
 fc-cache -f
-
-# Enable dnd mode for mako (deferred to first login)
-touch "$HOME/.first-login"
 
 verify_user_ownership \
   "$HOME/.cache/zsh" \

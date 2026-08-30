@@ -1,12 +1,13 @@
 [Unit]
 Description=First login setup
-After=graphical-session.target mako.service
+Requires=mako.service
+After=mako.service
 ConditionPathExists=%h/.first-login
 
 [Service]
 Type=oneshot
-ExecStart=%h/.local/bin/dot-first-login
-RemainAfterExit=yes
+ExecStart=/usr/bin/makoctl mode -a dnd
+ExecStartPost=/usr/bin/rm -f %h/.first-login
 
 [Install]
 WantedBy=graphical-session.target

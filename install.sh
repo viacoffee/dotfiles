@@ -141,7 +141,6 @@ run_phase "20-dotfiles.sh" "Dotfiles"
 run_phase "30-systemd.sh" "System services"
 
 run_phase "90-post.sh" "User services and directories"
-run_phase "91-mimes.sh" "Desktop defaults"
 log "Checking ownership of installer-managed user state"
 verify_user_ownership \
   "$HOME/.config" \

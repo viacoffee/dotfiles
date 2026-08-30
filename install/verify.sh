@@ -130,6 +130,31 @@ resolved_owns_resolv_conf() {
   [[ -L /etc/resolv.conf && $(readlink /etc/resolv.conf) == *stub-resolv* ]]
 }
 
+mime_default_is() {
+  local mime_type=$1
+  local desktop_id=$2
+  [[ $(xdg-mime query default "$mime_type") == "$desktop_id" ]]
+}
+
+gtk_settings_are_declarative() {
+  local settings_file=$1
+
+  grep -Fxq 'gtk-theme-name=Adwaita-dark' "$settings_file" &&
+    grep -Fxq 'gtk-icon-theme-name=Yaru-dark' "$settings_file" &&
+    grep -Fxq 'gtk-application-prefer-dark-theme=true' "$settings_file"
+}
+
+desktop_defaults_are_stowed() {
+  [[ -L $HOME/.config/mimeapps.list &&
+    -L $HOME/.config/gtk-3.0/settings.ini &&
+    -L $HOME/.config/gtk-4.0/settings.ini ]]
+}
+
+obsolete_first_login_helper_removed() {
+  [[ ! -e $HOME/.local/bin/dot-first-login &&
+    ! -L $HOME/.local/bin/dot-first-login ]]
+}
+
 pacman_original_backup_is_valid() {
   local backup=/etc/pacman.conf.dotfiles-original
   local checksum=$backup.sha256
@@ -323,9 +348,27 @@ main() {
     check_enabled_system_service "$service"
   done
 
-  for service in waybar.service mako.service swaybg.service swayidle.service swayosd.service; do
+  check_command "terminal MIME handler uses the installed desktop ID" \
+    mime_default_is x-scheme-handler/terminal Alacritty.desktop
+  check_command "directory MIME handler uses the installed desktop ID" \
+    mime_default_is inode/directory org.gnome.Nautilus.desktop
+  check_command "browser MIME handler is declarative" \
+    mime_default_is x-scheme-handler/https firefox.desktop
+  check_command "text MIME handler is declarative" \
+    mime_default_is text/plain nvim.desktop
+  check_command "GTK 3 appearance is declarative" \
+    gtk_settings_are_declarative "$HOME/.config/gtk-3.0/settings.ini"
+  check_command "GTK 4 appearance is declarative" \
+    gtk_settings_are_declarative "$HOME/.config/gtk-4.0/settings.ini"
+  check_command "desktop defaults are stowed from tracked configuration" \
+    desktop_defaults_are_stowed
+  check_command "obsolete first-login helper was removed" \
+    obsolete_first_login_helper_removed
+
+  for service in waybar.service mako.service swaybg.service swayidle.service swayosd.service dot-first-login.service; do
     check_enabled_user_service "$service"
   done
+  check_command "first-login marker was consumed" test ! -e "$HOME/.first-login"
 
   check_command "user manager is reachable" systemctl --user show-environment
 
