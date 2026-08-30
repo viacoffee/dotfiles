@@ -102,6 +102,10 @@ limine_hook_has_expected_owner() {
   [[ $(pacman -Qqo /etc/pacman.d/hooks/90-mkinitcpio-install.hook) == limine-mkinitcpio-hook ]]
 }
 
+limine_config_has_no_stale_uki_entries() {
+  ! sudo grep -Eq '/EFI/Linux/arch-linux(-fallback)?\.efi' /boot/limine.conf
+}
+
 alternate_limine_configs_removed() {
   local candidate
 
@@ -265,6 +269,8 @@ main() {
   check_command "Limine configuration exists and is nonempty" sudo test -s /boot/limine.conf
   check_command "Limine configuration references the expected UKI" \
     sudo grep -Fq 'dot_linux.efi' /boot/limine.conf
+  check_command "Limine configuration contains no stale default-preset UKI entries" \
+    limine_config_has_no_stale_uki_entries
   check_command "last known-working Limine configuration is retained" \
     sudo test -s /boot/limine.conf.dotfiles-last-known-good
   check_command "alternate Limine configurations were removed" \
