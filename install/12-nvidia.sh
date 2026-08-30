@@ -54,7 +54,6 @@ log "Installing NVIDIA drivers and dependencies..."
 INSTALL_PACKAGES=("$KERNEL_HEADERS" "${PACKAGES[@]}")
 install_packages_without_generation "${INSTALL_PACKAGES[@]}"
 success "Package installation completed successfully"
-inject_install_failure after-nvidia-package-installation
 
 # Configure modprobe for early KMS
 log "Configuring modprobe for NVIDIA early KMS..."

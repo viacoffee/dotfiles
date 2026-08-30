@@ -16,10 +16,6 @@ if ! command_exists limine-snapper-sync; then
   return 1
 fi
 
-# This failure boundary is deliberately before any active boot configuration is
-# changed, so the package-transaction recovery test retains known-good entries.
-inject_install_failure before-final-limine-update
-
 # Step 1: Extract existing kernel command line from bootloader config
 log "Extracting kernel command line from existing bootloader config..."
 
@@ -163,11 +159,6 @@ if [[ -f "$preset" ]] && grep -q '^default_uki=' "$preset"; then
 fi
 
 expected_uki=/boot/EFI/Linux/dot_linux.efi
-if ! inject_install_failure during-final-limine-update; then
-  restore_last_known_limine_configuration
-  error "Restored the last known-working Limine configuration"
-  return 1
-fi
 limine_output=$(mktemp)
 if run_logged "Running authoritative final Limine generation" \
   sudo limine-update | tee "$limine_output"; then
@@ -186,7 +177,6 @@ if ! grep -Fq 'Unified kernel image generation successful' "$limine_output"; the
   return 1
 fi
 rm -f "$limine_output"
-inject_install_failure after-final-limine-update
 
 log "Validating final Limine and UKI artifacts"
 if ! sudo test -s /boot/limine.conf; then
@@ -278,4 +268,3 @@ done
 success "Generated Limine configuration committed"
 
 remove_pacman_generation_override
-inject_install_failure after-final-generation

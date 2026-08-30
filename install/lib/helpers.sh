@@ -73,15 +73,6 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-inject_install_failure() {
-  local boundary=$1
-
-  if [[ ${DOTFILES_INSTALL_FAIL_AT:-} == "$boundary" ]]; then
-    error "Injected installation failure at boundary: $boundary"
-    return 1
-  fi
-}
-
 # Fail if a path managed by the installer contains files owned by another user.
 verify_user_ownership() {
   local path unexpected_owner
