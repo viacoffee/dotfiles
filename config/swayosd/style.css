@@ -7,8 +7,8 @@ window#osd {
 
 window#osd #container {
   margin: 7px;
-  padding 7px;
-  background:transparent;
+  padding: 7px;
+  background: transparent;
 }
 
 window#osd image {
