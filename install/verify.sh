@@ -150,6 +150,10 @@ desktop_defaults_are_stowed() {
     -L $HOME/.config/gtk-4.0/settings.ini ]]
 }
 
+default_user_directories_exist() {
+  [[ -d $HOME/notes && -d $HOME/projects && -d $HOME/work ]]
+}
+
 pacman_original_backup_is_valid() {
   local backup=/etc/pacman.conf.dotfiles-original
   local checksum=$backup.sha256
@@ -362,6 +366,8 @@ main() {
     check_enabled_user_service "$service"
   done
   check_command "first-login marker was consumed" test ! -e "$HOME/.first-login"
+  check_command "default user directories use the expected names" \
+    default_user_directories_exist
 
   check_command "user manager is reachable" systemctl --user show-environment
 

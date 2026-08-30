@@ -29,9 +29,9 @@ enable_user_services \
 
 log "Creating default home directories"
 DEFAULT_DIRS=(
-  Notes
-  Projects
-  Work
+  notes
+  projects
+  work
 )
 for dir in "${DEFAULT_DIRS[@]}"; do
   mkdir -p "$HOME/$dir"
