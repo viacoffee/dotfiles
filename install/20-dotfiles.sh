@@ -32,7 +32,6 @@ log "stowing config"
 stow --no-folding -t "$HOME/.config" config
 
 mkdir -p "$HOME/.local"
-rm -f -- "$HOME/.local/bin/dot-first-login"
 log "stowing local"
 stow --no-folding -t "$HOME/.local" local
 

@@ -150,11 +150,6 @@ desktop_defaults_are_stowed() {
     -L $HOME/.config/gtk-4.0/settings.ini ]]
 }
 
-obsolete_first_login_helper_removed() {
-  [[ ! -e $HOME/.local/bin/dot-first-login &&
-    ! -L $HOME/.local/bin/dot-first-login ]]
-}
-
 pacman_original_backup_is_valid() {
   local backup=/etc/pacman.conf.dotfiles-original
   local checksum=$backup.sha256
@@ -362,8 +357,6 @@ main() {
     gtk_settings_are_declarative "$HOME/.config/gtk-4.0/settings.ini"
   check_command "desktop defaults are stowed from tracked configuration" \
     desktop_defaults_are_stowed
-  check_command "obsolete first-login helper was removed" \
-    obsolete_first_login_helper_removed
 
   for service in waybar.service mako.service swaybg.service swayidle.service swayosd.service dot-first-login.service; do
     check_enabled_user_service "$service"
