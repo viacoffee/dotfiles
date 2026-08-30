@@ -44,6 +44,10 @@ niri
 noto-fonts
 openssh
 playerctl
+pipewire
+pipewire-alsa
+pipewire-audio
+pipewire-pulse
 plymouth
 polkit-gnome
 power-profiles-daemon
@@ -51,6 +55,7 @@ python-gobject
 qt5-wayland
 qt6-wayland
 ripgrep
+rtkit
 slurp
 snapper
 starship
@@ -73,6 +78,7 @@ uwsm
 waybar
 whois
 wiremix
+wireplumber
 wl-clipboard
 wtype
 xclip
