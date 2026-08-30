@@ -114,6 +114,17 @@ resolved_owns_resolv_conf() {
   [[ -L /etc/resolv.conf && $(readlink /etc/resolv.conf) == *stub-resolv* ]]
 }
 
+pacman_original_backup_is_valid() {
+  local backup=/etc/pacman.conf.dotfiles-original
+  local checksum=$backup.sha256
+  local expected actual
+
+  [[ -f $backup && -f $checksum ]] || return 1
+  expected=$(sudo cat "$checksum" | tr -d '[:space:]')
+  actual=$(sudo sha256sum "$backup" | awk '{print $1}')
+  [[ -n $expected && $expected == "$actual" ]]
+}
+
 main() {
   if (($#)); then
     case $1 in
@@ -136,6 +147,7 @@ main() {
 
   local script_dir repo_root package_file repository repositories command_line
   local package missing_packages failed_units root_owned initramfs_listing ufw_status session_errors
+  local omarchy_siglevel policy
   local uki=/boot/EFI/Linux/dot_linux.efi
 
   script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
@@ -194,6 +206,31 @@ main() {
       pass "repository is configured once: $repository"
     else
       fail "repository is configured once: $repository" "observed count: $repository_count"
+    fi
+  done
+
+  check_command \
+    "managed repository fragment is installed" \
+    cmp -s "$script_dir/default/pacman/dotfiles-repositories.conf" \
+    /etc/pacman.d/dotfiles-repositories.conf
+  if [[ $(grep -Fxc 'Include = /etc/pacman.d/dotfiles-repositories.conf' /etc/pacman.conf) == 1 ]]; then
+    pass "managed repository fragment is included once"
+  else
+    fail "managed repository fragment is included once"
+  fi
+  check_command "original pacman configuration backup is valid" pacman_original_backup_is_valid
+
+  if [[ $(pacman-conf --repo omarchy Server 2>/dev/null) == "https://pkgs.omarchy.org/stable/$(uname -m)" ]]; then
+    pass "Omarchy repository uses the expected server"
+  else
+    fail "Omarchy repository uses the expected server"
+  fi
+  omarchy_siglevel=$(pacman-conf --repo omarchy SigLevel 2>/dev/null || true)
+  for policy in PackageOptional PackageTrustAll DatabaseOptional DatabaseTrustAll; do
+    if grep -qx "$policy" <<< "$omarchy_siglevel"; then
+      pass "Omarchy signature policy includes: $policy"
+    else
+      fail "Omarchy signature policy includes: $policy"
     fi
   done
 

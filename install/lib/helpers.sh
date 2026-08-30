@@ -93,6 +93,24 @@ package_installed() {
   pacman -Q "$1" >/dev/null 2>&1
 }
 
+# Confirm every configured package resolves from the synchronized repositories.
+validate_package_resolution() {
+  local package
+  local -a unresolved=()
+
+  for package in "$@"; do
+    if ! pacman -Si -- "$package" >/dev/null 2>&1; then
+      unresolved+=("$package")
+    fi
+  done
+
+  if ((${#unresolved[@]} > 0)); then
+    error "Required packages do not resolve: ${unresolved[*]}"
+    return 1
+  fi
+  success "All required packages resolve from configured repositories"
+}
+
 # Print section header
 # Usage: section "Display Manager Configuration"
 section() {
