@@ -16,6 +16,10 @@ if ! command_exists limine-snapper-sync; then
   return 1
 fi
 
+# This failure boundary is deliberately before any active boot configuration is
+# changed, so the package-transaction recovery test retains known-good entries.
+inject_install_failure before-final-limine-update
+
 # Step 1: Extract existing kernel command line from bootloader config
 log "Extracting kernel command line from existing bootloader config..."
 
@@ -148,16 +152,48 @@ for stale in /boot/EFI/Linux/arch-linux.efi /boot/EFI/Linux/arch-linux-fallback.
   fi
 done
 
-log "Re-enabling mkinitcpio hooks"
-# Restore the specific mkinitcpio pacman hooks
-if [[ -f /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled ]]; then
-  sudo mv /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled /usr/share/libalpm/hooks/90-mkinitcpio-install.hook
-fi
-
-if [[ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled ]]; then
-  sudo mv /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook
-fi
-success "mkinitcpio hooks re-enabled"
-
-run_logged "Running limine-update" \
+expected_uki=/boot/EFI/Linux/dot_linux.efi
+uki_state_before=$(sudo stat -c '%s:%y' "$expected_uki" 2>/dev/null || true)
+run_logged "Running authoritative final Limine generation" \
   sudo limine-update
+inject_install_failure after-final-limine-update
+
+log "Validating final Limine and UKI artifacts"
+if ! sudo test -s /boot/limine.conf; then
+  error "Final Limine configuration is missing or empty"
+  return 1
+fi
+if ! sudo grep -Fq 'dot_linux.efi' /boot/limine.conf; then
+  error "Final Limine configuration does not reference the expected UKI"
+  return 1
+fi
+if ! sudo test -s "$expected_uki"; then
+  error "Expected UKI is missing or empty: $expected_uki"
+  return 1
+fi
+uki_state_after=$(sudo stat -c '%s:%y' "$expected_uki")
+if [[ -n $uki_state_before && $uki_state_after == "$uki_state_before" ]]; then
+  error "Final Limine generation did not refresh the expected UKI"
+  return 1
+fi
+
+initramfs_listing=$(sudo lsinitcpio -l "$expected_uki")
+for required_command in cryptsetup plymouth btrfs; do
+  if ! grep -Eq "(^|/)${required_command}$" <<< "$initramfs_listing"; then
+    error "Final UKI does not contain: $required_command"
+    return 1
+  fi
+done
+
+if [[ -f /etc/mkinitcpio.conf.d/nvidia.conf ]]; then
+  for required_module in nvidia nvidia_modeset nvidia_uvm nvidia_drm; do
+    if ! grep -Eq "(^|/)${required_module}(\\.ko(\\.[a-z0-9]+)?)?$" <<< "$initramfs_listing"; then
+      error "Final UKI does not contain NVIDIA module: $required_module"
+      return 1
+    fi
+  done
+fi
+success "Final Limine configuration and UKI validated"
+
+remove_pacman_generation_override
+inject_install_failure after-final-generation

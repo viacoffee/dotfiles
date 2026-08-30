@@ -73,6 +73,15 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+inject_install_failure() {
+  local boundary=$1
+
+  if [[ ${DOTFILES_INSTALL_FAIL_AT:-} == "$boundary" ]]; then
+    error "Injected installation failure at boundary: $boundary"
+    return 1
+  fi
+}
+
 # Fail if a path managed by the installer contains files owned by another user.
 verify_user_ownership() {
   local path unexpected_owner
@@ -91,6 +100,50 @@ verify_user_ownership() {
 # Usage: package_installed "sddm"
 package_installed() {
   pacman -Q "$1" >/dev/null 2>&1
+}
+
+prepare_pacman_generation_override() {
+  local override_hook
+
+  : "${DOTFILES_PACMAN_HOOK_DIR:?DOTFILES_PACMAN_HOOK_DIR is not set}"
+  override_hook="$DOTFILES_PACMAN_HOOK_DIR/90-mkinitcpio-install.hook"
+
+  run_logged "Creating private pacman hook override" \
+    sudo rm -rf -- "$DOTFILES_PACMAN_HOOK_DIR"
+  sudo install -d -m 700 "$DOTFILES_PACMAN_HOOK_DIR"
+  sudo ln -s /dev/null "$override_hook"
+
+  if [[ $(sudo readlink "$override_hook") != /dev/null ]]; then
+    error "Pacman generation hook override is invalid: $override_hook"
+    return 1
+  fi
+  success "Package-triggered boot generation will be deferred after the system upgrade"
+}
+
+remove_pacman_generation_override() {
+  : "${DOTFILES_PACMAN_HOOK_DIR:?DOTFILES_PACMAN_HOOK_DIR is not set}"
+  run_logged "Removing private pacman hook override" \
+    sudo rm -rf -- "$DOTFILES_PACMAN_HOOK_DIR"
+}
+
+install_packages_without_generation() {
+  local override_hook
+
+  if (($# == 0)); then
+    error "No packages supplied for installation"
+    return 1
+  fi
+
+  : "${DOTFILES_PACMAN_HOOK_DIR:?DOTFILES_PACMAN_HOOK_DIR is not set}"
+  override_hook="$DOTFILES_PACMAN_HOOK_DIR/90-mkinitcpio-install.hook"
+  if [[ $(sudo readlink "$override_hook" 2>/dev/null) != /dev/null ]]; then
+    error "Pacman generation hook override is not active: $override_hook"
+    return 1
+  fi
+
+  run_logged "Installing packages with boot generation deferred: $*" \
+    sudo pacman --hookdir "$DOTFILES_PACMAN_HOOK_DIR" \
+      -S --noconfirm --needed "$@"
 }
 
 # Confirm every configured package resolves from the synchronized repositories.
@@ -164,8 +217,7 @@ install_missing_packages() {
     info "Installing ${#missing[@]} missing package(s): ${missing[*]}"
     log "Installing missing packages..."
 
-    run_logged "Installing missing packages: ${missing[*]}" \
-      sudo pacman -S --noconfirm --needed "${missing[@]}"
+    install_packages_without_generation "${missing[@]}"
 
     info "Verifying installed packages..."
     local verify_failed=0

@@ -175,5 +175,11 @@ validate_pacman_configuration
 run_logged "Synchronizing package databases" sudo pacman -Sy --noconfirm
 validate_package_resolution "${required_packages[@]}"
 
-run_logged "Updating system" sudo pacman -Syu --noconfirm
+# Keep normal hooks enabled for the full system upgrade so any upgraded kernel
+# finishes with boot artifacts from the currently working configuration.
+run_logged "Updating system with normal pacman hooks" sudo pacman -Syu --noconfirm
+inject_install_failure after-system-upgrade
+
+export DOTFILES_PACMAN_HOOK_DIR=${DOTFILES_PACMAN_HOOK_DIR:-/run/dotfiles-install/${DOTFILES_DEFAULT_UID:-$(id -u)}/pacman-hooks}
+prepare_pacman_generation_override
 install_missing_packages "${required_packages[@]}"

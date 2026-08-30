@@ -48,14 +48,13 @@ fi
 
 info "Packages to be installed: ${PACKAGES[*]}"
 
-# Install packages
+# Install packages without generating boot artifacts before the final
+# mkinitcpio, Plymouth, and Limine configuration has been written.
 log "Installing NVIDIA drivers and dependencies..."
 INSTALL_PACKAGES=("$KERNEL_HEADERS" "${PACKAGES[@]}")
-if ! sudo pacman -S --needed --noconfirm "${INSTALL_PACKAGES[@]}"; then
-  error "Failed to install NVIDIA packages"
-  return 1
-fi
+install_packages_without_generation "${INSTALL_PACKAGES[@]}"
 success "Package installation completed successfully"
+inject_install_failure after-nvidia-package-installation
 
 # Configure modprobe for early KMS
 log "Configuring modprobe for NVIDIA early KMS..."
@@ -84,13 +83,6 @@ MODULES+=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 EOF
 then
   error "Failed to write mkinitcpio configuration"
-  return 1
-fi
-
-# Regenerate initramfs with NVIDIA modules
-log "Regenerating initramfs with NVIDIA modules..."
-if ! sudo mkinitcpio -P; then
-  error "Failed to regenerate initramfs"
   return 1
 fi
 

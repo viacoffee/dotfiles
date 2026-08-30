@@ -243,6 +243,9 @@ main() {
   check_command \
     "Limine pacman hook has the expected owner" \
     limine_hook_has_expected_owner
+  check_command \
+    "private pacman hook override was removed" \
+    sudo test ! -e "/run/dotfiles-install/$(id -u)/pacman-hooks"
 
   check_command "root uses encrypted Btrfs" root_is_encrypted_btrfs
   check_command "system booted in EFI mode" test -d /sys/firmware/efi

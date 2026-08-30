@@ -44,17 +44,6 @@ fi
 # shellcheck source=install/lib/helpers.sh
 source "$DOTFILES_INSTALL/lib/helpers.sh"
 
-# Restore mkinitcpio hooks if install fails between preflight and bootloader phases
-_restore_mkinitcpio_hooks() {
-  local hook_dir="/usr/share/libalpm/hooks"
-  for hook in 90-mkinitcpio-install 60-mkinitcpio-remove; do
-    if [[ -f "$hook_dir/${hook}.hook.disabled" ]]; then
-      sudo mv "$hook_dir/${hook}.hook.disabled" "$hook_dir/${hook}.hook" 2>/dev/null || true
-    fi
-  done
-}
-trap _restore_mkinitcpio_hooks EXIT
-
 DOTFILES_ERROR_REPORTED=0
 _install_error() {
   local status=$1
