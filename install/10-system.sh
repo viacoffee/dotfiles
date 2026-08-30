@@ -60,7 +60,23 @@ write_managed_pacman_configuration() {
   awk \
     -v activate_multilib="$((1 - multilib_active))" \
     -v managed_fragment="$PACMAN_REPOSITORY_FRAGMENT" '
-      BEGIN { skip_omarchy = 0; waiting_for_multilib_include = 0 }
+      function emit(line) {
+        while (pending_blanks > 0) {
+          print ""
+          pending_blanks--
+        }
+        print line
+      }
+
+      BEGIN {
+        skip_omarchy = 0
+        waiting_for_multilib_include = 0
+        pending_blanks = 0
+      }
+
+      /^[[:space:]]*#[[:space:]]*Dotfiles-managed third-party repositories[[:space:]]*$/ {
+        next
+      }
 
       $0 ~ "^[[:space:]]*Include[[:space:]]*=[[:space:]]*" managed_fragment "[[:space:]]*$" {
         next
@@ -78,18 +94,23 @@ write_managed_pacman_configuration() {
       skip_omarchy { next }
 
       activate_multilib && /^[[:space:]]*#[[:space:]]*\[multilib\][[:space:]]*$/ {
-        print "[multilib]"
+        emit("[multilib]")
         waiting_for_multilib_include = 1
         next
       }
 
       waiting_for_multilib_include && /^[[:space:]]*#[[:space:]]*Include[[:space:]]*=[[:space:]]*\/etc\/pacman\.d\/mirrorlist[[:space:]]*$/ {
-        print "Include = /etc/pacman.d/mirrorlist"
+        emit("Include = /etc/pacman.d/mirrorlist")
         waiting_for_multilib_include = 0
         next
       }
 
-      { print }
+      /^[[:space:]]*$/ {
+        pending_blanks++
+        next
+      }
+
+      { emit($0) }
 
       END {
         print ""
