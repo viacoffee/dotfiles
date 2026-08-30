@@ -1,0 +1,64 @@
+#!/usr/bin/env bats
+
+setup() {
+  repo_root=$(cd "$BATS_TEST_DIRNAME/.." && pwd)
+  mock_bin=$BATS_TEST_TMPDIR/bin
+  test_home=$BATS_TEST_TMPDIR/home
+  mkdir -p "$mock_bin" "$test_home"
+  cat > "$mock_bin/git" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >> "$GIT_CALLS"
+clone_dir=${!#}
+mkdir -p "$clone_dir"
+printf '#!/usr/bin/env bash\nprintf "installer started\\n"\n' > "$clone_dir/install.sh"
+EOF
+  chmod +x "$mock_bin/git"
+}
+
+run_bootstrap_in_tty() {
+  local answer=$1
+  shift
+  local command
+  printf -v command 'env HOME=%q GIT_CALLS=%q PATH=%q bash %q' \
+    "$test_home" "$BATS_TEST_TMPDIR/git.calls" "$mock_bin:$PATH" "$repo_root/bootstrap.sh"
+  local argument
+  for argument in "$@"; do
+    printf -v argument '%q' "$argument"
+    command+=" $argument"
+  done
+  run bash -c 'printf "%s\n" "$1" | script -qefc "$2" /dev/null' _ "$answer" "$command"
+}
+
+@test "public submodules use HTTPS URLs" {
+  run git -C "$repo_root" config --file .gitmodules --get-regexp '^submodule\..*\.url$'
+
+  [ "$status" -eq 0 ]
+  [ -n "$output" ]
+  while read -r _ url; do
+    [[ $url == https://* ]]
+    [[ $url != git@* ]]
+  done <<< "$output"
+}
+
+@test "README bootstrap preserves terminal input" {
+  run grep -F 'bash <(curl -fsSL' "$repo_root/README.md"
+
+  [ "$status" -eq 0 ]
+  [[ $output != *"| bash"* ]]
+}
+
+@test "bootstrap reads confirmation from the terminal and aborts" {
+  run_bootstrap_in_tty n
+
+  [ "$status" -eq 0 ]
+  [[ $output == *"Aborted."* ]]
+  [[ $output != *"installer started"* ]]
+}
+
+@test "bootstrap passes the requested branch and starts after confirmation" {
+  run_bootstrap_in_tty y --branch installer-refactor
+
+  [ "$status" -eq 0 ]
+  [[ $output == *"installer started"* ]]
+  grep -Fq -- '--recurse-submodules -b installer-refactor' "$BATS_TEST_TMPDIR/git.calls"
+}
