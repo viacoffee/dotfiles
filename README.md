@@ -11,7 +11,7 @@
 
 ## Installation
 
-This is an Arch Linux setup. Start with [archinstall](https://wiki.archlinux.org/title/Archinstall), then run the bootstrap command below after the first reboot. It installs Git when needed, clones this repository, and starts `install.sh` after confirmation.
+This is an Arch Linux setup. Start with [archinstall](https://wiki.archlinux.org/title/Archinstall), then run the bootstrap command below after the first reboot. The command installs curl, and the bootstrap script installs Git when needed, clones this repository, and starts `install.sh` after confirmation.
 
 ### Initial setup (archinstall)
 
@@ -30,7 +30,7 @@ After archinstall finishes and the system reboots, log in and continue below.
 Run the bootstrap script:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh | bash
+sudo pacman -S --needed curl && bash <(curl -fsSL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh)
 ```
 
 The script clones the repository to `~/dotfiles`, shows a warning before making system changes, and then runs the installer.
@@ -38,7 +38,7 @@ The script clones the repository to `~/dotfiles`, shows a warning before making 
 To install a specific branch:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh | bash -s -- -b back_to_arch
+sudo pacman -S --needed curl && bash <(curl -fsSL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh) -b back_to_arch
 ```
 
 ## Keyboard Shortcuts
