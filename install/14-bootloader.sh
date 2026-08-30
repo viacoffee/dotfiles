@@ -82,27 +82,28 @@ sudo install -m 644 "$staged_limine_defaults" /etc/default/limine.dotfiles-new
 sudo mv /etc/default/limine.dotfiles-new /etc/default/limine
 rm -f "$staged_limine_defaults"
 
-# Keep a boot-discoverable recovery configuration in place while
-# /boot/limine.conf is regenerated. If the current configuration is already at
-# another Limine search path, leave it there until the new artifacts validate.
+# Preserve the known-working configuration before asking Limine to update it.
+# Keep the active file valid throughout the transaction instead of replacing it
+# with an entry-less template before generation.
 last_known_limine_config=/boot/limine.conf.dotfiles-last-known-good
 sudo cp "$limine_config" "${last_known_limine_config}.dotfiles-new"
 sudo mv "${last_known_limine_config}.dotfiles-new" "$last_known_limine_config"
 
-recovery_limine_config=$limine_config
-if [[ $limine_config == /boot/limine.conf ]]; then
-  recovery_limine_config=/boot/EFI/BOOT/limine.conf
-  sudo install -d "$(dirname "$recovery_limine_config")"
-  sudo cp "$limine_config" "${recovery_limine_config}.dotfiles-new"
-  sudo mv "${recovery_limine_config}.dotfiles-new" "$recovery_limine_config"
-fi
-success "Last known-working Limine configuration retained at $recovery_limine_config"
+restore_last_known_limine_configuration() {
+  sudo cp "$last_known_limine_config" /boot/limine.conf.dotfiles-new
+  sudo mv /boot/limine.conf.dotfiles-new /boot/limine.conf
+}
 
-# limine-update writes generated entries to /boot/limine.conf. The recovery
-# configuration above has higher search priority until validation completes.
-sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/limine/limine.conf" \
-  /boot/limine.conf.dotfiles-new
-sudo mv /boot/limine.conf.dotfiles-new /boot/limine.conf
+# Normalize older Limine config locations without changing their content. The
+# copy is promoted before the old search-path file is removed, so interruption
+# cannot leave the ESP without a valid configuration.
+if [[ $limine_config != /boot/limine.conf ]]; then
+  sudo cp "$limine_config" /boot/limine.conf.dotfiles-new
+  sudo mv /boot/limine.conf.dotfiles-new /boot/limine.conf
+  sudo rm -f -- "$limine_config"
+  limine_config=/boot/limine.conf
+fi
+success "Last known-working Limine configuration retained at $last_known_limine_config"
 
 # Match Snapper configs
 if ! sudo snapper list-configs 2>/dev/null | grep -q "root"; then
@@ -171,19 +172,26 @@ for stale in /boot/EFI/Linux/arch-linux.efi /boot/EFI/Linux/arch-linux-fallback.
 done
 
 expected_uki=/boot/EFI/Linux/dot_linux.efi
-inject_install_failure during-final-limine-update
+if ! inject_install_failure during-final-limine-update; then
+  restore_last_known_limine_configuration
+  error "Restored the last known-working Limine configuration"
+  return 1
+fi
 limine_output=$(mktemp)
 if run_logged "Running authoritative final Limine generation" \
   sudo limine-update | tee "$limine_output"; then
   :
 else
   rm -f "$limine_output"
+  restore_last_known_limine_configuration
+  error "Restored the last known-working Limine configuration"
   return 1
 fi
 
 if ! grep -Fq 'Unified kernel image generation successful' "$limine_output"; then
   rm -f "$limine_output"
-  error "Final Limine generation did not report a successful UKI build"
+  restore_last_known_limine_configuration
+  error "Final Limine generation did not report a successful UKI build; restored the last known-working configuration"
   return 1
 fi
 rm -f "$limine_output"
@@ -191,21 +199,25 @@ inject_install_failure after-final-limine-update
 
 log "Validating final Limine and UKI artifacts"
 if ! sudo test -s /boot/limine.conf; then
-  error "Final Limine configuration is missing or empty"
+  restore_last_known_limine_configuration
+  error "Final Limine configuration is missing or empty; restored the last known-working configuration"
   return 1
 fi
 if ! sudo grep -Fq 'dot_linux.efi' /boot/limine.conf; then
-  error "Final Limine configuration does not reference the expected UKI"
+  restore_last_known_limine_configuration
+  error "Final Limine configuration does not reference the expected UKI; restored the last known-working configuration"
   return 1
 fi
 if ! sudo test -s "$expected_uki"; then
-  error "Expected UKI is missing or empty: $expected_uki"
+  restore_last_known_limine_configuration
+  error "Expected UKI is missing or empty: $expected_uki; restored the last known-working configuration"
   return 1
 fi
 initramfs_listing=$(sudo lsinitcpio -l "$expected_uki")
 for required_command in cryptsetup plymouth btrfs; do
   if ! grep -Eq "(^|/)${required_command}$" <<< "$initramfs_listing"; then
-    error "Final UKI does not contain: $required_command"
+    restore_last_known_limine_configuration
+    error "Final UKI does not contain: $required_command; restored the last known-working configuration"
     return 1
   fi
 done
@@ -213,22 +225,17 @@ done
 if [[ -f /etc/mkinitcpio.conf.d/nvidia.conf ]]; then
   for required_module in nvidia nvidia_modeset nvidia_uvm nvidia_drm; do
     if ! grep -Eq "(^|/)${required_module}(\\.ko(\\.[a-z0-9]+)?)?$" <<< "$initramfs_listing"; then
-      error "Final UKI does not contain NVIDIA module: $required_module"
+      restore_last_known_limine_configuration
+      error "Final UKI does not contain NVIDIA module: $required_module; restored the last known-working configuration"
       return 1
     fi
   done
 fi
 success "Final Limine configuration and UKI validated"
 
-# Commit the generated configuration only after all checks pass. Removing the
-# recovery copy makes /boot/limine.conf authoritative again.
 if ! sudo test -s "$last_known_limine_config"; then
   error "Last known-working Limine configuration is missing or empty"
   return 1
-fi
-if [[ $recovery_limine_config != /boot/limine.conf ]]; then
-  run_logged "Committing generated Limine configuration" \
-    sudo rm -f -- "$recovery_limine_config"
 fi
 success "Generated Limine configuration committed"
 

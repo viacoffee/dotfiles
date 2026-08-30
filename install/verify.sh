@@ -102,7 +102,7 @@ limine_hook_has_expected_owner() {
   [[ $(pacman -Qqo /etc/pacman.d/hooks/90-mkinitcpio-install.hook) == limine-mkinitcpio-hook ]]
 }
 
-limine_recovery_configs_removed() {
+alternate_limine_configs_removed() {
   local candidate
 
   for candidate in \
@@ -267,8 +267,8 @@ main() {
     sudo grep -Fq 'dot_linux.efi' /boot/limine.conf
   check_command "last known-working Limine configuration is retained" \
     sudo test -s /boot/limine.conf.dotfiles-last-known-good
-  check_command "temporary Limine recovery configuration was removed" \
-    limine_recovery_configs_removed
+  check_command "alternate Limine configurations were removed" \
+    alternate_limine_configs_removed
   if sudo test -s "$uki"; then
     printf 'UKI SHA256: %s\n' "$(sudo sha256sum "$uki" | awk '{print $1}')"
   fi
