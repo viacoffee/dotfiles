@@ -10,4 +10,4 @@ ExecStart=/usr/bin/makoctl mode -a dnd
 ExecStartPost=/usr/bin/rm -f %h/.first-login
 
 [Install]
-WantedBy=graphical-session.target
+WantedBy=mako.service
