@@ -73,6 +73,20 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+# Fail if a path managed by the installer contains files owned by another user.
+verify_user_ownership() {
+  local path unexpected_owner
+
+  for path in "$@"; do
+    [[ -e $path ]] || continue
+    unexpected_owner=$(find "$path" -xdev ! -uid "$DOTFILES_DEFAULT_UID" -print -quit)
+    if [[ -n $unexpected_owner ]]; then
+      error "Unexpected ownership under $path: $unexpected_owner"
+      return 1
+    fi
+  done
+}
+
 # Check if package is installed (pacman)
 # Usage: package_installed "sddm"
 package_installed() {

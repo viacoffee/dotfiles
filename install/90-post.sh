@@ -10,7 +10,7 @@ enable_user_services() {
 
 # Create zsh cache
 log "Creating zsh cache directory..."
-mkdir -p ~/.cache/zsh
+mkdir -p "$HOME/.cache/zsh"
 
 # Enable session services
 enable_user_services \
@@ -36,6 +36,13 @@ fc-cache -f
 
 # Enable dnd mode for mako (deferred to first login)
 touch "$HOME/.first-login"
+
+verify_user_ownership \
+  "$HOME/.cache/zsh" \
+  "$HOME/.first-login" \
+  "$HOME/notes" \
+  "$HOME/projects" \
+  "$HOME/work"
 
 log "Updating tldr"
 tldr --update || true

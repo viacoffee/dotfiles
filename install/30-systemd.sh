@@ -102,6 +102,7 @@ if [[ ! -f "$path_conf" ]] || ! grep -q '.local/bin' "$path_conf"; then
   # shellcheck disable=SC2016 # variables must expand in the future user session
   echo 'PATH=$HOME/.local/bin:$PATH' >> "$path_conf"
 fi
+verify_user_ownership "$HOME/.config/environment.d" "$path_conf"
 
 run_logged "Reloading systemd manager" \
   sudo systemctl daemon-reload

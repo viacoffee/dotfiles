@@ -1,34 +1,22 @@
 #!/bin/bash
 
 # User Account Verification and Configuration
-# Verifies and configures the non-root user running the script for autologin
+# Uses the normal-user identity established by preflight.
 
 log "Verifying user account for autologin..."
 
-# Get the user running the script (the one with sudo privileges)
-# When run with sudo, we need to get the original user, not root
-if [[ -n "${SUDO_USER:-}" ]]; then
-  # Script was run with sudo, use the original user
-  LOGIN_USER="$SUDO_USER"
-  success "Detected user running with sudo: $LOGIN_USER"
-elif [[ "$EUID" -ne 0 ]]; then
-  # Script not run with sudo, use current user
-  LOGIN_USER="$(whoami)"
-  success "Detected current user: $LOGIN_USER"
-else
-  # Script is running as root without sudo (not recommended)
-  error "Script must be run as a non-root user or with sudo from a non-root user"
+if [[ -z ${DOTFILES_DEFAULT_USER:-} || -z ${DOTFILES_DEFAULT_UID:-} || -z ${DOTFILES_USER_HOME:-} ]]; then
+  error "Preflight did not establish the installer user"
   return 1
 fi
-
-# Validate that LOGIN_USER is not root
-if [[ "$LOGIN_USER" = "root" ]]; then
-  error "Autologin cannot be configured for root user. Please run the installer as a non-root user."
+if [[ $(id -un) != "$DOTFILES_DEFAULT_USER" || $(id -u) != "$DOTFILES_DEFAULT_UID" ]]; then
+  error "Installer user changed after preflight"
   return 1
 fi
-
-# Export the username for use in subsequent scripts
-export DOTFILES_DEFAULT_USER="$LOGIN_USER"
+if [[ $HOME != "$DOTFILES_USER_HOME" ]]; then
+  error "HOME changed after preflight"
+  return 1
+fi
 
 success "User verification completed"
 log "Default login user: $DOTFILES_DEFAULT_USER"

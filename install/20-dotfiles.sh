@@ -1,9 +1,8 @@
 #!/bin/bash
 
-if [[ $EUID -eq 0 && -n $SUDO_USER ]]; then
-  USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
-else
-  USER_HOME="$HOME"
+if [[ $HOME != "$DOTFILES_USER_HOME" ]]; then
+  error "Stow target does not match the home directory validated by preflight"
+  return 1
 fi
 
 if [[ "$(pwd)" != "$DOTFILES_PATH" ]]; then
@@ -13,20 +12,21 @@ fi
 log "Working directory: $(pwd)"
 
 log "Remove existing bashrc"
-[[ -f "$USER_HOME/.bashrc" ]] && rm -f "$USER_HOME/.bashrc"
+[[ -f "$HOME/.bashrc" ]] && rm -f "$HOME/.bashrc"
 
 log "stowing home"
-stow home
+stow -t "$HOME" home
 
 log "Remove niri config if it exists"
-[[ -f "$USER_HOME/.config/niri/config.kdl" ]] && rm -f "$USER_HOME/.config/niri/config.kdl"
+[[ -f "$HOME/.config/niri/config.kdl" ]] && rm -f "$HOME/.config/niri/config.kdl"
 
-mkdir -p "$USER_HOME/.config"
+mkdir -p "$HOME/.config"
 log "stowing config"
-stow --no-folding -t "$USER_HOME/.config" config
+stow --no-folding -t "$HOME/.config" config
 
-mkdir -p "$USER_HOME/.local"
+mkdir -p "$HOME/.local"
 log "stowing local"
-stow --no-folding -t "$USER_HOME/.local" local
+stow --no-folding -t "$HOME/.local" local
 
+verify_user_ownership "$HOME/.config" "$HOME/.local" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.zshrc"
 success "Dotfiles stowed"
