@@ -42,6 +42,14 @@ for dir in "${DEFAULT_DIRS[@]}"; do
   mkdir -p "$HOME/$dir"
 done
 
+# Install the repository default wallpaper without stowing it. Keep an
+# existing local override.
+DEFAULT_BACKGROUND="$DOTFILES_INSTALL_DEFAULTS_PATH/background.jpg"
+if [[ ! -e $HOME/background.jpg && ! -L $HOME/background.jpg ]]; then
+  cp -- "$DEFAULT_BACKGROUND" "$HOME/background.jpg"
+  log "Installed default wallpaper"
+fi
+
 # Refresh font cache
 fc-cache -f
 
