@@ -2,6 +2,7 @@
 
 window-rule {
   match app-id="Alacritty"
+
   open-maximized-to-edges true
 }
 
@@ -11,6 +12,7 @@ window-rule {
   match app-id="mpv"
   match app-id="imv"
 
-  default-window-height { proportion 0.5; }
-  default-column-width { proportion 0.6; }
+  open-floating false
+  default-column-width { proportion 0.5; }
+  default-window-height {}
 }
