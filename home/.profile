@@ -9,8 +9,3 @@ export UWSM_SILENT_START=1
 if [ -d "$HOME/.local/bin" ]; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
-
-# Wayland session
-if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$DISPLAY" ]; then
-  export WAYLAND_DISPLAY="wayland-0"
-fi

@@ -27,6 +27,11 @@ enable_user_services \
   swayosd \
   dot-first-login
 
+log "Configuring gtk appearance"
+gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+gsettings set org.gnome.desktop.interface icon-theme Yaru-dark
+gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
+
 log "Creating default home directories"
 DEFAULT_DIRS=(
   notes
