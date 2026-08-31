@@ -22,9 +22,7 @@
     "niri/workspaces"
   ],
   "modules-right": [
-    "group/tray-expander",
-    "bluetooth",
-    "network",
+    "tray",
     "battery"
   ]
 }
