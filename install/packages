@@ -32,6 +32,7 @@ limine
 limine-mkinitcpio-hook
 limine-snapper-sync
 lsd
+lsof
 mako
 mpv
 nautilus
