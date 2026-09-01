@@ -3,7 +3,7 @@
 exec bemenu \
   --prompt "$1" \
   --ignorecase \
-  --fn 'InputMono Nerd Font 10' \
+  --fn 'Noto Sans Mono, Symbols Nerd Font Mono, monospace 10' \
   --line-height 30 \
   --hp 10 \
   --no-overlap \

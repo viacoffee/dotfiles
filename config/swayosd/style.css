@@ -17,7 +17,7 @@ window#osd image {
 
 window#osd image,
 window#osd label {
-  font-family: 'InputMono Nerd Font';
+  font-family: "Noto Sans Mono", "Symbols Nerd Font Mono", monospace;
   font-size: 12px;
   color: #cfd8dc;
 }

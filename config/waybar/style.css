@@ -13,7 +13,7 @@ window#waybar {
   border-radius: 0;
   box-shadow: none;
   color: #98a2b0;
-  font-family: "Mononoki Nerd Font", monospace, sans-serif;
+  font-family: "Noto Sans Mono", "Symbols Nerd Font Mono", monospace;
   font-size: 13.5px;
 }
 
