@@ -54,10 +54,6 @@ if [[ ! -L /etc/resolv.conf ]] || [[ "$(readlink /etc/resolv.conf)" != *"stub-re
   sudo ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 fi
 
-# IP forwarding for Docker
-sudo mkdir -p /etc/sysctl.d
-sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/sysctl/99-docker.conf" /etc/sysctl.d/99-docker.conf
-
 # Disable NVIDIA suspend/hibernate services
 # NOTE-david possibly revisit this after laptop testing
 for svc in nvidia-suspend nvidia-hibernate nvidia-resume nvidia-suspend-then-hibernate; do

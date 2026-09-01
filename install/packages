@@ -9,9 +9,6 @@ btop
 btrfs-progs
 cryptsetup
 curl
-docker
-docker-buildx
-docker-compose
 fastfetch
 firefox
 fzf
@@ -66,7 +63,6 @@ ttf-liberation
 ttf-nerd-fonts-symbols-mono
 ttf-space-mono-nerd
 ufw
-ufw-docker
 unzip
 uwsm
 waybar
