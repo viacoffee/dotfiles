@@ -16,7 +16,7 @@
     }
   },
   "clock": {
-    "format": "{0:%H}\n{0:%M}\n<span size='2000'> </span>\n<span size='small' alpha='55%' foreground='#98a2b0'>{0:%d}</span>",
+    "format": "{0:%H}\n{0:%M}\n<span size='2000'> </span>\n<span alpha='55%' foreground='#98a2b0'>{0:%d}</span>",
     "format-alt": "{:%m\n%d\n%y}",
     "tooltip": false
   },
