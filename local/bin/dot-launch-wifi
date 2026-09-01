@@ -5,5 +5,4 @@ source "$SCRIPT_DIR/lib/helpers.sh"
 
 # Attempts to unblock the wifi service first in case it should be been blocked.
 rfkill unblock wifi
-signal_waybar "9"
 dot-launch-term-float impala

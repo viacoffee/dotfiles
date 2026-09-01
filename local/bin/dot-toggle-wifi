@@ -8,5 +8,3 @@ if rfkill list wifi | grep -q "Soft blocked: yes"; then
 else
   rfkill block wifi
 fi
-
-signal_waybar "9"
