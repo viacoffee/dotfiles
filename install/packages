@@ -7,7 +7,6 @@ bluetui
 brightnessctl
 btop
 btrfs-progs
-clang
 cryptsetup
 curl
 docker
@@ -51,8 +50,6 @@ plymouth
 polkit-gnome
 power-profiles-daemon
 python-gobject
-qt5-wayland
-qt6-wayland
 ripgrep
 rtkit
 slurp
