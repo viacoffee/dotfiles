@@ -91,15 +91,6 @@ fi
 sudo mkdir -p "/etc/systemd/system.conf.d"
 sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/systemd/faster-shutdown.conf" /etc/systemd/system.conf.d/10-faster-shutdown.conf
 
-# Ensure .local/bin gets added to the environment path
-path_conf="$HOME/.config/environment.d/10-path.conf"
-mkdir -p "$HOME/.config/environment.d"
-if [[ ! -f "$path_conf" ]] || ! grep -q '.local/bin' "$path_conf"; then
-  # shellcheck disable=SC2016 # variables must expand in the future user session
-  echo 'PATH=$HOME/.local/bin:$PATH' >> "$path_conf"
-fi
-verify_user_ownership "$HOME/.config/environment.d" "$path_conf"
-
 run_logged "Reloading systemd manager" \
   sudo systemctl daemon-reload
 success "System services configured"
