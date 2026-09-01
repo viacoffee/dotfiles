@@ -50,9 +50,6 @@ if [[ ! -e $HOME/background.jpg && ! -L $HOME/background.jpg ]]; then
   log "Installed default wallpaper"
 fi
 
-# Refresh font cache
-fc-cache -f
-
 verify_user_ownership \
   "$HOME/.cache/zsh" \
   "$HOME/.first-login" \
