@@ -8,17 +8,27 @@ source ~/.zshrc.functions
 # Starship prompt
 eval "$(starship init zsh)"
 
-# Completion (compinit) — cached
+# Completion
 autoload -Uz compinit
 zmodload zsh/complist
 
-# Completion behavior
 zstyle ':completion:*' menu select
-zstyle ':completion:*' rehash true
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
-# Use cache for speed
-compinit -d ~/.cache/zsh/zcompdump
+zcompdump="$HOME/.cache/zsh/zcompdump"
+zcompstamp="$HOME/.cache/zsh/zcompdump.last-check"
+
+# Refresh completion definitions twice daily; use the fast cached path for
+# every other shell.
+if [[ ! -s $zcompdump ||
+      ! -e $zcompstamp ||
+      -n ${~zcompstamp}(N.mh+12) ]]; then
+  compinit -d "$zcompdump" && : >| "$zcompstamp"
+else
+  compinit -C -d "$zcompdump"
+fi
+
+unset zcompdump zcompstamp
 
 # History
 HISTFILE=~/.zsh_history
