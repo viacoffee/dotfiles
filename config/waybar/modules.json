@@ -53,8 +53,9 @@
   },
   "custom/screenrecord-indicator": {
     "on-click": "dot-cmd-screenrecord",
+    "exec-on-event": false,
     "exec": "$HOME/.config/waybar/indicators/screenrecord.sh",
-    "interval": 5,
+    "signal": 9,
     "return-type": "json"
   },
   "custom/webcam-indicator": {
