@@ -1,0 +1,135 @@
+#!/bin/bash
+set -euo pipefail
+
+REPO_ROOT=$(cd "$(dirname "$(readlink -f "$0")")/../.." && pwd)
+DOCKER_SYSCTL_SOURCE="$REPO_ROOT/install/default/sysctl/99-docker.conf"
+DOCKER_SYSCTL_TARGET=/etc/sysctl.d/99-docker.conf
+DOCKER_PACKAGES=(docker docker-buildx docker-compose ufw-docker)
+
+usage() {
+  cat <<'EOF'
+Usage:
+  dot-dev status
+  dot-dev install docker
+  dot-dev remove docker
+EOF
+}
+
+package_installed() {
+  pacman -Q "$1" >/dev/null 2>&1
+}
+
+docker_status() {
+  local package state
+
+  printf 'Core build environment:\n'
+  for package in base-devel yay; do
+    if package_installed "$package"; then
+      state=installed
+    else
+      state=missing
+    fi
+    printf '  %-16s %s\n' "$package" "$state"
+  done
+
+  printf 'Docker environment:\n'
+  for package in "${DOCKER_PACKAGES[@]}"; do
+    if package_installed "$package"; then
+      state=installed
+    else
+      state=missing
+    fi
+    printf '  %-16s %s\n' "$package" "$state"
+  done
+
+  if systemctl is-enabled --quiet docker.socket 2>/dev/null; then
+    printf '  %-16s enabled\n' docker.socket
+  else
+    printf '  %-16s disabled\n' docker.socket
+  fi
+
+  if grep -Fq 'BEGIN UFW AND DOCKER' /etc/ufw/after.rules 2>/dev/null; then
+    printf '  %-16s installed\n' 'UFW rules'
+  else
+    printf '  %-16s missing\n' 'UFW rules'
+  fi
+}
+
+install_docker() {
+  if [[ ! -f $DOCKER_SYSCTL_SOURCE ]]; then
+    printf 'Docker sysctl configuration not found: %s\n' "$DOCKER_SYSCTL_SOURCE" >&2
+    return 1
+  fi
+
+  sudo pacman -S --needed "${DOCKER_PACKAGES[@]}"
+  sudo install -Dm644 "$DOCKER_SYSCTL_SOURCE" "$DOCKER_SYSCTL_TARGET"
+  sudo sysctl --load "$DOCKER_SYSCTL_TARGET"
+
+  # Socket activation keeps dockerd stopped until a client uses it.
+  sudo systemctl enable --now docker.socket
+
+  sudo ufw allow in proto udp from 172.16.0.0/12 to 172.17.0.1 port 53 \
+    comment 'allow-docker-dns'
+  sudo ufw-docker install
+  sudo ufw reload
+
+  printf '\nDocker is installed. Use sudo docker, or explicitly join the root-equivalent docker group.\n'
+}
+
+remove_docker() {
+  local answer package
+  local -a installed_packages=()
+
+  read -r -p 'Remove Docker packages and managed configuration? [y/N] ' answer
+  [[ $answer =~ ^[Yy]([Ee][Ss])?$ ]] || {
+    printf 'Docker removal cancelled.\n'
+    return 0
+  }
+
+  if command -v ufw-docker >/dev/null 2>&1; then
+    sudo ufw-docker uninstall
+  fi
+
+  if sudo ufw status | grep -Fq 'allow-docker-dns'; then
+    sudo ufw --force delete allow in proto udp from 172.16.0.0/12 \
+      to 172.17.0.1 port 53 comment 'allow-docker-dns'
+  fi
+  sudo ufw reload
+
+  if package_installed docker; then
+    sudo systemctl disable --now docker.service docker.socket
+  fi
+
+  sudo rm -f "$DOCKER_SYSCTL_TARGET"
+
+  for package in "${DOCKER_PACKAGES[@]}"; do
+    package_installed "$package" && installed_packages+=("$package")
+  done
+  if ((${#installed_packages[@]})); then
+    sudo pacman -Rns --noconfirm "${installed_packages[@]}"
+  fi
+
+  printf '\nDocker packages and managed configuration were removed. /var/lib/docker was preserved.\n'
+}
+
+case ${1:-} in
+  '')
+    usage
+    ;;
+  status)
+    (($# == 1)) || { usage >&2; exit 2; }
+    docker_status
+    ;;
+  install|remove)
+    (($# == 2)) || { usage >&2; exit 2; }
+    [[ $2 == docker ]] || { printf 'Unknown development environment: %s\n' "$2" >&2; exit 2; }
+    "${1}_docker"
+    ;;
+  -h|--help)
+    usage
+    ;;
+  *)
+    usage >&2
+    exit 2
+    ;;
+esac

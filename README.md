@@ -142,6 +142,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | Command | Description |
 |---|---|
 | `dot-theme-background` | Set desktop wallpaper from a file path or URL |
+| `dot-dev` | Install, inspect, or remove optional development environments such as Docker |
 | `dot-update` | Update system packages and optionally reboot |
 | `dot-migrate` | Restow dotfiles and remove orphaned symlinks |
 
