@@ -1,27 +1,9 @@
 #!/bin/bash
 
-# List .desktop apps, pick with bemenu, launch via uwsm.
-# NoDisplay/Hidden, doesn't handle Terminal=true apps or localized names.
-
-# System first so user dirs override on name collision.
-dirs=(/usr/share/applications ~/.local/share/applications)
-
-declare -A APPS
-for d in "${dirs[@]}"; do
-  [[ -d $d ]] || continue
-  for f in "$d"/*.desktop; do
-    [[ -e $f ]] || continue
-    grep -qiE '^(NoDisplay|Hidden)=true' "$f" && continue
-    name=$(sed -n 's/^Name=//p' "$f" | head -1)
-    exec_line=$(sed -n 's/^Exec=//p' "$f" | head -1)
-    [[ -n $name && -n $exec_line ]] || continue
-    APPS[$name]="$exec_line"
-  done
-done
-
-choice=$(printf '%s\n' "${!APPS[@]}" | sort | dot-launch-menu "")
-[[ -n $choice ]] || exit 0
-
-# Strip freedesktop field codes (%f %U %i …) and launch detached via uwsm.
-cmd=$(sed 's/%[a-zA-Z]//g' <<< "${APPS[$choice]}")
-exec uwsm-app -- $cmd
+exec j4-dmenu-desktop \
+  --dmenu="dot-launch-menu" \
+  --wrapper="uwsm-app --" \
+  --term-mode=custom \
+  --term="xdg-terminal-exec --title={name} -- {cmdline@}" \
+  --no-generic \
+  --log-level=ERROR

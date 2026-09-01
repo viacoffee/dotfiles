@@ -26,6 +26,9 @@ setup() {
   packages_file=$repo_root/install/packages
   pacman_script=$repo_root/install/10-packages.sh
   pacman_fragment=$repo_root/install/default/pacman/dotfiles-repositories.conf
+  app_launcher=$repo_root/local/bin/dot-menu-apps
+  application_overrides=$repo_root/install/default/applications
+  user_setup_script=$repo_root/install/40-user-setup.sh
   swayosd_style=$repo_root/config/swayosd/style.css
 }
 
@@ -188,6 +191,46 @@ setup() {
   run grep -Fq '91-mimes.sh' "$repo_root/install.sh"
   [ "$status" -eq 1 ]
   [ ! -e "$repo_root/install/91-mimes.sh" ]
+}
+
+@test "application launcher uses Bemenu with a desktop-entry backend" {
+  grep -Fxq j4-dmenu-desktop "$packages_file"
+  grep -Fq 'exec j4-dmenu-desktop' "$app_launcher"
+  grep -Fq -- '--dmenu="dot-launch-menu"' "$app_launcher"
+  grep -Fq -- '--wrapper="uwsm-app --"' "$app_launcher"
+  grep -Fq -- '--term="xdg-terminal-exec --title={name} -- {cmdline@}"' "$app_launcher"
+
+  hidden_overrides=(
+    avahi-discover.desktop
+    bssh.desktop
+    btop.desktop
+    bvnc.desktop
+    limine-snapper-restore.desktop
+    lstopo.desktop
+    qv4l2.desktop
+    qvidcap.desktop
+    uuctl.desktop
+    vim.desktop
+    xgps.desktop
+    xgpsspeed.desktop
+  )
+  for desktop_id in "${hidden_overrides[@]}"; do
+    grep -Fxq 'Hidden=true' "$application_overrides/$desktop_id"
+  done
+
+  grep -Fxq 'X-TerminalArgExec=-e' "$application_overrides/Alacritty.desktop"
+  grep -Fxq 'X-TerminalArgAppId=--class' "$application_overrides/Alacritty.desktop"
+  [ ! -e "$repo_root/local/share/applications/Alacritty.desktop" ]
+  [ "$(find "$application_overrides" -maxdepth 1 -type f -name '*.desktop' | wc -l)" -eq "$(( ${#hidden_overrides[@]} + 1 ))" ]
+  if command -v desktop-file-validate >/dev/null 2>&1; then
+    run desktop-file-validate "$application_overrides"/*.desktop
+    [ "$status" -eq 0 ]
+  fi
+
+  grep -Fq 'APPLICATION_OVERRIDES_DIR="$HOME/.local/share/applications"' "$user_setup_script"
+  grep -Fq '"$DOTFILES_INSTALL_DEFAULTS_PATH/applications/"*.desktop' "$user_setup_script"
+  grep -Fq 'install -m 0644 -- "$desktop_override"' "$user_setup_script"
+  grep -Fq '"$APPLICATION_OVERRIDES_DIR/${desktop_override##*/}"' "$user_setup_script"
 }
 
 @test "first-login setup is ordered after mako without a helper script" {

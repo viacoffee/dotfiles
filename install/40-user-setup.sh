@@ -42,6 +42,14 @@ for dir in "${DEFAULT_DIRS[@]}"; do
   mkdir -p "$HOME/$dir"
 done
 
+log "Installing application menu overrides"
+APPLICATION_OVERRIDES_DIR="$HOME/.local/share/applications"
+mkdir -p "$APPLICATION_OVERRIDES_DIR"
+for desktop_override in "$DOTFILES_INSTALL_DEFAULTS_PATH/applications/"*.desktop; do
+  install -m 0644 -- "$desktop_override" \
+    "$APPLICATION_OVERRIDES_DIR/${desktop_override##*/}"
+done
+
 # Install the repository default wallpaper without stowing it. Keep an
 # existing local override.
 DEFAULT_BACKGROUND="$DOTFILES_INSTALL_DEFAULTS_PATH/background.jpg"
@@ -53,6 +61,7 @@ fi
 verify_user_ownership \
   "$HOME/.cache/zsh" \
   "$HOME/.first-login" \
+  "$APPLICATION_OVERRIDES_DIR" \
   "$HOME/notes" \
   "$HOME/projects" \
   "$HOME/work"

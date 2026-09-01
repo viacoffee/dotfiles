@@ -1,6 +1,6 @@
 include "bindings.kdl"
 include "window-rules.kdl"
-// include optional=true "window-rules.laptop.kdl"
+include optional=true "window-rules.laptop.kdl"
 include "animations.kdl"
 
 switch-events {
