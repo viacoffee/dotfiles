@@ -32,7 +32,7 @@
     "format-full": "󰂅",
     "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
     "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
-    "interval": 5,
+    "interval": 30,
     "on-click": "dot-menu power",
     "states": {
       "warning": 20,
@@ -54,23 +54,23 @@
   "custom/screenrecord-indicator": {
     "on-click": "dot-cmd-screenrecord",
     "exec": "$HOME/.config/waybar/indicators/screenrecord.sh",
-    "interval": 3,
+    "interval": 5,
     "return-type": "json"
   },
   "custom/webcam-indicator": {
     "exec": "$HOME/.config/waybar/indicators/webcam.sh",
     "return-type": "json",
-    "interval": 3
+    "interval": 5
   },
   "custom/screenshare-indicator": {
     "exec": "$HOME/.config/waybar/indicators/screenshare.sh",
     "return-type": "json",
-    "interval": 3
+    "interval": 5
   },
   "custom/dnd": {
     "on-click": "dot-toggle-dnd",
     "exec": "$HOME/.config/waybar/indicators/dnd.sh",
     "signal": 8,
     "return-type": "json"
-  },
+  }
 }
