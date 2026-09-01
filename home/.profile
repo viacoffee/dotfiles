@@ -7,5 +7,8 @@ export UWSM_SILENT_START=1
 
 # Add ~/.local/bin to PATH
 if [ -d "$HOME/.local/bin" ]; then
-  export PATH="$HOME/.local/bin:$PATH"
+  case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) export PATH="$HOME/.local/bin:$PATH" ;;
+  esac
 fi
