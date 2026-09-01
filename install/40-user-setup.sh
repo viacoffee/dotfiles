@@ -57,9 +57,6 @@ verify_user_ownership \
   "$HOME/projects" \
   "$HOME/work"
 
-log "Updating tldr"
-tldr --update || true
-
 # Set shell
 log "Changing default shell..."
 sudo usermod -s /bin/zsh "$DOTFILES_DEFAULT_USER"
