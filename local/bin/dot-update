@@ -31,18 +31,14 @@ dot-snapshot create || [ $? -eq 127 ]
 
 exec > >(tee "$update_log") 2>&1
 
-echo "Updating time..."
-sudo systemctl restart systemd-timesyncd
-
 echo -e "\e[32m\nUpdate system packages\e[0m"
-sudo pacman -Syyu --noconfirm
+sudo pacman -Syu --noconfirm
 
-orphans=$(pacman -Qtdq || true)
-if [[ -n $orphans ]]; then
+orphans=()
+mapfile -t orphans < <(pacman -Qtdq)
+if ((${#orphans[@]})); then
   echo -e "\e[32m\nRemove orphan system packages\e[0m"
-  for pkg in $orphans; do
-    sudo pacman -Rs --noconfirm "$pkg" || true
-  done
+  sudo pacman -Rns --noconfirm "${orphans[@]}"
   echo
 fi
 
