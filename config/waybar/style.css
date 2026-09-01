@@ -14,7 +14,7 @@ window#waybar {
   box-shadow: none;
   color: #98a2b0;
   font-family: "Noto Sans Mono", "Symbols Nerd Font Mono", monospace;
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 #clock {
@@ -83,7 +83,7 @@ tooltip * {
 }
 
 #custom-idle-indicator {
-  margin-top: 10px;
+  margin: 10px 0 0 -1px;
   font-size: 10px;
   opacity: 0.7;
   color: #98a2b0;
@@ -108,7 +108,7 @@ tooltip * {
 }
 
 #custom-dnd {
-  margin: 10px 0 0 -3px;
+  margin: 10px 0 0;
   font-size: 13px;
   opacity: 0.7;
   color: #98a2b0;
