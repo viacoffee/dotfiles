@@ -34,7 +34,6 @@ less
 limine
 limine-mkinitcpio-hook
 limine-snapper-sync
-linux-headers
 lsd
 mako
 mpv
