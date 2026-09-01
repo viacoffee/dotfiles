@@ -140,7 +140,7 @@ gtk_settings_are_declarative() {
   local settings_file=$1
 
   grep -Fxq 'gtk-theme-name=Adwaita-dark' "$settings_file" &&
-    grep -Fxq 'gtk-icon-theme-name=Yaru-dark' "$settings_file" &&
+    ! grep -q '^gtk-icon-theme-name=' "$settings_file" &&
     grep -Fxq 'gtk-application-prefer-dark-theme=true' "$settings_file"
 }
 

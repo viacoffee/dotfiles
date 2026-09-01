@@ -187,6 +187,10 @@ setup() {
 
   grep -Fxq 'gtk-theme-name=Adwaita-dark' "$clean_home/.config/gtk-3.0/settings.ini"
   grep -Fxq 'gtk-application-prefer-dark-theme=true' "$clean_home/.config/gtk-4.0/settings.ini"
+  run grep -R '^gtk-icon-theme-name=' \
+    "$clean_home/.config/gtk-3.0/settings.ini" \
+    "$clean_home/.config/gtk-4.0/settings.ini"
+  [ "$status" -eq 1 ]
   grep -Fq '"$HOME/.config/mimeapps.list"' "$repo_root/install/20-dotfiles.sh"
   run grep -Fq '91-mimes.sh' "$repo_root/install.sh"
   [ "$status" -eq 1 ]
