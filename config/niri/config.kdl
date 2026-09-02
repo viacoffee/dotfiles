@@ -28,7 +28,7 @@ input {
 
   keyboard {
     xkb {
-      options "compose:rctrl,lv5:caps_switch"
+      options "lv5:caps_switch"
     }
 
     repeat-delay 300
