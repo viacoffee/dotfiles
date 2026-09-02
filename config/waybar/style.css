@@ -33,7 +33,8 @@ window#waybar {
 #custom-screenrecord-indicator,
 #custom-webcam-indicator,
 #custom-screenshare-indicator,
-#custom-dnd {
+#custom-dnd,
+#custom-niri-window-position {
   min-width: 36px;
   margin: 0;
   padding-left: 0;
