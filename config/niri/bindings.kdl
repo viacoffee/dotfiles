@@ -27,7 +27,7 @@ binds {
   Mod+Shift+Space { spawn "dot-hivemind"; }
 
   // Capslock layer: Copy/Paste (terminal)
-  ISO_Level5_Shift+c { spawn "sh" "-c" "wtype -M ctrl -k Insert; sleep 0.1; content=$(xclip -selection primary -o 2>/dev/null); [ -n \"$content\" ] && echo \"$content\" | wl-copy"; }
+  ISO_Level5_Shift+c { spawn "wtype" "-M" "ctrl" "-k" "Insert"; }
   ISO_Level5_Shift+v { spawn "wtype" "-M" "shift" "-k" "Insert"; }
 
   // File browser
