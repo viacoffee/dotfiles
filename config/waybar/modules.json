@@ -46,7 +46,7 @@
     "show-passive-items": false
   },
   "custom/niri-window-position": {
-    "exec": "niri-window-position --layout vertical --dot · --active ● --hide-single",
+    "exec": "niri-window-position --layout vertical --dot ○ --active ● --hide-single",
     "return-type": "json"
   },
   "custom/idle-indicator": {
