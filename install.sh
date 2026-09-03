@@ -122,6 +122,16 @@ log "Installation started at: $(date '+%Y-%m-%d %H:%M:%S')"
 
 log "Starting installation phases"
 
+# Authenticate before rendering the preflight section. Bootstrap performs this
+# check before handing off to the installer; direct install.sh runs need it too.
+if ! sudo -n true 2>/dev/null; then
+  printf 'sudo access is required to continue.\n'
+  if ! sudo -v; then
+    _startup_error "Unable to obtain sudo access"
+    exit 1
+  fi
+fi
+
 run_phase "00-preflight.sh" "Preflight checks"
 readonly DOTFILES_DEFAULT_USER DOTFILES_DEFAULT_UID DOTFILES_USER_HOME
 

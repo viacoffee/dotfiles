@@ -85,17 +85,6 @@ else
   return 1
 fi
 
-# Check for sudo access
-step "Checking sudo access"
-if sudo -n true 2>/dev/null; then
-  success "sudo access confirmed (no password required)"
-elif sudo -v 2>/dev/null; then
-  success "sudo access confirmed"
-else
-  error "No sudo access - required for system configuration"
-  return 1
-fi
-
 step "Checking for the Limine bootloader"
 if command_exists limine; then
   success "limine bootloader found"
