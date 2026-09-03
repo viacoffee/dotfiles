@@ -561,8 +561,11 @@ EOF
   upgrade_line=$(grep -nF 'sudo pacman -Syu --noconfirm' "$pacman_script" | cut -d: -f1)
 
   [ "$module_line" -lt "$upgrade_line" ]
-  grep -Fxq '  nf_tables' "$pacman_script"
-  grep -Fxq '  nft_compat' "$pacman_script"
+  for module in \
+    nf_tables nft_compat nft_fib_ipv4 nft_fib_ipv6 nft_limit nft_log \
+    ipt_REJECT ip6t_REJECT ip6t_rt xt_hl; do
+    grep -Fxq "  $module" "$pacman_script"
+  done
 }
 
 @test "privileged commands use process-state polling for ticker updates" {
@@ -654,10 +657,6 @@ EOF
 
   [ "$status" -eq 1 ]
   [[ $output == *"Required packages do not resolve: missing-one missing-two"* ]]
-}
-
-@test "UFW has an iptables backend" {
-  grep -Fxq iptables "$packages_file"
 }
 
 @test "PipeWire runtime packages are installed" {

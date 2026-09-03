@@ -176,18 +176,31 @@ validate_pacman_configuration
 firewall_modules=(
   nf_tables
   nf_conntrack
+  nf_log_syslog
   nf_nat
   nft_chain_nat
+  nft_compat
   nft_ct
+  nft_fib
+  nft_fib_inet
+  nft_fib_ipv4
+  nft_fib_ipv6
+  nft_limit
+  nft_log
   nft_masq
+  nft_reject
+  nft_reject_inet
   nft_reject_ipv4
   nft_reject_ipv6
-  nft_compat
   ip_tables
   ip6_tables
+  ipt_REJECT
+  ip6t_REJECT
+  ip6t_rt
   xt_addrtype
   xt_comment
   xt_conntrack
+  xt_hl
   xt_limit
   xt_LOG
   xt_multiport
