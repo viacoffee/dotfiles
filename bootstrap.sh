@@ -132,6 +132,15 @@ printf 'Target: %s\n' "$CLONE_DIR"
 printf 'Log: %s\n\n' "$BOOTSTRAP_LOG"
 
 if ! command -v git >/dev/null 2>&1; then
+  # Authenticate before drawing the in-place status line so sudo's password
+  # prompt cannot overwrite it.
+  if ! sudo -n true 2>/dev/null; then
+    printf 'sudo is required to continue.\n'
+    if ! sudo -v; then
+      bootstrap_error "Unable to obtain sudo access"
+      exit 1
+    fi
+  fi
   run_quiet "Installing Git" sudo pacman -S --noconfirm git
 else
   bootstrap_done "Git is available"
