@@ -118,6 +118,7 @@ DOTFILES_INSTALL_LOG_FILE=$log_file
 source "$repo_root/install/lib/helpers.sh"
 section_start "Packages"
 step "Synchronizing databases"
+section_note "No optional hardware detected; skipped"
 section_complete
 section_start "Bootloader"
 DOTFILES_LAST_ERROR="Generation failed"
@@ -131,7 +132,28 @@ EOF
   [[ $output == *$'\033[0;34m○ Packages'* ]]
   [[ $output == *$'\033[0;90m  ○ Synchronizing databases'* ]]
   [[ $output == *$'\033[0;32m● Packages'* ]]
+  [[ $output == *"No optional hardware detected; skipped"* ]]
   [[ $output == *$'\033[0;31m● Bootloader'* ]]
+}
+
+@test "long-running commands update the TTY ticker with elapsed time" {
+  log_file=$BATS_TEST_TMPDIR/elapsed-status.log
+  status_script=$BATS_TEST_TMPDIR/elapsed-status.sh
+  cat > "$status_script" <<EOF
+#!/usr/bin/env bash
+DOTFILES_INSTALL_LOG_FILE=$log_file
+source "$repo_root/install/lib/helpers.sh"
+section_start "Packages"
+run_logged "Downloading packages" sleep 2
+section_complete
+EOF
+  chmod +x "$status_script"
+
+  run env TERM=xterm script -qefc "$status_script" /dev/null
+
+  [ "$status" -eq 0 ]
+  [[ $output == *"○ Downloading packages (1s)"* ]]
+  [[ $output == *$'\033[0;32m● Packages'* ]]
 }
 
 @test "NO_COLOR keeps TTY markers but removes escape sequences" {
@@ -607,6 +629,10 @@ EOF
 
   [ "$status" -eq 1 ]
   [[ $output == *"Required packages do not resolve: missing-one missing-two"* ]]
+}
+
+@test "UFW has an iptables backend" {
+  grep -Fxq iptables "$packages_file"
 }
 
 @test "PipeWire runtime packages are installed" {

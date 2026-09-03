@@ -169,5 +169,4 @@ if ! cd "$CLONE_DIR"; then
   exit 1
 fi
 
-bootstrap_done "Starting installer"
 exec bash install.sh

@@ -8,6 +8,7 @@ setup() {
   cat > "$mock_bin/git" <<'EOF'
 #!/usr/bin/env bash
 printf '%s\n' "$*" >> "$GIT_CALLS"
+printf 'clone progress details\n' >&2
 clone_dir=${!#}
 mkdir -p "$clone_dir"
 printf '#!/usr/bin/env bash\nprintf "installer started\\n"\n' > "$clone_dir/install.sh"
@@ -60,5 +61,8 @@ run_bootstrap_in_tty() {
 
   [ "$status" -eq 0 ]
   [[ $output == *"installer started"* ]]
+  [[ $output != *"Starting installer..."* ]]
+  [[ $output != *"clone progress details"* ]]
+  grep -Fq 'clone progress details' "$test_home/.local/state/dotfiles/install.log"
   grep -Fq -- '--recurse-submodules -b installer-refactor' "$BATS_TEST_TMPDIR/git.calls"
 }

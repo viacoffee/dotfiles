@@ -15,6 +15,7 @@ CURSOR_UP='\033[1A'
 
 DOTFILES_ACTIVE_SECTION=${DOTFILES_ACTIVE_SECTION:-}
 DOTFILES_CURRENT_STEP=${DOTFILES_CURRENT_STEP:-}
+DOTFILES_SECTION_NOTE=${DOTFILES_SECTION_NOTE:-}
 DOTFILES_STATUS_RENDERED=0
 DOTFILES_TICKER_RENDERED=0
 DOTFILES_LAST_ERROR=${DOTFILES_LAST_ERROR:-}
@@ -87,6 +88,15 @@ _render_active_status() {
   fi
 }
 
+_update_ticker_elapsed() {
+  local description=$1
+  local elapsed=$2
+  ((DOTFILES_INTERACTIVE_OUTPUT && DOTFILES_TICKER_RENDERED)) || return 0
+
+  printf '\r%b' "$ERASE_LINE"
+  _print_styled "$DIM" "  ○ $description (${elapsed}s)"
+}
+
 log() {
   _write_log INFO "$@"
 }
@@ -113,6 +123,7 @@ section_start() {
 
   DOTFILES_ACTIVE_SECTION=$title
   DOTFILES_CURRENT_STEP=
+  DOTFILES_SECTION_NOTE=
   _write_log SECTION "Starting: $title"
 
   if ((DOTFILES_INTERACTIVE_OUTPUT)); then
@@ -131,12 +142,23 @@ section_complete() {
     _clear_status_display
     _print_styled "$GREEN" "● $title"
     printf '\n'
+    if [[ -n $DOTFILES_SECTION_NOTE ]]; then
+      _print_styled "$DIM" "  $DOTFILES_SECTION_NOTE"
+      printf '\n'
+    fi
   else
     printf 'DONE  %s\n' "$title"
+    [[ -z $DOTFILES_SECTION_NOTE ]] || printf 'NOTE  %s\n' "$DOTFILES_SECTION_NOTE"
   fi
 
   DOTFILES_ACTIVE_SECTION=
   DOTFILES_CURRENT_STEP=
+  DOTFILES_SECTION_NOTE=
+}
+
+section_note() {
+  DOTFILES_SECTION_NOTE="$(_read_message "$@")"
+  _write_log NOTE "$DOTFILES_SECTION_NOTE"
 }
 
 warn() {
@@ -209,6 +231,7 @@ section_failed() {
 
   DOTFILES_ACTIVE_SECTION=
   DOTFILES_CURRENT_STEP=
+  DOTFILES_SECTION_NOTE=
 }
 
 # Run a non-interactive command with all routine output captured in the log.
@@ -216,6 +239,7 @@ run_logged() {
   local description=$1
   shift
   local exit_code command_string capture_file started_at elapsed line timestamp error_output
+  local command_pid last_elapsed
 
   printf -v command_string '%q ' "$@"
   command_string=${command_string% }
@@ -224,7 +248,24 @@ run_logged() {
   started_at=$SECONDS
   capture_file=$(mktemp)
 
-  if "$@" >"$capture_file" 2>&1; then
+  if ((DOTFILES_INTERACTIVE_OUTPUT)); then
+    "$@" >"$capture_file" 2>&1 &
+    command_pid=$!
+    last_elapsed=-1
+    while kill -0 "$command_pid" 2>/dev/null; do
+      sleep 1
+      elapsed=$((SECONDS - started_at))
+      if ((elapsed != last_elapsed)) && kill -0 "$command_pid" 2>/dev/null; then
+        _update_ticker_elapsed "$description" "$elapsed"
+        last_elapsed=$elapsed
+      fi
+    done
+    if wait "$command_pid"; then
+      exit_code=0
+    else
+      exit_code=$?
+    fi
+  elif "$@" >"$capture_file" 2>&1; then
     exit_code=0
   else
     exit_code=$?
