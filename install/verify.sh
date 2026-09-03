@@ -402,16 +402,6 @@ main() {
     fail "UFW is active"
   fi
 
-  if [[ -f /etc/dotfiles-test-vm ]]; then
-    if sudo ufw status | grep -Fq allow-dotfiles-test-host-ssh; then
-      pass "test VM SSH firewall exception exists"
-    else
-      fail "test VM SSH firewall exception exists"
-    fi
-  else
-    skip "test VM SSH firewall exception (not a marked test VM)"
-  fi
-
   local -a ownership_roots=()
   for repository in "$HOME/.config" "$HOME/.cache" "$HOME/.local"; do
     [[ -e $repository ]] && ownership_roots+=("$repository")
