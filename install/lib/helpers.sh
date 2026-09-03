@@ -292,13 +292,18 @@ run_logged() {
 
   if ((exit_code != 0)); then
     DOTFILES_LAST_FAILED_COMMAND=$command_string
-    error_output=$(tail -n 20 "$capture_file" \
+    error_output=$(tail -n 80 "$capture_file" \
       | tr '\r' '\n' \
       | sed $'s/\033\[[0-9;?]*[[:alpha:]]//g' \
       | awk 'NF && !seen[$0]++')
     DOTFILES_LAST_COMMAND_ERROR=$(printf '%s\n' "$error_output" \
-      | grep -Ei 'error|failed|failure|fatal|exception|denied|invalid|not found' \
-      | tail -n 4 || true)
+      | grep -Ei '(^|[[:space:]])(error|fatal):|not supported|missing kernel module|protocol not supported|permission denied' \
+      | head -n 4 || true)
+    if [[ -z $DOTFILES_LAST_COMMAND_ERROR ]]; then
+      DOTFILES_LAST_COMMAND_ERROR=$(printf '%s\n' "$error_output" \
+        | grep -Ei 'error|failed|failure|fatal|exception|denied|invalid|not found' \
+        | tail -n 4 || true)
+    fi
     if [[ -z $DOTFILES_LAST_COMMAND_ERROR ]]; then
       DOTFILES_LAST_COMMAND_ERROR=$(tail -n 1 <<< "$error_output")
     fi
