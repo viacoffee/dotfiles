@@ -41,8 +41,10 @@ VM_BASE_NAME=dotfiles-test-automation-base
 ```
 
 New test clones will inherit OpenSSH, the public test key, and the
-`/etc/dotfiles-test-vm` marker. The original production-like baseline remains
-unchanged.
+`/etc/dotfiles-test-vm` marker. During an SSH-driven install, the firewall phase
+uses that marker to add a source-restricted SSH rule named
+`allow-dotfiles-test-host-ssh`. This rule is for test access only. The original
+production-like baseline remains unchanged.
 
 ## Lifecycle
 
@@ -109,6 +111,18 @@ Save a screenshot under the configured results directory:
 ```bash
 ./tests/vm/run screenshot fresh
 ```
+
+After the final verification and evidence collection, remove the test-only SSH
+firewall rule. Do this as the last guest-side operation because subsequent SSH
+connections may be blocked:
+
+```bash
+./tests/vm/run firewall-cleanup fresh
+```
+
+The command verifies that the `allow-dotfiles-test-host-ssh` rule is gone and
+saves a cleanup transcript. If the installer is rerun later over SSH, it will
+add the rule again and cleanup must be repeated.
 
 Request a clean shutdown, then remove the clone and its storage:
 

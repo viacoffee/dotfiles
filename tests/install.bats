@@ -79,7 +79,7 @@ setup() {
   [ "$status" -eq 0 ]
 }
 
-@test "non-TTY logging preserves argument messages and streamed input" {
+@test "diagnostic logging preserves arguments and streamed input without terminal noise" {
   log_file=$BATS_TEST_TMPDIR/helpers.log
 
   # shellcheck disable=SC2016 # positional arguments expand in the child shell
@@ -88,10 +88,105 @@ setup() {
     _ "$repo_root/install/lib/helpers.sh"
 
   [ "$status" -eq 0 ]
-  [[ $output == *"argument message"* ]]
-  [[ $output == *"streamed message"* ]]
-  grep -Fq 'argument message' "$log_file"
-  grep -Fq 'streamed message' "$log_file"
+  [ -z "$output" ]
+  grep -Fq '[INFO   ] argument message' "$log_file"
+  grep -Fq '[INFO   ] streamed message' "$log_file"
+}
+
+@test "non-TTY status output is line-oriented and unstyled" {
+  log_file=$BATS_TEST_TMPDIR/status.log
+
+  # shellcheck disable=SC2016 # positional arguments expand in the child shell
+  run env DOTFILES_INSTALL_LOG_FILE="$log_file" bash -c '
+    source "$1"
+    section_start "Packages"
+    step "Synchronizing databases"
+    section_complete
+  ' _ "$repo_root/install/lib/helpers.sh"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = $'START Packages\nSTEP  Synchronizing databases\nDONE  Packages' ]
+  [[ $output != *$'\033['* ]]
+}
+
+@test "TTY status output uses the configured circle markers and colors" {
+  log_file=$BATS_TEST_TMPDIR/tty-status.log
+  status_script=$BATS_TEST_TMPDIR/tty-status.sh
+  cat > "$status_script" <<EOF
+#!/usr/bin/env bash
+DOTFILES_INSTALL_LOG_FILE=$log_file
+source "$repo_root/install/lib/helpers.sh"
+section_start "Packages"
+step "Synchronizing databases"
+section_complete
+section_start "Bootloader"
+DOTFILES_LAST_ERROR="Generation failed"
+section_failed 1 "limine-update"
+EOF
+  chmod +x "$status_script"
+
+  run env TERM=xterm script -qefc "$status_script" /dev/null
+
+  [ "$status" -eq 0 ]
+  [[ $output == *$'\033[0;34m○ Packages'* ]]
+  [[ $output == *$'\033[0;90m  ○ Synchronizing databases'* ]]
+  [[ $output == *$'\033[0;32m● Packages'* ]]
+  [[ $output == *$'\033[0;31m● Bootloader'* ]]
+}
+
+@test "NO_COLOR keeps TTY markers but removes escape sequences" {
+  log_file=$BATS_TEST_TMPDIR/no-color.log
+  status_script=$BATS_TEST_TMPDIR/no-color.sh
+  cat > "$status_script" <<EOF
+#!/usr/bin/env bash
+DOTFILES_INSTALL_LOG_FILE=$log_file
+source "$repo_root/install/lib/helpers.sh"
+section_start "Packages"
+step "Synchronizing databases"
+section_complete
+EOF
+  chmod +x "$status_script"
+
+  run env TERM=xterm NO_COLOR=1 script -qefc "$status_script" /dev/null
+
+  [ "$status" -eq 0 ]
+  [[ $output == *"○ Packages"* ]]
+  [[ $output == *"  ○ Synchronizing databases"* ]]
+  [[ $output == *"● Packages"* ]]
+  [[ $output != *$'\033[0;34m'* ]]
+  [[ $output != *$'\033[0;90m'* ]]
+  [[ $output != *$'\033[0;32m'* ]]
+}
+
+@test "failed command output is logged while only its error is presented" {
+  log_file=$BATS_TEST_TMPDIR/command.log
+  failing_command=$BATS_TEST_TMPDIR/failing-command
+  cat > "$failing_command" <<'EOF'
+#!/usr/bin/env bash
+printf 'routine package output\n'
+printf 'database failure\n' >&2
+exit 42
+EOF
+  chmod +x "$failing_command"
+
+  # shellcheck disable=SC2016 # positional arguments expand in the child shell
+  run env DOTFILES_INSTALL_LOG_FILE="$log_file" bash -c '
+    source "$1"
+    section_start "Packages"
+    run_logged "Updating packages" "$2" || {
+      command_status=$?
+      section_failed "$command_status" "$DOTFILES_LAST_FAILED_COMMAND"
+      exit "$command_status"
+    }
+  ' _ "$repo_root/install/lib/helpers.sh" "$failing_command"
+
+  [ "$status" -eq 42 ]
+  [[ $output != *"routine package output"* ]]
+  [[ $output == *"database failure"* ]]
+  grep -Fq 'routine package output' "$log_file"
+  grep -Fq 'database failure' "$log_file"
+  run grep -P $'\033\\[' "$log_file"
+  [ "$status" -eq 1 ]
 }
 
 @test "installer failure log identifies the phase and failed command" {

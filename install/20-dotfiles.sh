@@ -22,8 +22,8 @@ remove_regular_stow_conflict() {
 
 remove_regular_stow_conflict "$HOME/.bashrc"
 
-log "stowing home"
-stow -t "$HOME" home
+step "Stowing home files"
+run_logged "Stowing home files" stow -t "$HOME" home
 
 remove_regular_stow_conflict "$HOME/.config/niri/config.kdl"
 
@@ -34,12 +34,12 @@ for managed_config in \
   "$HOME/.config/gtk-4.0/settings.ini"; do
   remove_regular_stow_conflict "$managed_config"
 done
-log "stowing config"
-stow --no-folding -t "$HOME/.config" config
+run_logged "Stowing application configuration" \
+  stow --no-folding -t "$HOME/.config" config
 
 mkdir -p "$HOME/.local"
-log "stowing local"
-stow --no-folding -t "$HOME/.local" local
+run_logged "Stowing local executables" \
+  stow --no-folding -t "$HOME/.local" local
 
 verify_user_ownership "$HOME/.config" "$HOME/.local" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.zshrc"
 success "Dotfiles stowed"

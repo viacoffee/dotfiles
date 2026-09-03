@@ -1,6 +1,6 @@
 #!/bin/bash
 
-log "Starting NVIDIA driver installation"
+step "Detecting NVIDIA hardware"
 
 # Detect NVIDIA GPU with error handling
 NVIDIA="$(lspci | grep -i 'nvidia' || true)"
@@ -10,7 +10,7 @@ if [[ -z "$NVIDIA" ]]; then
   return 0
 fi
 
-info "NVIDIA GPU detected: $NVIDIA"
+log "NVIDIA GPU detected: $NVIDIA"
 
 # Detect kernel type and set appropriate headers package
 KERNEL_HEADERS=""
@@ -27,18 +27,18 @@ else
   return 1
 fi
 
-info "Detected kernel headers package: $KERNEL_HEADERS"
+log "Detected kernel headers package: $KERNEL_HEADERS"
 
 # Determine driver packages based on GPU model
 PACKAGES=()
 
 if echo "$NVIDIA" | grep -qE "RTX [2-9][0-9]|GTX 16"; then
   # Turing (16xx, 20xx), Ampere (30xx), Ada (40xx), and newer recommend the open-source kernel modules
-  info "Detected modern NVIDIA GPU (RTX 20xx+). Using open-source drivers."
+  step "Selecting open NVIDIA drivers"
   PACKAGES=(nvidia-open-dkms nvidia-utils lib32-nvidia-utils libva-nvidia-driver)
 elif echo "$NVIDIA" | grep -qE "GTX 9|GTX 10|Quadro P|MX1|MX2|MX3"; then
   # Pascal (10xx, Quadro Pxxx, MX150, MX2xx, MX3xx) and Maxwell (9xx, MX110, MX130) use legacy drivers
-  info "Detected legacy NVIDIA GPU (Maxwell/Pascal). Using legacy drivers (580xx)."
+  step "Selecting legacy NVIDIA drivers"
   PACKAGES=(nvidia-580xx-dkms nvidia-580xx-utils lib32-nvidia-580xx-utils)
 else
   warn "NVIDIA GPU detected but no compatible driver found."
@@ -46,17 +46,17 @@ else
   return 0
 fi
 
-info "Packages to be installed: ${PACKAGES[*]}"
+log "Packages to be installed: ${PACKAGES[*]}"
 
 # Install packages without generating boot artifacts before the final
 # mkinitcpio, Plymouth, and Limine configuration has been written.
-log "Installing NVIDIA drivers and dependencies..."
+step "Installing NVIDIA drivers and dependencies"
 INSTALL_PACKAGES=("$KERNEL_HEADERS" "${PACKAGES[@]}")
 install_packages_without_generation "${INSTALL_PACKAGES[@]}"
 success "Package installation completed successfully"
 
 # Configure modprobe for early KMS
-log "Configuring modprobe for NVIDIA early KMS..."
+step "Configuring NVIDIA early KMS"
 if ! sudo mkdir -p /etc/modprobe.d; then
   error "Failed to create modprobe.d directory"
   return 1
@@ -71,7 +71,7 @@ then
 fi
 
 # Configure mkinitcpio for early module loading
-log "Configuring mkinitcpio for NVIDIA modules..."
+step "Configuring NVIDIA initramfs modules"
 if ! sudo mkdir -p /etc/mkinitcpio.conf.d; then
   error "Failed to create mkinitcpio.conf.d directory"
   return 1
@@ -86,7 +86,7 @@ then
 fi
 
 # Set NVIDIA environment variables for Wayland/Niri
-log "Configuring NVIDIA environment variables..."
+step "Configuring NVIDIA environment variables"
 if ! mkdir -p ~/.config/environment.d; then
   error "Failed to create environment.d directory"
   return 1
@@ -103,5 +103,5 @@ then
   return 1
 fi
 
-success "NVIDIA drivers configured successfully."
-warn "Note: System reboot may be required for changes to take effect."
+log "NVIDIA drivers configured successfully"
+log "A system reboot is required to load the NVIDIA changes"

@@ -1,14 +1,36 @@
 #!/bin/bash
 
-# Helper functions for installation
-# Provides logging, output formatting, and error handling
+# Installer diagnostics and terminal status rendering.
 
-# Color codes for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+DIM='\033[0;90m'
+# shellcheck disable=SC2034 # Used by install.sh after this library is sourced.
+BOLD='\033[1m'
+NC='\033[0m'
+ERASE_LINE='\033[2K'
+CURSOR_UP='\033[1A'
+
+DOTFILES_ACTIVE_SECTION=${DOTFILES_ACTIVE_SECTION:-}
+DOTFILES_CURRENT_STEP=${DOTFILES_CURRENT_STEP:-}
+DOTFILES_STATUS_RENDERED=0
+DOTFILES_TICKER_RENDERED=0
+DOTFILES_LAST_ERROR=${DOTFILES_LAST_ERROR:-}
+DOTFILES_LAST_FAILED_COMMAND=${DOTFILES_LAST_FAILED_COMMAND:-}
+DOTFILES_LAST_COMMAND_ERROR=${DOTFILES_LAST_COMMAND_ERROR:-}
+
+if [[ -t 1 && ${TERM:-dumb} != dumb ]]; then
+  DOTFILES_INTERACTIVE_OUTPUT=1
+else
+  DOTFILES_INTERACTIVE_OUTPUT=0
+fi
+if [[ -n ${NO_COLOR+x} ]]; then
+  DOTFILES_COLOR_OUTPUT=0
+else
+  DOTFILES_COLOR_OUTPUT=$DOTFILES_INTERACTIVE_OUTPUT
+fi
 
 _read_message() {
   if (($#)); then
@@ -18,62 +40,236 @@ _read_message() {
   fi
 }
 
-_log() {
-  local level="$1"
-  local color="$2"
-  shift 2
+_write_log() {
+  local level=$1
+  shift
+  local message timestamp line
+  message="$(_read_message "$@")"
+  timestamp=$(date '+%F %T')
 
+  while IFS= read -r line || [[ -n $line ]]; do
+    printf '[%s] [%-7s] %s\n' "$timestamp" "$level" "$line"
+  done <<< "$message" >> "${DOTFILES_INSTALL_LOG_FILE:-/dev/null}"
+}
+
+_print_styled() {
+  local color=$1
+  shift
+  if ((DOTFILES_COLOR_OUTPUT)); then
+    printf '%b%s%b' "$color" "$*" "$NC"
+  else
+    printf '%s' "$*"
+  fi
+}
+
+_clear_status_display() {
+  ((DOTFILES_INTERACTIVE_OUTPUT && DOTFILES_STATUS_RENDERED)) || return 0
+
+  if ((DOTFILES_TICKER_RENDERED)); then
+    printf '\r%b' "$ERASE_LINE"
+  fi
+  printf '%b\r%b' "$CURSOR_UP" "$ERASE_LINE"
+  DOTFILES_STATUS_RENDERED=0
+  DOTFILES_TICKER_RENDERED=0
+}
+
+_render_active_status() {
+  ((DOTFILES_INTERACTIVE_OUTPUT)) || return 0
+  [[ -n $DOTFILES_ACTIVE_SECTION ]] || return 0
+
+  _print_styled "$BLUE" "○ $DOTFILES_ACTIVE_SECTION"
+  printf '\n'
+  DOTFILES_STATUS_RENDERED=1
+
+  if [[ -n $DOTFILES_CURRENT_STEP ]]; then
+    _print_styled "$DIM" "  ○ $DOTFILES_CURRENT_STEP"
+    DOTFILES_TICKER_RENDERED=1
+  fi
+}
+
+log() {
+  _write_log INFO "$@"
+}
+
+step() {
   local message
   message="$(_read_message "$@")"
+  DOTFILES_CURRENT_STEP=$message
+  _write_log STEP "$message"
 
-  if [[ -n $level ]]; then
-    if [[ -n $color ]]; then
-      printf '%b\n' "${color}${level}${NC} $message"
-    else
-      printf '%s %s\n' "$level" "$message"
-    fi
+  if ((DOTFILES_INTERACTIVE_OUTPUT)); then
+    _clear_status_display
+    _render_active_status
   else
-    printf '%s\n' "$message"
+    printf 'STEP  %s\n' "$message"
   fi
-
-  printf '[%s] %s\n' "$(date '+%F %T')" "$message" \
-    >> "$DOTFILES_INSTALL_LOG_FILE"
 }
 
-log() { _log "" "" "$@"; }
-info() { _log "INFO" "$BLUE" "$@"; }
-important() { _log "==>" "\033[1;34m" "$@"; }
-success() { _log "✓" "$GREEN" "$@"; }
-warn() { _log "WARNING" "$YELLOW" "$@"; }
-error() { _log "ERROR" "$RED" "$@"; }
+section_start() {
+  local title=$1
+  if [[ -n $DOTFILES_ACTIVE_SECTION ]]; then
+    section_complete "$DOTFILES_ACTIVE_SECTION"
+  fi
 
-# Logging function - logs command output to install log and displays to stdout
-# Usage: run_logged "description" command arg1 arg2 ...
+  DOTFILES_ACTIVE_SECTION=$title
+  DOTFILES_CURRENT_STEP=
+  _write_log SECTION "Starting: $title"
+
+  if ((DOTFILES_INTERACTIVE_OUTPUT)); then
+    _render_active_status
+  else
+    printf 'START %s\n' "$title"
+  fi
+}
+
+section_complete() {
+  local title=${1:-$DOTFILES_ACTIVE_SECTION}
+  [[ -n $title ]] || return 0
+  _write_log SECTION "Completed: $title"
+
+  if ((DOTFILES_INTERACTIVE_OUTPUT)); then
+    _clear_status_display
+    _print_styled "$GREEN" "● $title"
+    printf '\n'
+  else
+    printf 'DONE  %s\n' "$title"
+  fi
+
+  DOTFILES_ACTIVE_SECTION=
+  DOTFILES_CURRENT_STEP=
+}
+
+warn() {
+  local message
+  message="$(_read_message "$@")"
+  _write_log WARN "$message"
+
+  if ((DOTFILES_INTERACTIVE_OUTPUT)); then
+    _clear_status_display
+    _print_styled "$YELLOW" "! $message"
+    printf '\n'
+    _render_active_status
+  else
+    printf 'WARN  %s\n' "$message" >&2
+  fi
+}
+
+error() {
+  local message
+  message="$(_read_message "$@")"
+  DOTFILES_LAST_ERROR=$message
+  _write_log ERROR "$message"
+
+  # install.sh defers errors so its ERR trap can render one complete failure block.
+  if [[ ${DOTFILES_DEFER_ERRORS:-0} != 1 ]]; then
+    if ((DOTFILES_INTERACTIVE_OUTPUT)); then
+      _clear_status_display
+      _print_styled "$RED" "● $message"
+      printf '\n'
+    else
+      printf 'ERROR %s\n' "$message" >&2
+    fi
+  fi
+}
+
+section_failed() {
+  local status=$1
+  local command=${2:-}
+  local reason=${DOTFILES_LAST_ERROR:-Command exited with status $status}
+  local title=${DOTFILES_ACTIVE_SECTION:-${DOTFILES_CURRENT_PHASE:-Installation}}
+
+  _write_log ERROR "Failed: $title (status=$status command=$command)"
+
+  if ((DOTFILES_INTERACTIVE_OUTPUT)); then
+    _clear_status_display
+    _print_styled "$RED" "● $title"
+    printf '\n'
+    _print_styled "$RED" "  $reason"
+    printf '\n'
+    if [[ -n $command ]]; then
+      _print_styled "$RED" "  Command: $command"
+      printf '\n'
+    fi
+    if [[ -n $DOTFILES_LAST_COMMAND_ERROR && $DOTFILES_LAST_COMMAND_ERROR != "$reason" ]]; then
+      while IFS= read -r line; do
+        _print_styled "$RED" "  $line"
+        printf '\n'
+      done <<< "$DOTFILES_LAST_COMMAND_ERROR"
+    fi
+    _print_styled "$RED" "  Log: ${DOTFILES_INSTALL_LOG_FILE:-<unavailable>}"
+    printf '\n'
+  else
+    printf 'FAIL  %s\n' "$title" >&2
+    printf 'ERROR %s\n' "$reason" >&2
+    [[ -z $command ]] || printf 'ERROR Command: %s\n' "$command" >&2
+    [[ -z $DOTFILES_LAST_COMMAND_ERROR || $DOTFILES_LAST_COMMAND_ERROR == "$reason" ]] || \
+      printf 'ERROR %s\n' "$DOTFILES_LAST_COMMAND_ERROR" >&2
+    printf 'ERROR Log: %s\n' "${DOTFILES_INSTALL_LOG_FILE:-<unavailable>}" >&2
+  fi
+
+  DOTFILES_ACTIVE_SECTION=
+  DOTFILES_CURRENT_STEP=
+}
+
+# Run a non-interactive command with all routine output captured in the log.
 run_logged() {
-  local description="$1"; shift
-  local exit_code command_string
+  local description=$1
+  shift
+  local exit_code command_string capture_file started_at elapsed line timestamp error_output
 
   printf -v command_string '%q ' "$@"
-  log "$description"
-  log "Command: ${command_string% }"
+  command_string=${command_string% }
+  step "$description"
+  _write_log COMMAND "$command_string"
+  started_at=$SECONDS
+  capture_file=$(mktemp)
 
-  if "$@" 2>&1 | tee -a "$DOTFILES_INSTALL_LOG_FILE"; then
-    success "$description completed"
-    return 0
+  if "$@" >"$capture_file" 2>&1; then
+    exit_code=0
   else
     exit_code=$?
-    error "$description failed with exit code $exit_code"
-    return "$exit_code"
   fi
+
+  timestamp=$(date '+%F %T')
+  while IFS= read -r line || [[ -n $line ]]; do
+    # Commands are not attached to a terminal, but strip any forced ANSI output
+    # before it reaches the persistent log.
+    line=$(printf '%s' "$line" | sed $'s/\033\[[0-9;?]*[[:alpha:]]//g; s/\r$//')
+    printf '[%s] [OUTPUT ] %s\n' "$timestamp" "$line"
+  done < "$capture_file" >> "${DOTFILES_INSTALL_LOG_FILE:-/dev/null}"
+  elapsed=$((SECONDS - started_at))
+  _write_log COMMAND "$description exited with status $exit_code after ${elapsed}s"
+
+  if ((exit_code != 0)); then
+    DOTFILES_LAST_FAILED_COMMAND=$command_string
+    error_output=$(tail -n 20 "$capture_file" \
+      | tr '\r' '\n' \
+      | sed $'s/\033\[[0-9;?]*[[:alpha:]]//g' \
+      | awk 'NF && !seen[$0]++')
+    DOTFILES_LAST_COMMAND_ERROR=$(printf '%s\n' "$error_output" \
+      | grep -Ei 'error|failed|failure|fatal|exception|denied|invalid|not found' \
+      | tail -n 4 || true)
+    if [[ -z $DOTFILES_LAST_COMMAND_ERROR ]]; then
+      DOTFILES_LAST_COMMAND_ERROR=$(tail -n 1 <<< "$error_output")
+    fi
+  else
+    DOTFILES_LAST_FAILED_COMMAND=
+    DOTFILES_LAST_COMMAND_ERROR=
+  fi
+  rm -f "$capture_file"
+  return "$exit_code"
 }
 
-# Check if command exists
-# Usage: command_exists "pacman"
+# Compatibility names used while phase scripts are kept independently sourceable.
+info() { step "$@"; }
+important() { log "$@"; }
+success() { log "$@"; }
+section() { section_start "$@"; }
+
 command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-# Fail if a path managed by the installer contains files owned by another user.
 verify_user_ownership() {
   local path unexpected_owner
 
@@ -87,8 +283,6 @@ verify_user_ownership() {
   done
 }
 
-# Check if package is installed (pacman)
-# Usage: package_installed "sddm"
 package_installed() {
   pacman -Q "$1" >/dev/null 2>&1
 }
@@ -108,7 +302,7 @@ prepare_pacman_generation_override() {
     error "Pacman generation hook override is invalid: $override_hook"
     return 1
   fi
-  success "Package-triggered boot generation will be deferred after the system upgrade"
+  log "Package-triggered boot generation will be deferred after the system upgrade"
 }
 
 remove_pacman_generation_override() {
@@ -132,12 +326,12 @@ install_packages_without_generation() {
     return 1
   fi
 
-  run_logged "Installing packages with boot generation deferred: $*" \
+  log "Packages requested with boot generation deferred: $*"
+  run_logged "Installing packages with boot generation deferred" \
     sudo pacman --hookdir "$DOTFILES_PACMAN_HOOK_DIR" \
       -S --noconfirm --needed "$@"
 }
 
-# Confirm every configured package resolves from the synchronized repositories.
 validate_package_resolution() {
   local package
   local -a unresolved=()
@@ -152,51 +346,15 @@ validate_package_resolution() {
     error "Required packages do not resolve: ${unresolved[*]}"
     return 1
   fi
-  success "All required packages resolve from configured repositories"
+  log "All required packages resolve from configured repositories"
 }
 
-# Print section header
-# Usage: section "Display Manager Configuration"
-section() {
-  local title="$1"
-  echo ""
-  printf '%b\n' "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  printf '%b\n' "${BLUE}${NC} $title"
-  printf '%b\n' "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  log "Starting: $title"
-  echo ""
-}
-
-# Print summary
-# Usage: summary "Component" "Status"
-summary() {
-  local component="$1"
-  local status="$2"
-  if [[ "$status" = "✓" ]]; then
-    printf '%b\n' "${GREEN}$component: $status${NC}"
-  else
-    printf '%b\n' "${RED}$component: $status${NC}"
-  fi
-}
-
-# Install missing packages
-# Usage:
-# system_packages=(
-#   git
-#   neovim
-#   ripgrep
-#   fd
-# )
-#
-# install_missing_packages "${system_packages[@]}"
-#
-# OR inline:
-# install_missing_packages git neovim ripgrep fd
 install_missing_packages() {
   local packages=("$@")
   local missing=()
+  local pkg verify_failed
 
-  info "Checking ${#packages[@]} required packages..."
+  step "Checking ${#packages[@]} required packages"
 
   for pkg in "${packages[@]}"; do
     if ! package_installed "$pkg"; then
@@ -204,27 +362,21 @@ install_missing_packages() {
     fi
   done
 
-  if (( ${#missing[@]} > 0 )); then
-    info "Installing ${#missing[@]} missing package(s): ${missing[*]}"
-    log "Installing missing packages..."
-
+  if ((${#missing[@]} > 0)); then
+    step "Installing ${#missing[@]} missing packages"
     install_packages_without_generation "${missing[@]}"
 
-    info "Verifying installed packages..."
-    local verify_failed=0
+    step "Verifying installed packages"
+    verify_failed=0
     for pkg in "${packages[@]}"; do
       if ! package_installed "$pkg"; then
         error "Failed to verify package: $pkg"
         verify_failed=1
       fi
     done
-    if (( verify_failed )); then
-      return 1
-    fi
+    ((verify_failed == 0)) || return 1
+  else
+    log "All required packages were already installed"
   fi
-
-  if (( ${#missing[@]} == 0 )); then
-    info "All required packages were already installed."
-  fi
-  success "Required packages are installed and verified"
+  log "Required packages are installed and verified"
 }

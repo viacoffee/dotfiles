@@ -1,6 +1,6 @@
 #!/bin/bash
 
-log "Updating system and installing required packages..."
+step "Reading package configuration"
 
 PACMAN_CONF=${PACMAN_CONF:-/etc/pacman.conf}
 PACMAN_ORIGINAL_BACKUP=${PACMAN_ORIGINAL_BACKUP:-$PACMAN_CONF.dotfiles-original}
