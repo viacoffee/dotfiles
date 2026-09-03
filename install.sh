@@ -96,12 +96,14 @@ run_phase() {
 }
 
 if ((DOTFILES_COLOR_OUTPUT)); then
-  printf '%b%s%b\n' "$BOLD" "dotfiles installer" "$NC"
+  printf '%b%s%b\n\n' "$BOLD" "dotfiles installer" "$NC"
+  printf '%b  Source: %s\n  Log:    %s%b\n\n' \
+    "$DIM" "$DOTFILES_PATH" "$DOTFILES_INSTALL_LOG_FILE" "$NC"
 else
-  printf '%s\n' "dotfiles installer"
+  printf 'dotfiles installer\n\n'
+  printf '  Source: %s\n' "$DOTFILES_PATH"
+  printf '  Log:    %s\n\n' "$DOTFILES_INSTALL_LOG_FILE"
 fi
-printf 'Installing from: %s\n' "$DOTFILES_PATH"
-printf 'Log: %s\n\n' "$DOTFILES_INSTALL_LOG_FILE"
 log <<EOF
 Vars log:
   + DOTFILES_PATH=$DOTFILES_PATH
