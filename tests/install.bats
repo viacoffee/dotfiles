@@ -353,28 +353,6 @@ EOF
   grep -Fq '"$APPLICATION_OVERRIDES_DIR/${desktop_override##*/}"' "$user_setup_script"
 }
 
-@test "first-login setup is ordered after mako without a helper script" {
-  service=$repo_root/config/systemd/user/dot-first-login.service
-
-  grep -Fxq 'Requires=mako.service' "$service"
-  grep -Fxq 'After=mako.service' "$service"
-  grep -Fxq 'ExecStart=/usr/bin/makoctl mode -a dnd' "$service"
-  grep -Fxq 'ExecStartPost=/usr/bin/rm -f %h/.first-login' "$service"
-  grep -Fxq 'WantedBy=mako.service' "$service"
-  run grep -Fq 'WantedBy=graphical-session.target' "$service"
-  [ "$status" -eq 1 ]
-  user_setup=$repo_root/install/40-user-setup.sh
-  grep -Fq 'if ! systemctl --user is-enabled --quiet dot-first-login.service' \
-    "$user_setup"
-  [ "$(grep -Fxc '  touch "$HOME/.first-login"' "$user_setup")" -eq 1 ]
-  grep -Fxq '  notes' "$user_setup"
-  grep -Fxq '  projects' "$user_setup"
-  grep -Fxq '  work' "$user_setup"
-  run grep -Eq '^  (Notes|Projects|Work)$' "$user_setup"
-  [ "$status" -eq 1 ]
-  [ ! -e "$repo_root/local/bin/dot-first-login" ]
-}
-
 @test "Plymouth theme copy is idempotent" {
   # shellcheck disable=SC2016 # matching a literal shell expression
   run grep -F 'sudo cp -a "$DOTFILES_INSTALL_DEFAULTS_PATH/plymouth/." "$plymouth_theme_dir/"' "$bootloader_script"

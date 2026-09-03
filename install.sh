@@ -155,7 +155,6 @@ verify_user_ownership \
   "$HOME/.config" \
   "$HOME/.cache" \
   "$HOME/.local" \
-  "$HOME/.first-login" \
   "$HOME/notes" \
   "$HOME/projects" \
   "$HOME/work"

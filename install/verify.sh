@@ -362,10 +362,9 @@ main() {
   check_command "desktop defaults are stowed from tracked configuration" \
     desktop_defaults_are_stowed
 
-  for service in waybar.service mako.service swaybg.service swayidle.service swayosd.service dot-first-login.service; do
+  for service in waybar.service mako.service swaybg.service swayidle.service swayosd.service; do
     check_enabled_user_service "$service"
   done
-  check_command "first-login marker was consumed" test ! -e "$HOME/.first-login"
   check_command "default user directories use the expected names" \
     default_user_directories_exist
 
