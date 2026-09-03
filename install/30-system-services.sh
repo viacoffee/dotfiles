@@ -1,6 +1,6 @@
 #!/bin/bash
 
-info "Configuring networking, system services, and user PATH..."
+step "Configuring networking and system services"
 
 # Bluetooth
 if ! systemctl is-enabled --quiet bluetooth.service; then

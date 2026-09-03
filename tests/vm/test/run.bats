@@ -156,6 +156,7 @@ EOF
   [ "$status" -eq 0 ]
   [[ $output == *"prepare CASE"* ]]
   [[ $output == *"verify CASE [LABEL]"* ]]
+  [[ $output == *"firewall-cleanup CASE"* ]]
   [[ $output == *"remove CASE [--force]"* ]]
 }
 
@@ -244,7 +245,9 @@ EOF
 
   [ "$status" -eq 0 ]
   grep -q 'dotfiles-user@192.168.122.204' "$MOCK_LOG"
-  grep -Fq 'sudo\ pacman\ -S\ --needed\ curl\ \&\&\ bash\ \<\(curl\ -fsSL\ https://example.test/bootstrap.sh\)\ -b\ installer-refactor' "$MOCK_LOG"
+  grep -Fq 'bash\ \<\(curl\ -fsSL\ https://example.test/bootstrap.sh\)\ -b\ installer-refactor' "$MOCK_LOG"
+  run grep -Fq 'pacman\ -S\ --needed\ curl\ \&\&' "$MOCK_LOG"
+  [ "$status" -eq 1 ]
 }
 
 @test "rerun updates and runs the configured branch through SSH" {
@@ -299,6 +302,19 @@ EOF
   [ "$status" -eq 0 ]
   grep -Fq 'bash\ install/verify.sh' "$MOCK_LOG"
   [ -f "$BATS_TEST_TMPDIR/results/fresh/verify-baseline.log" ]
+}
+
+@test "firewall cleanup removes and verifies the test-only SSH rule" {
+  printf 'running\n' > "$MOCK_STATE/dotfiles-test-fresh"
+  printf '192.168.122.204\n' > "$MOCK_STATE/ip"
+  ssh-keygen -q -t ed25519 -N '' -f "$BATS_TEST_TMPDIR/id_ed25519"
+
+  run "$runner" firewall-cleanup fresh
+
+  [ "$status" -eq 0 ]
+  grep -Fq 'ufw\ --force\ delete\ allow\ from' "$MOCK_LOG"
+  grep -Fq 'allow-dotfiles-test-host-ssh' "$MOCK_LOG"
+  [ "$(find "$BATS_TEST_TMPDIR/results/fresh" -name 'firewall-cleanup-*.log' | wc -l)" -eq 1 ]
 }
 
 @test "invalid case names are rejected before calling libvirt" {

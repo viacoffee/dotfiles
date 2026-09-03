@@ -9,7 +9,7 @@ enable_user_services() {
 }
 
 # Create zsh cache
-log "Creating zsh cache directory..."
+step "Creating the Zsh cache"
 mkdir -p "$HOME/.cache/zsh"
 
 # Schedule first-login setup only until it has completed once. The service
@@ -27,11 +27,11 @@ enable_user_services \
   swayosd \
   dot-first-login
 
-log "Configuring gtk appearance"
+step "Configuring GTK appearance"
 gsettings set org.gnome.desktop.interface color-scheme prefer-dark
 gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
 
-log "Creating default home directories"
+step "Creating default home directories"
 DEFAULT_DIRS=(
   notes
   projects
@@ -41,7 +41,7 @@ for dir in "${DEFAULT_DIRS[@]}"; do
   mkdir -p "$HOME/$dir"
 done
 
-log "Installing application menu overrides"
+step "Installing application menu overrides"
 APPLICATION_OVERRIDES_DIR="$HOME/.local/share/applications"
 mkdir -p "$APPLICATION_OVERRIDES_DIR"
 for desktop_override in "$DOTFILES_INSTALL_DEFAULTS_PATH/applications/"*.desktop; do
@@ -66,6 +66,6 @@ verify_user_ownership \
   "$HOME/work"
 
 # Set shell
-log "Changing default shell..."
+step "Changing the default shell"
 sudo usermod -s /bin/zsh "$DOTFILES_DEFAULT_USER"
 success "Post-install user setup complete"

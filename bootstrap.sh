@@ -9,21 +9,104 @@ set -euo pipefail
 REPO_URL="https://github.com/viacoffee/dotfiles.git"
 CLONE_DIR="$HOME/dotfiles"
 BRANCH=""
+BOOTSTRAP_LOG="$HOME/.local/state/dotfiles/install.log"
 
-# parse args
-while [[ $# -gt 0 ]]; do
+if [[ -t 1 && ${TERM:-dumb} != dumb ]]; then
+  INTERACTIVE_OUTPUT=1
+else
+  INTERACTIVE_OUTPUT=0
+fi
+if ((INTERACTIVE_OUTPUT)) && [[ -z ${NO_COLOR+x} ]]; then
+  BLUE='\033[0;94m'
+  GREEN='\033[0;32m'
+  YELLOW='\033[1;33m'
+  RED='\033[0;31m'
+  BOLD='\033[1m'
+  NC='\033[0m'
+else
+  BLUE=
+  GREEN=
+  YELLOW=
+  RED=
+  BOLD=
+  NC=
+fi
+
+bootstrap_error() {
+  printf '%b• %s%b\n' "$RED" "$1" "$NC" >&2
+}
+
+bootstrap_start() {
+  if ((INTERACTIVE_OUTPUT)); then
+    printf '%b○ %s%b' "$BLUE" "$1" "$NC"
+  else
+    printf 'START %s\n' "$1"
+  fi
+}
+
+bootstrap_done() {
+  if ((INTERACTIVE_OUTPUT)); then
+    printf '\r\033[2K%b• %s%b\n' "$GREEN" "$1" "$NC"
+  else
+    printf 'DONE  %s\n' "$1"
+  fi
+}
+
+run_quiet() {
+  local description=$1
+  shift
+  local capture_file status command_string error_output line
+  capture_file=$(mktemp)
+  printf -v command_string '%q ' "$@"
+  bootstrap_start "$description"
+
+  if "$@" >"$capture_file" 2>&1; then
+    status=0
+  else
+    status=$?
+  fi
+
+  {
+    printf '[%s] [BOOTSTRAP] Command: %s\n' "$(date '+%F %T')" "${command_string% }"
+    sed $'s/\033\[[0-9;?]*[[:alpha:]]//g' "$capture_file"
+    printf '[%s] [BOOTSTRAP] Exit status: %d\n' "$(date '+%F %T')" "$status"
+  } >> "$BOOTSTRAP_LOG"
+
+  if ((status == 0)); then
+    bootstrap_done "$description"
+  else
+    ((INTERACTIVE_OUTPUT)) && printf '\r\033[2K'
+    bootstrap_error "$description failed with status $status"
+    error_output=$(tail -n 20 "$capture_file" \
+      | tr '\r' '\n' \
+      | sed $'s/\033\[[0-9;?]*[[:alpha:]]//g' \
+      | grep -Ei 'error|failed|failure|fatal|exception|denied|invalid|not found' \
+      | tail -n 4 || true)
+    if [[ -z $error_output ]]; then
+      error_output=$(tail -n 1 "$capture_file")
+    fi
+    while IFS= read -r line; do
+      [[ -z $line ]] || bootstrap_error "$line"
+    done <<< "$error_output"
+    bootstrap_error "Log: $BOOTSTRAP_LOG"
+  fi
+  rm -f "$capture_file"
+  return "$status"
+}
+
+while (($# > 0)); do
   case "$1" in
     -b|--branch)
-      if [[ -z "${2:-}" ]]; then
-        echo "ERROR: -b/--branch requires a branch name" >&2
-        echo "Usage: bootstrap.sh [-b|--branch <branch>]" >&2
+      if [[ -z ${2:-} ]]; then
+        bootstrap_error "-b/--branch requires a branch name"
+        printf 'Usage: bootstrap.sh [-b|--branch <branch>]\n' >&2
         exit 1
       fi
-      BRANCH="$2"
+      BRANCH=$2
       shift 2
       ;;
     -h|--help)
-      cat <<EOF
+      cat <<'EOF'
 Usage: bootstrap.sh [-b|--branch <branch>]
 
 Options:
@@ -33,87 +116,69 @@ EOF
       exit 0
       ;;
     *)
-      echo "ERROR: Unknown option: $1" >&2
+      bootstrap_error "Unknown option: $1"
       exit 1
       ;;
   esac
 done
 
-cat <<'EOF'
-      )  (
-     (   ) )
-      ) ( (
-    _______)_
- .-'---------|
-( C|/\/\/\/\/|
- '-./\/\/\/\/|
-   '_________'
-    '-------'
+mkdir -p "$(dirname "$BOOTSTRAP_LOG")"
+touch "$BOOTSTRAP_LOG"
 
-EOF
+printf '%b%s%b\n' "$BOLD" "dotfiles bootstrap" "$NC"
+printf 'Repository: %s\n' "$REPO_URL"
+printf 'Target: %s\n' "$CLONE_DIR"
+[[ -z $BRANCH ]] || printf 'Branch: %s\n' "$BRANCH"
+printf 'Log: %s\n\n' "$BOOTSTRAP_LOG"
 
-echo "https://github.com/viacoffee/dotfiles"
-echo ""
-echo "Bootstrap will clone the dotfiles and start the Arch installation."
-echo "Target directory: $CLONE_DIR"
-[[ -n "$BRANCH" ]] && echo "Requested branch: $BRANCH"
-echo ""
-
-# ensure git is available
-if ! command -v git &>/dev/null; then
-  echo "[1/3] Git is not installed; installing it with pacman..."
-  sudo pacman -S --noconfirm git
-else
-  echo "[1/3] Git is available."
+# The installer requires sudo access. Authenticate before rendering any
+# in-place status lines so a password prompt cannot overwrite them.
+if ! sudo -n true 2>/dev/null; then
+  printf 'sudo access is required to continue.\n'
+  if ! sudo -v; then
+    bootstrap_error "Unable to obtain sudo access"
+    exit 1
+  fi
 fi
 
-# guard against clobbering an existing clone
-if [[ -d "$CLONE_DIR" ]]; then
-  echo "ERROR: $CLONE_DIR already exists — remove or rename it first" >&2
+if ! command -v git >/dev/null 2>&1; then
+  run_quiet "Installing Git" sudo pacman -S --noconfirm git
+else
+  bootstrap_done "Git is available"
+fi
+
+if [[ -d $CLONE_DIR ]]; then
+  bootstrap_error "$CLONE_DIR already exists; remove or rename it first"
   exit 1
 fi
 
-# clone
 clone_args=(--recurse-submodules)
-if [[ -n "$BRANCH" ]]; then
+if [[ -n $BRANCH ]]; then
   clone_args+=(-b "$BRANCH")
-  echo "Cloning branch: $BRANCH"
-else
-  echo "Cloning default branch"
 fi
+run_quiet "Cloning repository" git clone "${clone_args[@]}" "$REPO_URL" "$CLONE_DIR"
 
-echo "[2/3] Cloning repository..."
-git clone "${clone_args[@]}" "$REPO_URL" "$CLONE_DIR"
-echo "Repository cloned to $CLONE_DIR"
-echo ""
-
-# confirm before install
-echo ""
-printf '\033[1m\033[1;33m'
+printf '\n%b' "$YELLOW"
 cat <<'EOF'
-  This will run install.sh, which configures packages, bootloader,
-  firewall, display manager, and other system-level settings.
-  This is a DESTRUCTIVE operation intended for a fresh Arch install.
+! This will configure packages, the bootloader, firewall, display manager,
+  and other system settings. It is intended for a fresh Arch installation.
 EOF
-printf '\033[0m'
-echo ""
+printf '%b\n' "$NC"
 
-printf 'This will make system-wide changes and may take some time.\n'
 answer=""
 if [[ -r /dev/tty ]]; then
-  read -rp "[3/3] Start the installation now? [y/N] " answer </dev/tty || true
+  read -rp "Start the installation now? [y/N] " answer </dev/tty || true
 else
-  read -rp "[3/3] Start the installation now? [y/N] " answer || true
+  read -rp "Start the installation now? [y/N] " answer || true
 fi
-if [[ ! "$answer" =~ ^[Yy]$ ]]; then
-  echo "Aborted. You can run it later with: bash $CLONE_DIR/install.sh"
+if [[ ! $answer =~ ^[Yy]$ ]]; then
+  printf 'Aborted. You can run it later with: bash %s/install.sh\n' "$CLONE_DIR"
   exit 0
 fi
 
 if ! cd "$CLONE_DIR"; then
-  echo "ERROR: Failed to cd into $CLONE_DIR" >&2
+  bootstrap_error "Failed to cd into $CLONE_DIR"
   exit 1
 fi
 
-echo "Starting installer..."
 exec bash install.sh

@@ -22,7 +22,6 @@ setup() {
   limine_defaults=$repo_root/install/default/limine/default.conf
   greetd_script=$repo_root/install/12-greetd.sh
   systemd_script=$repo_root/install/30-system-services.sh
-  firewall_script=$repo_root/install/50-firewall.sh
   packages_file=$repo_root/install/packages
   pacman_script=$repo_root/install/10-packages.sh
   pacman_fragment=$repo_root/install/default/pacman/dotfiles-repositories.conf
@@ -79,7 +78,7 @@ setup() {
   [ "$status" -eq 0 ]
 }
 
-@test "non-TTY logging preserves argument messages and streamed input" {
+@test "diagnostic logging preserves arguments and streamed input without terminal noise" {
   log_file=$BATS_TEST_TMPDIR/helpers.log
 
   # shellcheck disable=SC2016 # positional arguments expand in the child shell
@@ -88,10 +87,127 @@ setup() {
     _ "$repo_root/install/lib/helpers.sh"
 
   [ "$status" -eq 0 ]
-  [[ $output == *"argument message"* ]]
-  [[ $output == *"streamed message"* ]]
-  grep -Fq 'argument message' "$log_file"
-  grep -Fq 'streamed message' "$log_file"
+  [ -z "$output" ]
+  grep -Fq '[INFO   ] argument message' "$log_file"
+  grep -Fq '[INFO   ] streamed message' "$log_file"
+}
+
+@test "non-TTY status output is line-oriented and unstyled" {
+  log_file=$BATS_TEST_TMPDIR/status.log
+
+  # shellcheck disable=SC2016 # positional arguments expand in the child shell
+  run env DOTFILES_INSTALL_LOG_FILE="$log_file" bash -c '
+    source "$1"
+    section_start "Packages"
+    step "Synchronizing databases"
+    section_complete
+  ' _ "$repo_root/install/lib/helpers.sh"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = $'START Packages\nSTEP  Synchronizing databases\nDONE  Packages' ]
+  [[ $output != *$'\033['* ]]
+}
+
+@test "TTY status output uses the configured circle markers and colors" {
+  log_file=$BATS_TEST_TMPDIR/tty-status.log
+  status_script=$BATS_TEST_TMPDIR/tty-status.sh
+  cat > "$status_script" <<EOF
+#!/usr/bin/env bash
+DOTFILES_INSTALL_LOG_FILE=$log_file
+source "$repo_root/install/lib/helpers.sh"
+section_start "Packages"
+step "Synchronizing databases"
+section_note "No optional hardware detected; skipped"
+section_complete
+section_start "Bootloader"
+DOTFILES_LAST_ERROR="Generation failed"
+section_failed 1 "limine-update"
+EOF
+  chmod +x "$status_script"
+
+  run env TERM=xterm script -qefc "$status_script" /dev/null
+
+  [ "$status" -eq 0 ]
+  [[ $output == *$'\033[0;94m○ Packages'* ]]
+  [[ $output == *$'\033[0;90m  ○ Synchronizing databases'* ]]
+  [[ $output == *$'\033[0;32m• Packages'* ]]
+  [[ $output == *$'\033[0;90m  └─ No optional hardware detected; skipped'* ]]
+  [[ $output == *$'\033[0;31m• Bootloader'* ]]
+}
+
+@test "long-running commands update the TTY ticker with elapsed time" {
+  log_file=$BATS_TEST_TMPDIR/elapsed-status.log
+  status_script=$BATS_TEST_TMPDIR/elapsed-status.sh
+  cat > "$status_script" <<EOF
+#!/usr/bin/env bash
+DOTFILES_INSTALL_LOG_FILE=$log_file
+source "$repo_root/install/lib/helpers.sh"
+section_start "Packages"
+run_logged "Downloading packages" sleep 2
+section_complete
+EOF
+  chmod +x "$status_script"
+
+  run env TERM=xterm script -qefc "$status_script" /dev/null
+
+  [ "$status" -eq 0 ]
+  [[ $output == *"○ Downloading packages (1s)"* ]]
+  [[ $output == *$'\033[0;32m• Packages'* ]]
+}
+
+@test "NO_COLOR keeps TTY markers but removes escape sequences" {
+  log_file=$BATS_TEST_TMPDIR/no-color.log
+  status_script=$BATS_TEST_TMPDIR/no-color.sh
+  cat > "$status_script" <<EOF
+#!/usr/bin/env bash
+DOTFILES_INSTALL_LOG_FILE=$log_file
+source "$repo_root/install/lib/helpers.sh"
+section_start "Packages"
+step "Synchronizing databases"
+section_complete
+EOF
+  chmod +x "$status_script"
+
+  run env TERM=xterm NO_COLOR=1 script -qefc "$status_script" /dev/null
+
+  [ "$status" -eq 0 ]
+  [[ $output == *"○ Packages"* ]]
+  [[ $output == *"  ○ Synchronizing databases"* ]]
+  [[ $output == *"• Packages"* ]]
+  [[ $output != *$'\033[0;94m'* ]]
+  [[ $output != *$'\033[0;90m'* ]]
+  [[ $output != *$'\033[0;32m'* ]]
+}
+
+@test "failed command output is logged while only its error is presented" {
+  log_file=$BATS_TEST_TMPDIR/command.log
+  failing_command=$BATS_TEST_TMPDIR/failing-command
+  cat > "$failing_command" <<'EOF'
+#!/usr/bin/env bash
+printf 'routine package output\n'
+printf 'database failure\n' >&2
+exit 42
+EOF
+  chmod +x "$failing_command"
+
+  # shellcheck disable=SC2016 # positional arguments expand in the child shell
+  run env DOTFILES_INSTALL_LOG_FILE="$log_file" bash -c '
+    source "$1"
+    section_start "Packages"
+    run_logged "Updating packages" "$2" || {
+      command_status=$?
+      section_failed "$command_status" "$DOTFILES_LAST_FAILED_COMMAND"
+      exit "$command_status"
+    }
+  ' _ "$repo_root/install/lib/helpers.sh" "$failing_command"
+
+  [ "$status" -eq 42 ]
+  [[ $output != *"routine package output"* ]]
+  [[ $output == *"database failure"* ]]
+  grep -Fq 'routine package output' "$log_file"
+  grep -Fq 'database failure' "$log_file"
+  run grep -P $'\033\\[' "$log_file"
+  [ "$status" -eq 1 ]
 }
 
 @test "installer failure log identifies the phase and failed command" {
@@ -282,15 +398,6 @@ setup() {
   [ "$status" -eq 0 ]
 }
 
-@test "marked test VMs retain SSH access through UFW" {
-  # shellcheck disable=SC2016 # matching a literal shell expression
-  run grep -F '[[ -f /etc/dotfiles-test-vm && -n ${SSH_CONNECTION:-} ]]' "$firewall_script"
-  [ "$status" -eq 0 ]
-
-  run grep -F "comment 'allow-dotfiles-test-host-ssh'" "$firewall_script"
-  [ "$status" -eq 0 ]
-}
-
 @test "pacman configuration is managed without replacing the complete file" {
   grep -Fq 'PACMAN_ORIGINAL_BACKUP=${PACMAN_ORIGINAL_BACKUP:-$PACMAN_CONF.dotfiles-original}' "$pacman_script"
   grep -Fq 'PACMAN_REPOSITORY_FRAGMENT=${PACMAN_REPOSITORY_FRAGMENT:-/etc/pacman.d/dotfiles-repositories.conf}' "$pacman_script"
@@ -345,7 +452,11 @@ for argument in "$@"; do
 done
 exec /usr/bin/pacman-conf --config="$PACMAN_CONF" "$@"
 EOF
-  chmod +x "$mock_bin/sudo" "$mock_bin/pacman" "$mock_bin/pacman-conf"
+  cat > "$mock_bin/modprobe" <<'EOF'
+#!/usr/bin/env bash
+exit 0
+EOF
+  chmod +x "$mock_bin/sudo" "$mock_bin/pacman" "$mock_bin/pacman-conf" "$mock_bin/modprobe"
   cp "$fixture/etc/pacman.conf" "$fixture/original.conf"
 
   pacman_env=(
@@ -429,6 +540,24 @@ EOF
   [ "$status" -eq 1 ]
 }
 
+@test "firewall modules are loaded before a kernel upgrade" {
+  module_line=$(grep -nF 'sudo modprobe -a "${firewall_modules[@]}"' "$pacman_script" | cut -d: -f1)
+  upgrade_line=$(grep -nF 'sudo pacman -Syu --noconfirm' "$pacman_script" | cut -d: -f1)
+
+  [ "$module_line" -lt "$upgrade_line" ]
+  for module in \
+    nf_tables nft_compat nft_fib_ipv4 nft_fib_ipv6 nft_limit nft_log \
+    ipt_REJECT ip6t_REJECT ip6t_rt xt_hl; do
+    grep -Fxq "  $module" "$pacman_script"
+  done
+}
+
+@test "privileged commands use process-state polling for ticker updates" {
+  grep -Fq 'ps -o stat= -p "$1"' "$repo_root/install/lib/helpers.sh"
+  run grep -Fq 'kill -0 "$command_pid"' "$repo_root/install/lib/helpers.sh"
+  [ "$status" -eq 1 ]
+}
+
 @test "NVIDIA generation is deferred to final Limine generation" {
   nvidia_script=$repo_root/install/11-nvidia.sh
 
@@ -495,7 +624,9 @@ EOF
   done
 }
 
-@test "required package resolution reports every unresolved package" {
+@test "required package resolution has elapsed-time status and reports every unresolved package" {
+  grep -Fq 'run_logged "Validating required package availability"' "$pacman_script"
+
   mock_bin=$BATS_TEST_TMPDIR/package-resolution-bin
   mkdir -p "$mock_bin"
   cat > "$mock_bin/pacman" <<'EOF'
@@ -519,6 +650,11 @@ EOF
     run grep -qx "$package" "$packages_file"
     [ "$status" -eq 0 ]
   done
+}
+
+@test "successful installation offers an optional reboot" {
+  grep -Fq 'Reboot now? [y/N]' "$repo_root/install.sh"
+  grep -Fq 'run_logged "Requesting system reboot" sudo systemctl reboot' "$repo_root/install.sh"
 }
 
 @test "SwayOSD CSS declarations contain separators" {

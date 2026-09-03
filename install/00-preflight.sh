@@ -1,6 +1,6 @@
 #!/bin/bash
 
-log "Validating required components..."
+step "Validating required components"
 
 if ((EUID == 0)); then
   error "Run the installer as a normal user, not as root or through sudo"
@@ -44,7 +44,7 @@ export DOTFILES_USER_HOME="$passwd_home"
 success "User context confirmed: $DOTFILES_DEFAULT_USER ($DOTFILES_DEFAULT_UID)"
 
 # Must be x86 only to fully work
-log "Checking that system is x86_64"
+step "Checking system architecture"
 if [[ "$(uname -m)" = "x86_64" ]]; then
   success "x86_64 CPU"
 else
@@ -53,7 +53,7 @@ else
 fi
 
 # Must have secure boot disabled
-log "Check secure boot is disabled"
+step "Checking Secure Boot"
 if bootctl status 2>/dev/null | grep -q 'Secure Boot: enabled'; then
   error "Secure boot needs to be disabled"
   return 1
@@ -61,7 +61,7 @@ else
   success "Secure boot is disabled"
 fi
 
-log "Checking for pacman..."
+step "Checking for pacman"
 if command_exists pacman; then
   success "pacman found"
 else
@@ -69,7 +69,7 @@ else
   return 1
 fi
 
-log "Checking for systemd..."
+step "Checking for systemd"
 if command_exists systemctl; then
   success "systemd found"
 else
@@ -77,7 +77,7 @@ else
   return 1
 fi
 
-log "Checking that the user systemd manager is reachable..."
+step "Checking the user systemd manager"
 if systemctl --user show-environment >/dev/null 2>&1; then
   success "User systemd manager is reachable"
 else
@@ -86,7 +86,7 @@ else
 fi
 
 # Check for sudo access
-log "Checking for sudo access..."
+step "Checking sudo access"
 if sudo -n true 2>/dev/null; then
   success "sudo access confirmed (no password required)"
 elif sudo -v 2>/dev/null; then
@@ -96,7 +96,7 @@ else
   return 1
 fi
 
-log "Checking for limine bootloader..."
+step "Checking for the Limine bootloader"
 if command_exists limine; then
   success "limine bootloader found"
 else
@@ -104,7 +104,7 @@ else
   return 1
 fi
 
-log "Checking for Btrfs filesystem tools..."
+step "Checking for Btrfs tools"
 if command_exists btrfs; then
   success "Btrfs tools found"
 else
@@ -112,7 +112,7 @@ else
   return 1
 fi
 
-log "Checking for LUKS support..."
+step "Checking for LUKS support"
 if command_exists cryptsetup; then
   success "LUKS support found"
 else

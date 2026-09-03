@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # greetd configuration for autologin with fallback to bare TTY
-log "Configuring greetd for direct autologin"
+step "Configuring greetd for direct autologin"
 
-log "Creating greetd configuration directory..."
+log "Creating greetd configuration directory"
 run_logged "Create /etc/greetd" sudo mkdir -p /etc/greetd
 
 # Configure greetd with initial session (autologin) and fallback to bare shell
-log "Create greetd config"
+step "Writing greetd configuration"
 sudo tee /etc/greetd/config.toml > /dev/null <<EOF
 [terminal]
 vt = "next"
@@ -29,7 +29,7 @@ if systemctl --user is-enabled niri.service >/dev/null 2>&1; then
   run_logged "Disable niri.service user unit" \
     systemctl --user disable niri.service
 else
-  info "niri.service user unit is already disabled"
+  log "niri.service user unit is already disabled"
 fi
 
 success "greetd configuration complete"

@@ -2,7 +2,7 @@
 
 # Limine bootloader
 
-log "Configuring Limine bootloader..."
+step "Checking Limine bootloader dependencies"
 
 # Check if limine-mkinitcpio-hook is installed
 if ! command_exists limine-mkinitcpio; then
@@ -17,7 +17,7 @@ if ! command_exists limine-snapper-sync; then
 fi
 
 # Step 1: Extract existing kernel command line from bootloader config
-log "Extracting kernel command line from existing bootloader config..."
+step "Reading the existing kernel command line"
 
 sudo tee /etc/mkinitcpio.conf.d/dot_hooks.conf <<EOF >/dev/null
 HOOKS=(base udev plymouth keyboard autodetect microcode modconf kms keymap block encrypt filesystems btrfs-overlayfs)
@@ -30,7 +30,7 @@ if [[ ! -d /sys/firmware/efi ]]; then
 fi
 
 # Find config location. The ESP may only be readable by root.
-log "Finding limine config..."
+step "Finding the Limine configuration"
 limine_config=""
 for candidate in \
   /boot/EFI/arch-limine/limine.conf \
@@ -103,19 +103,21 @@ success "Last known-working Limine configuration retained at $last_known_limine_
 
 # Match Snapper configs
 if ! sudo snapper list-configs 2>/dev/null | grep -q "root"; then
-  sudo snapper -c root create-config /
+  run_logged "Creating the root Snapper configuration" \
+    sudo snapper -c root create-config /
 fi
 
 if ! sudo snapper list-configs 2>/dev/null | grep -q "home"; then
-  sudo snapper -c home create-config /home
+  run_logged "Creating the home Snapper configuration" \
+    sudo snapper -c home create-config /home
 fi
 
 # Enable quota to allow space-aware algorithms to work
-log "Check if btrfs quota is enabled"
+step "Checking Btrfs quota"
 if sudo btrfs quota status / | grep -qE '^\s*Enabled:\s+yes'; then
   success "Btrfs quota already enabled"
 else
-  sudo btrfs quota enable /
+  run_logged "Enabling Btrfs quota" sudo btrfs quota enable /
   success "Enabled btrfs quota"
 fi
 
@@ -127,11 +129,11 @@ sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root
 sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
 
 # Blacklist hardware watchdog modules (desktop, not needed)
-log "Blacklisting hardware watchdog modules..."
+step "Blacklisting hardware watchdog modules"
 sudo mkdir -p /etc/modprobe.d
 sudo cp "$DOTFILES_INSTALL_DEFAULTS_PATH/modprobe/nowatchdog.conf" /etc/modprobe.d/nowatchdog.conf
 
-log "Checking plymouth theme configuration..."
+step "Configuring the Plymouth theme"
 plymouth_theme_dir=/usr/share/plymouth/themes/dot
 if sudo test -d "$plymouth_theme_dir/plymouth"; then
   run_logged "Removing nested Plymouth theme directory" \
@@ -149,7 +151,7 @@ fi
 success "Plymouth theme configuration is set"
 
 # Disable default mkinitcpio UKI generation
-log "Disabling default mkinitcpio UKI preset..."
+step "Disabling the default mkinitcpio UKI preset"
 preset="/etc/mkinitcpio.d/linux.preset"
 if [[ -f "$preset" ]] && grep -q '^default_uki=' "$preset"; then
   sudo sed -i 's/^default_uki=/#default_uki=/' "$preset"
@@ -160,8 +162,9 @@ fi
 
 expected_uki=/boot/EFI/Linux/dot_linux.efi
 limine_output=$(mktemp)
+# shellcheck disable=SC2016 # $1 expands inside the child shell.
 if run_logged "Running authoritative final Limine generation" \
-  sudo limine-update | tee "$limine_output"; then
+  bash -o pipefail -c 'sudo limine-update 2>&1 | tee "$1"' _ "$limine_output"; then
   :
 else
   rm -f "$limine_output"
@@ -178,7 +181,7 @@ if ! grep -Fq 'Unified kernel image generation successful' "$limine_output"; the
 fi
 rm -f "$limine_output"
 
-log "Validating final Limine and UKI artifacts"
+step "Validating final Limine and UKI artifacts"
 if ! sudo test -s /boot/limine.conf; then
   restore_last_known_limine_configuration
   error "Final Limine configuration is missing or empty; restored the last known-working configuration"
@@ -258,7 +261,7 @@ if ! sudo test -s "$last_known_limine_config"; then
   return 1
 fi
 
-log "Cleaning stale UKIs"
+step "Cleaning stale UKIs"
 for stale in /boot/EFI/Linux/arch-linux.efi /boot/EFI/Linux/arch-linux-fallback.efi; do
   if sudo test -f "$stale"; then
     run_logged "Removing stale UKI: $stale" \

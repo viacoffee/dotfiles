@@ -1,6 +1,6 @@
 #!/bin/bash
 
-log "Updating system and installing required packages..."
+step "Reading package configuration"
 
 PACMAN_CONF=${PACMAN_CONF:-/etc/pacman.conf}
 PACMAN_ORIGINAL_BACKUP=${PACMAN_ORIGINAL_BACKUP:-$PACMAN_CONF.dotfiles-original}
@@ -170,10 +170,51 @@ preserve_original_pacman_configuration
 write_managed_pacman_configuration
 validate_pacman_configuration
 
+# A full kernel upgrade removes the running kernel's module tree. Keep the
+# netfilter modules needed by UFW resident so the firewall can be configured
+# later in this same installer run, before rebooting into the new kernel.
+firewall_modules=(
+  nf_tables
+  nf_conntrack
+  nf_log_syslog
+  nf_nat
+  nft_chain_nat
+  nft_compat
+  nft_ct
+  nft_fib
+  nft_fib_inet
+  nft_fib_ipv4
+  nft_fib_ipv6
+  nft_limit
+  nft_log
+  nft_masq
+  nft_reject
+  nft_reject_inet
+  nft_reject_ipv4
+  nft_reject_ipv6
+  ip_tables
+  ip6_tables
+  ipt_REJECT
+  ip6t_REJECT
+  ip6t_rt
+  xt_addrtype
+  xt_comment
+  xt_conntrack
+  xt_hl
+  xt_limit
+  xt_LOG
+  xt_multiport
+  xt_recent
+  xt_tcpudp
+)
+run_logged "Preparing firewall kernel modules" \
+  sudo modprobe -a "${firewall_modules[@]}"
+
 # Refresh repository databases so newly configured repository packages can be
 # resolved before any system upgrade begins.
 run_logged "Synchronizing package databases" sudo pacman -Sy --noconfirm
-validate_package_resolution "${required_packages[@]}"
+run_logged "Validating required package availability" \
+  validate_package_resolution "${required_packages[@]}"
 
 # Keep normal hooks enabled for the full system upgrade so any upgraded kernel
 # finishes with boot artifacts from the currently working configuration.

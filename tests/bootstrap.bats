@@ -8,11 +8,18 @@ setup() {
   cat > "$mock_bin/git" <<'EOF'
 #!/usr/bin/env bash
 printf '%s\n' "$*" >> "$GIT_CALLS"
+printf 'clone progress details\n' >&2
 clone_dir=${!#}
 mkdir -p "$clone_dir"
 printf '#!/usr/bin/env bash\nprintf "installer started\\n"\n' > "$clone_dir/install.sh"
 EOF
-  chmod +x "$mock_bin/git"
+  cat > "$mock_bin/sudo" <<'EOF'
+#!/usr/bin/env bash
+[[ ${1:-} == -n && ${2:-} == true ]] && exit 0
+[[ ${1:-} == -v ]] && exit 0
+exec "$@"
+EOF
+  chmod +x "$mock_bin/git" "$mock_bin/sudo"
 }
 
 run_bootstrap_in_tty() {
@@ -47,11 +54,20 @@ run_bootstrap_in_tty() {
   [[ $output != *"| bash"* ]]
 }
 
+@test "bootstrap requires sudo access before setup" {
+  auth_line=$(grep -nF 'if ! sudo -n true' "$repo_root/bootstrap.sh" | cut -d: -f1)
+  setup_line=$(grep -nF 'if ! command -v git' "$repo_root/bootstrap.sh" | cut -d: -f1)
+
+  [ "$auth_line" -lt "$setup_line" ]
+}
+
 @test "bootstrap reads confirmation from the terminal and aborts" {
   run_bootstrap_in_tty n
 
   [ "$status" -eq 0 ]
   [[ $output == *"Aborted."* ]]
+  [[ $output == *$'\033[1;33m! This will configure packages'* ]]
+  [[ $output != *$'\033[0;31mThis will configure packages'* ]]
   [[ $output != *"installer started"* ]]
 }
 
@@ -60,5 +76,8 @@ run_bootstrap_in_tty() {
 
   [ "$status" -eq 0 ]
   [[ $output == *"installer started"* ]]
+  [[ $output != *"Starting installer..."* ]]
+  [[ $output != *"clone progress details"* ]]
+  grep -Fq 'clone progress details' "$test_home/.local/state/dotfiles/install.log"
   grep -Fq -- '--recurse-submodules -b installer-refactor' "$BATS_TEST_TMPDIR/git.calls"
 }
