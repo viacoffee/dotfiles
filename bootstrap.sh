@@ -17,7 +17,7 @@ else
   INTERACTIVE_OUTPUT=0
 fi
 if ((INTERACTIVE_OUTPUT)) && [[ -z ${NO_COLOR+x} ]]; then
-  BLUE='\033[0;34m'
+  BLUE='\033[0;94m'
   GREEN='\033[0;32m'
   YELLOW='\033[1;33m'
   RED='\033[0;31m'
@@ -33,7 +33,7 @@ else
 fi
 
 bootstrap_error() {
-  printf '%b● %s%b\n' "$RED" "$1" "$NC" >&2
+  printf '%b• %s%b\n' "$RED" "$1" "$NC" >&2
 }
 
 bootstrap_start() {
@@ -46,7 +46,7 @@ bootstrap_start() {
 
 bootstrap_done() {
   if ((INTERACTIVE_OUTPUT)); then
-    printf '\r\033[2K%b● %s%b\n' "$GREEN" "$1" "$NC"
+    printf '\r\033[2K%b• %s%b\n' "$GREEN" "$1" "$NC"
   else
     printf 'DONE  %s\n' "$1"
   fi

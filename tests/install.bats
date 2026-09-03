@@ -129,11 +129,11 @@ EOF
   run env TERM=xterm script -qefc "$status_script" /dev/null
 
   [ "$status" -eq 0 ]
-  [[ $output == *$'\033[0;34m○ Packages'* ]]
+  [[ $output == *$'\033[0;94m○ Packages'* ]]
   [[ $output == *$'\033[0;90m  ○ Synchronizing databases'* ]]
-  [[ $output == *$'\033[0;32m● Packages'* ]]
+  [[ $output == *$'\033[0;32m• Packages'* ]]
   [[ $output == *$'\033[0;90m  └─ No optional hardware detected; skipped'* ]]
-  [[ $output == *$'\033[0;31m● Bootloader'* ]]
+  [[ $output == *$'\033[0;31m• Bootloader'* ]]
 }
 
 @test "long-running commands update the TTY ticker with elapsed time" {
@@ -153,7 +153,7 @@ EOF
 
   [ "$status" -eq 0 ]
   [[ $output == *"○ Downloading packages (1s)"* ]]
-  [[ $output == *$'\033[0;32m● Packages'* ]]
+  [[ $output == *$'\033[0;32m• Packages'* ]]
 }
 
 @test "NO_COLOR keeps TTY markers but removes escape sequences" {
@@ -174,8 +174,8 @@ EOF
   [ "$status" -eq 0 ]
   [[ $output == *"○ Packages"* ]]
   [[ $output == *"  ○ Synchronizing databases"* ]]
-  [[ $output == *"● Packages"* ]]
-  [[ $output != *$'\033[0;34m'* ]]
+  [[ $output == *"• Packages"* ]]
+  [[ $output != *$'\033[0;94m'* ]]
   [[ $output != *$'\033[0;90m'* ]]
   [[ $output != *$'\033[0;32m'* ]]
 }

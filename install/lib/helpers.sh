@@ -5,7 +5,7 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
+BLUE='\033[0;94m'
 DIM='\033[0;90m'
 # shellcheck disable=SC2034 # Used by install.sh after this library is sourced.
 BOLD='\033[1m'
@@ -146,7 +146,7 @@ section_complete() {
 
   if ((DOTFILES_INTERACTIVE_OUTPUT)); then
     _clear_status_display
-    _print_styled "$GREEN" "● $title"
+    _print_styled "$GREEN" "• $title"
     printf '\n'
     if [[ -n $DOTFILES_SECTION_NOTE ]]; then
       _print_styled "$DIM" "  └─ $DOTFILES_SECTION_NOTE"
@@ -192,7 +192,7 @@ error() {
   if [[ ${DOTFILES_DEFER_ERRORS:-0} != 1 ]]; then
     if ((DOTFILES_INTERACTIVE_OUTPUT)); then
       _clear_status_display
-      _print_styled "$RED" "● $message"
+      _print_styled "$RED" "• $message"
       printf '\n'
     else
       printf 'ERROR %s\n' "$message" >&2
@@ -210,7 +210,7 @@ section_failed() {
 
   if ((DOTFILES_INTERACTIVE_OUTPUT)); then
     _clear_status_display
-    _print_styled "$RED" "● $title"
+    _print_styled "$RED" "• $title"
     printf '\n'
     _print_styled "$RED" "  $reason"
     printf '\n'
