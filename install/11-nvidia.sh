@@ -6,7 +6,7 @@ step "Detecting NVIDIA hardware"
 NVIDIA="$(lspci | grep -i 'nvidia' || true)"
 
 if [[ -z "$NVIDIA" ]]; then
-  warn "No NVIDIA GPU detected. Skipping NVIDIA driver installation."
+  section_note "No NVIDIA GPU detected; skipped"
   return 0
 fi
 
