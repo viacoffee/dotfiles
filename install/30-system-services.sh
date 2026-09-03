@@ -46,7 +46,7 @@ fi
 # Ensure systemd-resolved is enabled for DNS
 if ! systemctl is-enabled --quiet systemd-resolved.service; then
   run_logged "Enable systemd-resolved" \
-    sudo systemctl enable systemd-resolved.service
+    sudo systemctl enable --now systemd-resolved.service
 fi
 
 # Ensure resolv.conf points to systemd-resolved stub
