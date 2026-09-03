@@ -96,11 +96,11 @@ run_phase() {
 }
 
 if ((DOTFILES_COLOR_OUTPUT)); then
-  printf '%b%s%b\n\n' "$BOLD" "dotfiles installer" "$NC"
-  printf '%b  Source: %s\n  Log:    %s%b\n\n' \
+  printf '\n%b%s%b\n' "$BOLD" "dotfiles installer" "$NC"
+  printf '%b  ├─ Source: %s\n  └─ Log:    %s%b\n\n' \
     "$DIM" "$DOTFILES_PATH" "$DOTFILES_INSTALL_LOG_FILE" "$NC"
 else
-  printf 'dotfiles installer\n\n'
+  printf '\ndotfiles installer\n'
   printf '  Source: %s\n' "$DOTFILES_PATH"
   printf '  Log:    %s\n\n' "$DOTFILES_INSTALL_LOG_FILE"
 fi
