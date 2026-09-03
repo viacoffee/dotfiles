@@ -394,9 +394,9 @@ run_bootstrap() {
 
   if [[ -n $branch ]]; then
     [[ $branch =~ ^[a-zA-Z0-9._/-]+$ ]] || die "invalid branch name: $branch"
-    printf -v remote_command 'sudo pacman -S --needed curl && bash <(curl -fsSL %q) -b %q' "$VM_BOOTSTRAP_URL" "$branch"
+    printf -v remote_command 'bash <(curl -fsSL %q) -b %q' "$VM_BOOTSTRAP_URL" "$branch"
   else
-    printf -v remote_command 'sudo pacman -S --needed curl && bash <(curl -fsSL %q)' "$VM_BOOTSTRAP_URL"
+    printf -v remote_command 'bash <(curl -fsSL %q)' "$VM_BOOTSTRAP_URL"
   fi
 
   transcript=$VM_RESULTS_DIR/$case_name/bootstrap-$(date '+%Y%m%d-%H%M%S').log

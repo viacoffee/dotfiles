@@ -245,7 +245,9 @@ EOF
 
   [ "$status" -eq 0 ]
   grep -q 'dotfiles-user@192.168.122.204' "$MOCK_LOG"
-  grep -Fq 'sudo\ pacman\ -S\ --needed\ curl\ \&\&\ bash\ \<\(curl\ -fsSL\ https://example.test/bootstrap.sh\)\ -b\ installer-refactor' "$MOCK_LOG"
+  grep -Fq 'bash\ \<\(curl\ -fsSL\ https://example.test/bootstrap.sh\)\ -b\ installer-refactor' "$MOCK_LOG"
+  run grep -Fq 'pacman\ -S\ --needed\ curl\ \&\&' "$MOCK_LOG"
+  [ "$status" -eq 1 ]
 }
 
 @test "rerun updates and runs the configured branch through SSH" {

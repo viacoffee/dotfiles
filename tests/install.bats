@@ -132,7 +132,7 @@ EOF
   [[ $output == *$'\033[0;34m○ Packages'* ]]
   [[ $output == *$'\033[0;90m  ○ Synchronizing databases'* ]]
   [[ $output == *$'\033[0;32m● Packages'* ]]
-  [[ $output == *"No optional hardware detected; skipped"* ]]
+  [[ $output == *$'\033[0;90m  └─ No optional hardware detected; skipped'* ]]
   [[ $output == *$'\033[0;31m● Bootloader'* ]]
 }
 
@@ -664,6 +664,11 @@ EOF
     run grep -qx "$package" "$packages_file"
     [ "$status" -eq 0 ]
   done
+}
+
+@test "successful installation offers an optional reboot" {
+  grep -Fq 'Reboot now? [y/N]' "$repo_root/install.sh"
+  grep -Fq 'run_logged "Requesting system reboot" sudo systemctl reboot' "$repo_root/install.sh"
 }
 
 @test "SwayOSD CSS declarations contain separators" {

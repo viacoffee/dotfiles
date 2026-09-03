@@ -53,6 +53,8 @@ run_bootstrap_in_tty() {
 
   [ "$status" -eq 0 ]
   [[ $output == *"Aborted."* ]]
+  [[ $output == *$'\033[1;33m! This will configure packages'* ]]
+  [[ $output != *$'\033[0;31mThis will configure packages'* ]]
   [[ $output != *"installer started"* ]]
 }
 
