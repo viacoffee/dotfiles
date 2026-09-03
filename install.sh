@@ -167,5 +167,20 @@ if ((DOTFILES_COLOR_OUTPUT)); then
 else
   printf '%s\n' "Installed successfully."
 fi
-printf 'Reboot to start the configured desktop session.\n'
 printf 'Log: %s\n' "$DOTFILES_INSTALL_LOG_FILE"
+
+reboot_answer=
+if ((DOTFILES_INTERACTIVE_OUTPUT)); then
+  read -rp "Reboot now? [y/N] " reboot_answer </dev/tty || true
+else
+  printf 'Reboot to start the configured desktop session.\n'
+fi
+
+if [[ $reboot_answer =~ ^[Yy]$ ]]; then
+  export DOTFILES_CURRENT_PHASE="reboot"
+  section_start "Reboot"
+  run_logged "Requesting system reboot" sudo systemctl reboot
+  section_complete "Reboot"
+elif ((DOTFILES_INTERACTIVE_OUTPUT)); then
+  printf 'Reboot skipped. Run sudo systemctl reboot when ready.\n'
+fi
