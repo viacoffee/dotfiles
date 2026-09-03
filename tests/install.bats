@@ -406,6 +406,12 @@ EOF
 
   run grep -F "comment 'allow-dotfiles-test-host-ssh'" "$firewall_script"
   [ "$status" -eq 0 ]
+
+  backend_line=$(grep -nF 'sudo iptables --version' "$firewall_script" | cut -d: -f1)
+  ssh_rule_line=$(grep -nF 'comment '\''allow-dotfiles-test-host-ssh'\''' "$firewall_script" | cut -d: -f1)
+  deny_line=$(grep -nF 'sudo ufw default deny incoming' "$firewall_script" | cut -d: -f1)
+  [ "$backend_line" -lt "$ssh_rule_line" ]
+  [ "$ssh_rule_line" -lt "$deny_line" ]
 }
 
 @test "pacman configuration is managed without replacing the complete file" {

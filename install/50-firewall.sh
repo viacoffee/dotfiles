@@ -1,16 +1,18 @@
 #!/bin/bash
 
-step "Configuring firewall defaults"
+step "Validating the firewall backend"
+if ! command_exists ufw; then
+  error "UFW is not installed"
+  return 1
+fi
+if ! command_exists iptables; then
+  error "The iptables backend required by UFW is not installed"
+  return 1
+fi
+run_logged "Checking the iptables backend" sudo iptables --version
 
-# Allow nothing in, everything out
-run_logged "Denying unsolicited incoming traffic" sudo ufw default deny incoming
-run_logged "Allowing outgoing traffic" sudo ufw default allow outgoing
-
-# Allow ports for LocalSend
-run_logged "Allowing LocalSend UDP traffic" sudo ufw allow 53317/udp
-run_logged "Allowing LocalSend TCP traffic" sudo ufw allow 53317/tcp
-
-# Keep host-side automation reachable only on explicitly marked test VMs.
+# Keep host-side automation reachable only on explicitly marked test VMs. Add
+# this rule before changing defaults in case UFW is already active in the base.
 if [[ -f /etc/dotfiles-test-vm && -n ${SSH_CONNECTION:-} ]]; then
   ssh_client_ip=${SSH_CONNECTION%% *}
   run_logged "Allowing test VM SSH traffic" \
@@ -18,10 +20,14 @@ if [[ -f /etc/dotfiles-test-vm && -n ${SSH_CONNECTION:-} ]]; then
       comment 'allow-dotfiles-test-host-ssh'
 fi
 
-# Turn on the firewall
-run_logged "Enabling UFW" sudo ufw --force enable
+step "Configuring firewall defaults"
+run_logged "Denying unsolicited incoming traffic" sudo ufw default deny incoming
+run_logged "Allowing outgoing traffic" sudo ufw default allow outgoing
 
-# Enable UFW systemd service to start on boot
+run_logged "Allowing LocalSend UDP traffic" sudo ufw allow 53317/udp
+run_logged "Allowing LocalSend TCP traffic" sudo ufw allow 53317/tcp
+
+run_logged "Enabling UFW" sudo ufw --force enable
 run_logged "Enabling the UFW system service" sudo systemctl enable ufw
 
 success "Firewall configured and enabled"

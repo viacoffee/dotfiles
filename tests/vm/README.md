@@ -124,6 +124,10 @@ The command verifies that the `allow-dotfiles-test-host-ssh` rule is gone and
 saves a cleanup transcript. If the installer is rerun later over SSH, it will
 add the rule again and cleanup must be repeated.
 
+If a firewall test makes SSH unreachable, `firewall-cleanup` cannot connect.
+Use the graphical console to recover the guest or discard the disposable clone
+with `remove CASE --force`; removing the clone also removes its firewall state.
+
 Request a clean shutdown, then remove the clone and its storage:
 
 ```bash
