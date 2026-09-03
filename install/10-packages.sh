@@ -170,6 +170,33 @@ preserve_original_pacman_configuration
 write_managed_pacman_configuration
 validate_pacman_configuration
 
+# A full kernel upgrade removes the running kernel's module tree. Keep the
+# netfilter modules needed by UFW resident so the firewall can be configured
+# later in this same installer run, before rebooting into the new kernel.
+firewall_modules=(
+  nf_tables
+  nf_conntrack
+  nf_nat
+  nft_chain_nat
+  nft_ct
+  nft_masq
+  nft_reject_ipv4
+  nft_reject_ipv6
+  nft_compat
+  ip_tables
+  ip6_tables
+  xt_addrtype
+  xt_comment
+  xt_conntrack
+  xt_limit
+  xt_LOG
+  xt_multiport
+  xt_recent
+  xt_tcpudp
+)
+run_logged "Preparing firewall kernel modules" \
+  sudo modprobe -a "${firewall_modules[@]}"
+
 # Refresh repository databases so newly configured repository packages can be
 # resolved before any system upgrade begins.
 run_logged "Synchronizing package databases" sudo pacman -Sy --noconfirm

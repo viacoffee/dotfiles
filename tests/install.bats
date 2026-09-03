@@ -468,7 +468,11 @@ for argument in "$@"; do
 done
 exec /usr/bin/pacman-conf --config="$PACMAN_CONF" "$@"
 EOF
-  chmod +x "$mock_bin/sudo" "$mock_bin/pacman" "$mock_bin/pacman-conf"
+  cat > "$mock_bin/modprobe" <<'EOF'
+#!/usr/bin/env bash
+exit 0
+EOF
+  chmod +x "$mock_bin/sudo" "$mock_bin/pacman" "$mock_bin/pacman-conf" "$mock_bin/modprobe"
   cp "$fixture/etc/pacman.conf" "$fixture/original.conf"
 
   pacman_env=(
@@ -549,6 +553,21 @@ EOF
   grep -Fq 'sudo pacman -Syu --noconfirm' "$pacman_script"
   run grep -R -E 'mkinitcpio-(install|remove)\.hook\.disabled|sudo mv .*(60|90)-mkinitcpio' \
     "$repo_root/install.sh" "$repo_root/install"
+  [ "$status" -eq 1 ]
+}
+
+@test "firewall modules are loaded before a kernel upgrade" {
+  module_line=$(grep -nF 'sudo modprobe -a "${firewall_modules[@]}"' "$pacman_script" | cut -d: -f1)
+  upgrade_line=$(grep -nF 'sudo pacman -Syu --noconfirm' "$pacman_script" | cut -d: -f1)
+
+  [ "$module_line" -lt "$upgrade_line" ]
+  grep -Fxq '  nf_tables' "$pacman_script"
+  grep -Fxq '  nft_compat' "$pacman_script"
+}
+
+@test "privileged commands use process-state polling for ticker updates" {
+  grep -Fq 'ps -o stat= -p "$1"' "$repo_root/install/lib/helpers.sh"
+  run grep -Fq 'kill -0 "$command_pid"' "$repo_root/install/lib/helpers.sh"
   [ "$status" -eq 1 ]
 }
 

@@ -97,6 +97,12 @@ _update_ticker_elapsed() {
   _print_styled "$DIM" "  ○ $description (${elapsed}s)"
 }
 
+_command_is_running() {
+  local state
+  state=$(ps -o stat= -p "$1" 2>/dev/null) || return 1
+  [[ $state != Z* ]]
+}
+
 log() {
   _write_log INFO "$@"
 }
@@ -252,10 +258,13 @@ run_logged() {
     "$@" >"$capture_file" 2>&1 &
     command_pid=$!
     last_elapsed=-1
-    while kill -0 "$command_pid" 2>/dev/null; do
+    # A sudo process changes ownership to root, making `kill -0` fail for the
+    # calling user even while the command is still running. Poll process state
+    # instead so privileged package operations keep the ticker moving.
+    while _command_is_running "$command_pid"; do
       sleep 1
       elapsed=$((SECONDS - started_at))
-      if ((elapsed != last_elapsed)) && kill -0 "$command_pid" 2>/dev/null; then
+      if ((elapsed != last_elapsed)) && _command_is_running "$command_pid"; then
         _update_ticker_elapsed "$description" "$elapsed"
         last_elapsed=$elapsed
       fi
