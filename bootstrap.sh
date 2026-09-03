@@ -19,12 +19,14 @@ fi
 if ((INTERACTIVE_OUTPUT)) && [[ -z ${NO_COLOR+x} ]]; then
   BLUE='\033[0;34m'
   GREEN='\033[0;32m'
+  YELLOW='\033[1;33m'
   RED='\033[0;31m'
   BOLD='\033[1m'
   NC='\033[0m'
 else
   BLUE=
   GREEN=
+  YELLOW=
   RED=
   BOLD=
   NC=
@@ -146,10 +148,10 @@ if [[ -n $BRANCH ]]; then
 fi
 run_quiet "Cloning repository" git clone "${clone_args[@]}" "$REPO_URL" "$CLONE_DIR"
 
-printf '\n%b' "$BOLD$RED"
+printf '\n%b' "$YELLOW"
 cat <<'EOF'
-This will configure packages, the bootloader, firewall, display manager,
-and other system settings. It is intended for a fresh Arch installation.
+! This will configure packages, the bootloader, firewall, display manager,
+  and other system settings. It is intended for a fresh Arch installation.
 EOF
 printf '%b\n' "$NC"
 
