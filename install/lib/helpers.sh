@@ -149,12 +149,12 @@ section_complete() {
     _print_styled "$GREEN" "● $title"
     printf '\n'
     if [[ -n $DOTFILES_SECTION_NOTE ]]; then
-      _print_styled "$DIM" "  $DOTFILES_SECTION_NOTE"
+      _print_styled "$DIM" "  └─ $DOTFILES_SECTION_NOTE"
       printf '\n'
     fi
   else
     printf 'DONE  %s\n' "$title"
-    [[ -z $DOTFILES_SECTION_NOTE ]] || printf 'NOTE  %s\n' "$DOTFILES_SECTION_NOTE"
+    [[ -z $DOTFILES_SECTION_NOTE ]] || printf 'NOTE  └─ %s\n' "$DOTFILES_SECTION_NOTE"
   fi
 
   DOTFILES_ACTIVE_SECTION=
