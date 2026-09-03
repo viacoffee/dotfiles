@@ -166,10 +166,12 @@ log "Installation finished: run=$DOTFILES_INSTALL_RUN_ID status=0"
 printf '\n'
 if ((DOTFILES_COLOR_OUTPUT)); then
   printf '%b%s%b\n' "$GREEN$BOLD" "Installed successfully." "$NC"
+  printf '%b  └─ Log: %s%b\n\n' \
+    "$DIM" "$DOTFILES_INSTALL_LOG_FILE" "$NC"
 else
   printf '%s\n' "Installed successfully."
+  printf 'Log: %s\n' "$DOTFILES_INSTALL_LOG_FILE"
 fi
-printf 'Log: %s\n' "$DOTFILES_INSTALL_LOG_FILE"
 
 reboot_answer=
 if ((DOTFILES_INTERACTIVE_OUTPUT)); then
