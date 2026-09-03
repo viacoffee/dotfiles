@@ -40,11 +40,32 @@ Then change this line in `tests/vm/config.local`:
 VM_BASE_NAME=dotfiles-test-automation-base
 ```
 
-New test clones will inherit OpenSSH, the public test key, and the
-`/etc/dotfiles-test-vm` marker. During an SSH-driven install, the firewall phase
-uses that marker to add a source-restricted SSH rule named
-`allow-dotfiles-test-host-ssh`. This rule is for test access only. The original
-production-like baseline remains unchanged.
+New test clones inherit OpenSSH, the public test key, and the
+`/etc/dotfiles-test-vm` marker. The original production-like baseline remains
+unchanged.
+
+### Test-only firewall rule
+
+When the installer is tested over SSH, keep the following guarded block in the
+firewall phase, currently `install/50-firewall.sh`. It must run before UFW's
+default policies are changed so the harness does not lose its active SSH
+connection:
+
+```bash
+# Keep host-side automation reachable only on explicitly marked test VMs. Add
+# this rule before changing defaults in case UFW is already active in the base.
+if [[ -f /etc/dotfiles-test-vm && -n ${SSH_CONNECTION:-} ]]; then
+  ssh_client_ip=${SSH_CONNECTION%% *}
+  run_logged "Allowing test VM SSH traffic" \
+    sudo ufw allow from "$ssh_client_ip" to any port 22 proto tcp \
+      comment 'allow-dotfiles-test-host-ssh'
+fi
+```
+
+Both guards are required: the marker limits the behavior to test VMs, and
+`SSH_CONNECTION` limits the rule to SSH-driven runs and supplies the host-side
+source address. The rule is temporary test infrastructure, not production
+firewall policy.
 
 ## Lifecycle
 

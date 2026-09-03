@@ -22,7 +22,6 @@ setup() {
   limine_defaults=$repo_root/install/default/limine/default.conf
   greetd_script=$repo_root/install/12-greetd.sh
   systemd_script=$repo_root/install/30-system-services.sh
-  firewall_script=$repo_root/install/50-firewall.sh
   packages_file=$repo_root/install/packages
   pacman_script=$repo_root/install/10-packages.sh
   pacman_fragment=$repo_root/install/default/pacman/dotfiles-repositories.conf
@@ -397,21 +396,6 @@ EOF
 @test "networkd is enabled when NetworkManager is disabled" {
   run grep -F 'sudo systemctl enable systemd-networkd.service' "$systemd_script"
   [ "$status" -eq 0 ]
-}
-
-@test "marked test VMs retain SSH access through UFW" {
-  # shellcheck disable=SC2016 # matching a literal shell expression
-  run grep -F '[[ -f /etc/dotfiles-test-vm && -n ${SSH_CONNECTION:-} ]]' "$firewall_script"
-  [ "$status" -eq 0 ]
-
-  run grep -F "comment 'allow-dotfiles-test-host-ssh'" "$firewall_script"
-  [ "$status" -eq 0 ]
-
-  backend_line=$(grep -nF 'sudo iptables --version' "$firewall_script" | cut -d: -f1)
-  ssh_rule_line=$(grep -nF 'comment '\''allow-dotfiles-test-host-ssh'\''' "$firewall_script" | cut -d: -f1)
-  deny_line=$(grep -nF 'sudo ufw default deny incoming' "$firewall_script" | cut -d: -f1)
-  [ "$backend_line" -lt "$ssh_rule_line" ]
-  [ "$ssh_rule_line" -lt "$deny_line" ]
 }
 
 @test "pacman configuration is managed without replacing the complete file" {
