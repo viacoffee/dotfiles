@@ -640,7 +640,9 @@ EOF
   done
 }
 
-@test "required package resolution reports every unresolved package" {
+@test "required package resolution has elapsed-time status and reports every unresolved package" {
+  grep -Fq 'run_logged "Validating required package availability"' "$pacman_script"
+
   mock_bin=$BATS_TEST_TMPDIR/package-resolution-bin
   mkdir -p "$mock_bin"
   cat > "$mock_bin/pacman" <<'EOF'

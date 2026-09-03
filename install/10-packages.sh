@@ -213,7 +213,8 @@ run_logged "Preparing firewall kernel modules" \
 # Refresh repository databases so newly configured repository packages can be
 # resolved before any system upgrade begins.
 run_logged "Synchronizing package databases" sudo pacman -Sy --noconfirm
-validate_package_resolution "${required_packages[@]}"
+run_logged "Validating required package availability" \
+  validate_package_resolution "${required_packages[@]}"
 
 # Keep normal hooks enabled for the full system upgrade so any upgraded kernel
 # finishes with boot artifacts from the currently working configuration.

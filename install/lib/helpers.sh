@@ -399,6 +399,7 @@ validate_package_resolution() {
 
   if ((${#unresolved[@]} > 0)); then
     error "Required packages do not resolve: ${unresolved[*]}"
+    printf 'ERROR: Required packages do not resolve: %s\n' "${unresolved[*]}" >&2
     return 1
   fi
   log "All required packages resolve from configured repositories"
