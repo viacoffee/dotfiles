@@ -4,7 +4,7 @@ include optional=true "window-rules.laptop.kdl"
 include "animations.kdl"
 
 switch-events {
-  lid-close { spawn "dot-cmd-shutdown"; }
+  lid-close { spawn "dot-cmd-suspend"; }
 }
 
 spawn-at-startup "uwsm" "finalize"

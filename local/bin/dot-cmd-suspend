@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+
+if ! pgrep --exact hyprlock >/dev/null; then
+  dot-lock-screen &
+  sleep 0.5
+fi
+
+systemctl suspend

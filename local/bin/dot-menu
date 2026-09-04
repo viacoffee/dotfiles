@@ -2,11 +2,13 @@
 
 if [[ "$1" == power ]]; then
   options="  Lock
+  Suspend
   Restart
   Shutdown"
 
   case $(dot-launch-menu "" <<< "$options") in
     *Lock*)     dot-lock-screen ;;
+    *Suspend*)  dot-cmd-suspend ;;
     *Restart*)  dot-cmd-reboot ;;
     *Shutdown*) dot-cmd-shutdown ;;
   esac
