@@ -1,0 +1,91 @@
+#!/bin/bash
+set -euo pipefail
+
+REPO_ROOT=$(cd "$(dirname "$(readlink -f "$0")")/../../.." && pwd)
+DOCKER_SYSCTL_SOURCE="$REPO_ROOT/install/default/sysctl/99-docker.conf"
+DOCKER_SYSCTL_TARGET=/etc/sysctl.d/99-docker.conf
+DOCKER_PACKAGES=(docker docker-buildx docker-compose ufw-docker)
+
+package_installed() {
+  pacman -Q "$1" >/dev/null 2>&1
+}
+
+summary() {
+  if package_installed docker; then
+    printf 'installed\n'
+  else
+    printf 'not installed\n'
+  fi
+}
+
+status() {
+  local package state
+
+  printf 'Docker environment:\n'
+  for package in "${DOCKER_PACKAGES[@]}"; do
+    if package_installed "$package"; then state=installed; else state=missing; fi
+    printf '  %-16s %s\n' "$package" "$state"
+  done
+
+  if systemctl is-enabled --quiet docker.socket 2>/dev/null; then state=enabled; else state=disabled; fi
+  printf '  %-16s %s\n' docker.socket "$state"
+
+  if [[ -f $DOCKER_SYSCTL_TARGET ]]; then state=installed; else state=missing; fi
+  printf '  %-16s %s\n' 'Docker sysctl' "$state"
+
+  if grep -Fq 'BEGIN UFW AND DOCKER' /etc/ufw/after.rules 2>/dev/null; then state=installed; else state=missing; fi
+  printf '  %-16s %s\n' 'UFW rules' "$state"
+}
+
+install() {
+  [[ -f $DOCKER_SYSCTL_SOURCE ]] || {
+    printf 'Docker sysctl configuration not found: %s\n' "$DOCKER_SYSCTL_SOURCE" >&2
+    return 1
+  }
+
+  sudo pacman -S --needed "${DOCKER_PACKAGES[@]}"
+  sudo /usr/bin/install -Dm644 "$DOCKER_SYSCTL_SOURCE" "$DOCKER_SYSCTL_TARGET"
+  sudo sysctl --load "$DOCKER_SYSCTL_TARGET"
+  sudo systemctl enable --now docker.socket
+  sudo ufw allow in proto udp from 172.16.0.0/12 to 172.17.0.1 port 53 comment 'allow-docker-dns'
+  sudo ufw-docker install
+  sudo ufw reload
+
+  printf '\nDocker is installed. Use sudo docker, or explicitly join the root-equivalent docker group.\n'
+}
+
+remove() {
+  local answer package
+  local -a installed_packages=()
+
+  read -r -p 'Remove Docker packages and managed configuration? [y/N] ' answer
+  [[ $answer =~ ^[Yy]([Ee][Ss])?$ ]] || { printf 'Docker removal cancelled.\n'; return 0; }
+
+  if command -v ufw-docker >/dev/null 2>&1; then sudo ufw-docker uninstall; fi
+  if sudo ufw status | grep -Fq 'allow-docker-dns'; then
+    sudo ufw --force delete allow in proto udp from 172.16.0.0/12 to 172.17.0.1 port 53 comment 'allow-docker-dns'
+  fi
+  sudo ufw reload
+
+  if package_installed docker; then sudo systemctl disable --now docker.service docker.socket; fi
+  sudo rm -f "$DOCKER_SYSCTL_TARGET"
+
+  for package in "${DOCKER_PACKAGES[@]}"; do
+    package_installed "$package" && installed_packages+=("$package")
+  done
+  if ((${#installed_packages[@]})); then sudo pacman -Rns --noconfirm "${installed_packages[@]}"; fi
+
+  printf '\nDocker packages and managed configuration were removed. /var/lib/docker was preserved.\n'
+}
+
+main() {
+  case ${1:-status} in
+    summary) summary ;;
+    status) status ;;
+    install) install ;;
+    remove) remove ;;
+    *) return 2 ;;
+  esac
+}
+
+main "$@"

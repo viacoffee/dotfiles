@@ -1,0 +1,64 @@
+#!/bin/bash
+set -euo pipefail
+
+MISE_PACKAGE=mise
+PROFILE_PATH="$HOME/.profile"
+
+package_installed() {
+  pacman -Q "$1" >/dev/null 2>&1
+}
+
+summary() {
+  if package_installed "$MISE_PACKAGE" && command -v mise >/dev/null 2>&1; then
+    printf 'installed\n'
+  else
+    printf 'not installed\n'
+  fi
+}
+
+status() {
+  local state
+
+  printf 'Mise environment:\n'
+  if package_installed "$MISE_PACKAGE"; then state=installed; else state=missing; fi
+  printf '  %-16s %s\n' "$MISE_PACKAGE" "$state"
+
+  if command -v mise >/dev/null 2>&1; then
+    printf '  %-16s installed (%s)\n' mise "$(mise --version 2>/dev/null || printf 'version unknown')"
+    printf '  Installed tools:\n'
+    mise ls 2>/dev/null || printf '    none\n'
+  else
+    printf '  %-16s missing\n' mise
+  fi
+
+  if grep -Fq 'Mise shims' "$PROFILE_PATH" 2>/dev/null; then state=configured; else state=missing; fi
+  printf '  %-16s %s\n' 'Shell shims' "$state"
+}
+
+install() {
+  sudo pacman -S --needed "$MISE_PACKAGE"
+  printf '\nMise is installed. Install runtimes with Mise, for example: mise use --global python@3.13\n'
+}
+
+remove() {
+  local answer
+
+  read -r -p 'Remove Mise? Installed runtimes and configuration will be preserved. [y/N] ' answer
+  [[ $answer =~ ^[Yy]([Ee][Ss])?$ ]] || { printf 'Mise removal cancelled.\n'; return 0; }
+
+  if package_installed "$MISE_PACKAGE"; then sudo pacman -Rns --noconfirm "$MISE_PACKAGE"; fi
+  rm -rf "$HOME/.local/share/mise/shims"
+  printf '\nMise was removed. Its runtimes and configuration were preserved; generated shims were removed.\n'
+}
+
+main() {
+  case ${1:-status} in
+    summary) summary ;;
+    status) status ;;
+    install) install ;;
+    remove) remove ;;
+    *) return 2 ;;
+  esac
+}
+
+main "$@"
