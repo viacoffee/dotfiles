@@ -1,187 +1,90 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO_ROOT=$(cd "$(dirname "$(readlink -f "$0")")/../.." && pwd)
-DOCKER_SYSCTL_SOURCE="$REPO_ROOT/install/default/sysctl/99-docker.conf"
-DOCKER_SYSCTL_TARGET=/etc/sysctl.d/99-docker.conf
-DOCKER_PACKAGES=(docker docker-buildx docker-compose ufw-docker)
-PI_PACKAGES=(nodejs npm glow)
-PI_NPM_PACKAGE=@earendil-works/pi-coding-agent
+SCRIPT_DIR=$(cd "$(dirname "$(readlink -f "$0")")" && pwd)
+PACKAGE_DIR=${DOT_DEV_PACKAGE_DIR:-"$SCRIPT_DIR/../lib/dot-dev"}
 
 usage() {
-  cat <<'EOF'
+  cat <<EOF
 Usage:
-  dot-dev status
-  dot-dev install docker|pi
-  dot-dev remove docker|pi
+  dot-dev
+  dot-dev status [package]
+  dot-dev install <package>
+  dot-dev remove <package>
+
+Available packages:
+$(package_names | sed 's/^/  /')
 EOF
 }
 
-package_installed() {
-  pacman -Q "$1" >/dev/null 2>&1
+package_names() {
+  local script
+
+  [[ -d $PACKAGE_DIR ]] || return 0
+
+  while IFS= read -r script; do
+    basename "$script"
+  done < <(find "$PACKAGE_DIR" -maxdepth 1 -type f -printf '%f\n' | sort)
 }
 
-development_status() {
+package_script() {
+  local package=$1
+  local candidate="$PACKAGE_DIR/$package"
+
+  [[ $package =~ ^[a-z0-9][a-z0-9-]*$ ]] || return 1
+  [[ -f $candidate ]] || return 1
+  printf '%s\n' "$candidate"
+}
+
+run_package() {
+  local package=$1
+  local operation=$2
+  local script
+
+  script=$(package_script "$package") || {
+    printf 'Unknown development environment: %s\n' "$package" >&2
+    return 2
+  }
+
+  bash "$script" "$operation"
+}
+
+aggregate_status() {
   local package state
 
-  printf 'Core build environment:\n'
-  for package in base-devel yay; do
-    if package_installed "$package"; then
-      state=installed
-    else
-      state=missing
+  printf 'Available development environments:\n'
+  while IFS= read -r package; do
+    [[ -n $package ]] || continue
+    state=$(run_package "$package" summary) || state='not installed'
+    if [[ $state != installed && $state != 'not installed' ]]; then
+      state='not installed'
     fi
     printf '  %-16s %s\n' "$package" "$state"
-  done
-
-  printf 'Docker environment:\n'
-  for package in "${DOCKER_PACKAGES[@]}"; do
-    if package_installed "$package"; then
-      state=installed
-    else
-      state=missing
-    fi
-    printf '  %-16s %s\n' "$package" "$state"
-  done
-
-  if systemctl is-enabled --quiet docker.socket 2>/dev/null; then
-    printf '  %-16s enabled\n' docker.socket
-  else
-    printf '  %-16s disabled\n' docker.socket
-  fi
-
-  if grep -Fq 'BEGIN UFW AND DOCKER' /etc/ufw/after.rules 2>/dev/null; then
-    printf '  %-16s installed\n' 'UFW rules'
-  else
-    printf '  %-16s missing\n' 'UFW rules'
-  fi
-
-  printf 'Pi environment:\n'
-  for package in "${PI_PACKAGES[@]}"; do
-    if package_installed "$package"; then
-      state=installed
-    else
-      state=missing
-    fi
-    printf '  %-16s %s\n' "$package" "$state"
-  done
-  if command -v pi >/dev/null 2>&1; then
-    printf '  %-16s %s (%s)\n' pi installed "$(pi --version 2>/dev/null || printf 'version unknown')"
-  else
-    printf '  %-16s missing\n' pi
-  fi
+  done < <(package_names)
 }
 
-install_docker() {
-  if [[ ! -f $DOCKER_SYSCTL_SOURCE ]]; then
-    printf 'Docker sysctl configuration not found: %s\n' "$DOCKER_SYSCTL_SOURCE" >&2
-    return 1
-  fi
-
-  sudo pacman -S --needed "${DOCKER_PACKAGES[@]}"
-  sudo install -Dm644 "$DOCKER_SYSCTL_SOURCE" "$DOCKER_SYSCTL_TARGET"
-  sudo sysctl --load "$DOCKER_SYSCTL_TARGET"
-
-  # Socket activation keeps dockerd stopped until a client uses it.
-  sudo systemctl enable --now docker.socket
-
-  sudo ufw allow in proto udp from 172.16.0.0/12 to 172.17.0.1 port 53 \
-    comment 'allow-docker-dns'
-  sudo ufw-docker install
-  sudo ufw reload
-
-  printf '\nDocker is installed. Use sudo docker, or explicitly join the root-equivalent docker group.\n'
+main() {
+  case ${1:-status} in
+    status)
+      case $# in
+        0|1) aggregate_status ;;
+        2) run_package "$2" status ;;
+        *) usage >&2; return 2 ;;
+      esac
+      ;;
+    install|remove)
+      (($# == 2)) || { usage >&2; return 2; }
+      run_package "$2" "$1"
+      ;;
+    -h|--help)
+      (($# == 1)) || { usage >&2; return 2; }
+      usage
+      ;;
+    *)
+      usage >&2
+      return 2
+      ;;
+  esac
 }
 
-remove_docker() {
-  local answer package
-  local -a installed_packages=()
-
-  read -r -p 'Remove Docker packages and managed configuration? [y/N] ' answer
-  [[ $answer =~ ^[Yy]([Ee][Ss])?$ ]] || {
-    printf 'Docker removal cancelled.\n'
-    return 0
-  }
-
-  if command -v ufw-docker >/dev/null 2>&1; then
-    sudo ufw-docker uninstall
-  fi
-
-  if sudo ufw status | grep -Fq 'allow-docker-dns'; then
-    sudo ufw --force delete allow in proto udp from 172.16.0.0/12 \
-      to 172.17.0.1 port 53 comment 'allow-docker-dns'
-  fi
-  sudo ufw reload
-
-  if package_installed docker; then
-    sudo systemctl disable --now docker.service docker.socket
-  fi
-
-  sudo rm -f "$DOCKER_SYSCTL_TARGET"
-
-  for package in "${DOCKER_PACKAGES[@]}"; do
-    package_installed "$package" && installed_packages+=("$package")
-  done
-  if ((${#installed_packages[@]})); then
-    sudo pacman -Rns --noconfirm "${installed_packages[@]}"
-  fi
-
-  printf '\nDocker packages and managed configuration were removed. /var/lib/docker was preserved.\n'
-}
-
-install_pi() {
-  sudo pacman -S --needed "${PI_PACKAGES[@]}"
-  npm install --global --ignore-scripts --prefix "$HOME/.local" "$PI_NPM_PACKAGE"
-
-  printf '\nPi and Glow are installed. Run pi and use /login before using Hivemind.\n'
-}
-
-remove_pi() {
-  local answer package
-  local -a installed_packages=()
-
-  read -r -p 'Remove Pi, Glow, Node.js, and npm? [y/N] ' answer
-  [[ $answer =~ ^[Yy]([Ee][Ss])?$ ]] || {
-    printf 'Pi removal cancelled.\n'
-    return 0
-  }
-
-  if command -v npm >/dev/null 2>&1 &&
-    npm list --global --prefix "$HOME/.local" --depth=0 "$PI_NPM_PACKAGE" >/dev/null 2>&1; then
-    npm uninstall --global --prefix "$HOME/.local" "$PI_NPM_PACKAGE"
-  fi
-
-  for package in "${PI_PACKAGES[@]}"; do
-    package_installed "$package" && installed_packages+=("$package")
-  done
-  if ((${#installed_packages[@]})); then
-    sudo pacman -Rns --noconfirm "${installed_packages[@]}"
-  fi
-
-  printf '\nPi and its system packages were removed. ~/.pi was preserved.\n'
-}
-
-case ${1:-} in
-  '')
-    usage
-    ;;
-  status)
-    (($# == 1)) || { usage >&2; exit 2; }
-    development_status
-    ;;
-  install|remove)
-    (($# == 2)) || { usage >&2; exit 2; }
-    [[ $2 == docker || $2 == pi ]] || {
-      printf 'Unknown development environment: %s\n' "$2" >&2
-      exit 2
-    }
-    "${1}_${2}"
-    ;;
-  -h|--help)
-    usage
-    ;;
-  *)
-    usage >&2
-    exit 2
-    ;;
-esac
+main "$@"

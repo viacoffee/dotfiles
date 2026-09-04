@@ -1,0 +1,60 @@
+#!/bin/bash
+set -euo pipefail
+
+CLAUDE_BIN="$HOME/.local/bin/claude"
+CLAUDE_INSTALL_DIR="$HOME/.local/share/claude"
+
+claude_installed() {
+  command -v claude >/dev/null 2>&1
+}
+
+summary() {
+  if claude_installed; then printf 'installed\n'; else printf 'not installed\n'; fi
+}
+
+status() {
+  local state
+
+  printf 'Claude Code environment:\n'
+  if claude_installed; then
+    printf '  %-16s installed (%s)\n' claude "$(claude --version 2>/dev/null || printf 'version unknown')"
+  else
+    printf '  %-16s missing\n' claude
+  fi
+
+  if [[ -d $CLAUDE_INSTALL_DIR ]]; then state=installed; else state=missing; fi
+  printf '  %-16s %s\n' 'Installation files' "$state"
+}
+
+install() {
+  command -v curl >/dev/null 2>&1 || {
+    printf 'curl is required to install Claude Code.\n' >&2
+    return 1
+  }
+
+  curl -fsSL https://claude.ai/install.sh | bash
+  printf '\nClaude Code is installed. Run claude and use /login to authenticate.\n'
+}
+
+remove() {
+  local answer
+
+  read -r -p 'Remove Claude Code? ~/.claude will be preserved. [y/N] ' answer
+  [[ $answer =~ ^[Yy]([Ee][Ss])?$ ]] || { printf 'Claude Code removal cancelled.\n'; return 0; }
+
+  rm -f "$CLAUDE_BIN"
+  rm -rf "$CLAUDE_INSTALL_DIR"
+  printf '\nClaude Code was removed. ~/.claude was preserved.\n'
+}
+
+main() {
+  case ${1:-status} in
+    summary) summary ;;
+    status) status ;;
+    install) install ;;
+    remove) remove ;;
+    *) return 2 ;;
+  esac
+}
+
+main "$@"
