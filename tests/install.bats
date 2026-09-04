@@ -7,7 +7,7 @@ create_installer_fixture() {
   cp "$installer_script" "$fixture/install.sh"
   cp "$repo_root/install/lib/helpers.sh" "$fixture/install/lib/helpers.sh"
   for phase in \
-    00-preflight.sh 10-packages.sh 11-nvidia.sh 12-greetd.sh \
+    00-preflight.sh 10-packages.sh 11-framework-audio.sh 11-nvidia.sh 12-greetd.sh \
     13-bootloader.sh 20-dotfiles.sh 30-system-services.sh 40-user-setup.sh \
     50-firewall.sh; do
     printf '#!/usr/bin/env bash\n' > "$fixture/install/$phase"
@@ -25,6 +25,8 @@ setup() {
   packages_file=$repo_root/install/packages
   pacman_script=$repo_root/install/10-packages.sh
   pacman_fragment=$repo_root/install/default/pacman/dotfiles-repositories.conf
+  framework_audio_script=$repo_root/install/11-framework-audio.sh
+  framework_audio_quirk=$repo_root/install/default/modprobe/framework-13-ai-300-audio.conf
   app_launcher=$repo_root/local/bin/dot-menu-apps
   application_overrides=$repo_root/install/default/applications
   user_setup_script=$repo_root/install/40-user-setup.sh
@@ -534,6 +536,50 @@ EOF
   grep -Fq 'ps -o stat= -p "$1"' "$repo_root/install/lib/helpers.sh"
   run grep -Fq 'kill -0 "$command_pid"' "$repo_root/install/lib/helpers.sh"
   [ "$status" -eq 1 ]
+}
+
+@test "Framework 13 AI 300 installs only its hardware audio quirk" {
+  fixture=$BATS_TEST_TMPDIR/framework-audio
+  mock_bin=$fixture/bin
+  dmi_path=$fixture/dmi
+  modprobe_dir=$fixture/modprobe.d
+  mkdir -p "$mock_bin" "$dmi_path" "$modprobe_dir"
+  cat > "$mock_bin/sudo" <<'EOF'
+#!/usr/bin/env bash
+exec "$@"
+EOF
+  chmod +x "$mock_bin/sudo"
+
+  printf '%s\n' Framework > "$dmi_path/sys_vendor"
+  printf '%s\n' 'Laptop 13 (AMD Ryzen AI 300 Series)' > "$dmi_path/product_name"
+
+  run env \
+    PATH="$mock_bin:$PATH" \
+    DOTFILES_INSTALL_DEFAULTS_PATH="$repo_root/install/default" \
+    DOTFILES_INSTALL_LOG_FILE="$fixture/install.log" \
+    FRAMEWORK_DMI_PATH="$dmi_path" \
+    FRAMEWORK_AUDIO_MODPROBE_DIR="$modprobe_dir" \
+    bash -c 'set -e; source "$1"; source "$2"' _ \
+    "$repo_root/install/lib/helpers.sh" "$framework_audio_script"
+
+  [ "$status" -eq 0 ]
+  cmp -s "$framework_audio_quirk" "$modprobe_dir/framework-13-ai-300-audio.conf"
+  grep -Fxq 'blacklist snd_acp70' "$modprobe_dir/framework-13-ai-300-audio.conf"
+  grep -Fxq 'blacklist snd_acp_pci' "$modprobe_dir/framework-13-ai-300-audio.conf"
+  grep -Fq 'Final UKI does not contain the Framework audio quirk' "$bootloader_script"
+
+  printf '%s\n' 'Laptop 13 (AMD Ryzen 7040 Series)' > "$dmi_path/product_name"
+  run env \
+    PATH="$mock_bin:$PATH" \
+    DOTFILES_INSTALL_DEFAULTS_PATH="$repo_root/install/default" \
+    DOTFILES_INSTALL_LOG_FILE="$fixture/install.log" \
+    FRAMEWORK_DMI_PATH="$dmi_path" \
+    FRAMEWORK_AUDIO_MODPROBE_DIR="$modprobe_dir" \
+    bash -c 'set -e; source "$1"; source "$2"' _ \
+    "$repo_root/install/lib/helpers.sh" "$framework_audio_script"
+
+  [ "$status" -eq 0 ]
+  [ ! -e "$modprobe_dir/framework-13-ai-300-audio.conf" ]
 }
 
 @test "NVIDIA generation is deferred to final Limine generation" {

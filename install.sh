@@ -149,6 +149,7 @@ Vars log:
   + DOTFILES_USER_HOME=${DOTFILES_USER_HOME:-}
 EOF
 
+run_phase "11-framework-audio.sh" "Framework audio"
 run_phase "11-nvidia.sh" "NVIDIA drivers"
 run_phase "12-greetd.sh" "Display manager"
 run_phase "13-bootloader.sh" "Bootloader and boot process"

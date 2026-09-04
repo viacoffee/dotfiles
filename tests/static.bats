@@ -8,6 +8,7 @@ setup() {
     "$repo_root/install/verify.sh"
     "$repo_root/install/00-preflight.sh"
     "$repo_root/install/10-packages.sh"
+    "$repo_root/install/11-framework-audio.sh"
     "$repo_root/install/11-nvidia.sh"
     "$repo_root/install/12-greetd.sh"
     "$repo_root/install/13-bootloader.sh"

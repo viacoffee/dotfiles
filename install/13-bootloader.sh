@@ -206,6 +206,14 @@ for required_command in cryptsetup plymouth btrfs; do
   fi
 done
 
+framework_audio_quirk=etc/modprobe.d/framework-13-ai-300-audio.conf
+if sudo test -f "/$framework_audio_quirk" &&
+   ! grep -Fxq "$framework_audio_quirk" <<< "$initramfs_listing"; then
+  restore_last_known_limine_configuration
+  error "Final UKI does not contain the Framework audio quirk; restored the last known-working configuration"
+  return 1
+fi
+
 if [[ -f /etc/mkinitcpio.conf.d/nvidia.conf ]]; then
   for required_module in nvidia nvidia_modeset nvidia_uvm nvidia_drm; do
     if ! grep -Eq "(^|/)${required_module}(\\.ko(\\.[a-z0-9]+)?)?$" <<< "$initramfs_listing"; then
