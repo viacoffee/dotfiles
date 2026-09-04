@@ -64,11 +64,20 @@ log "Limine cmdline: $CMDLINE"
 
 # The managed arguments are appended by the template below. Remove existing
 # occurrences first so repeated installer runs do not grow the command line.
-for managed_arg in quiet splash nowatchdog plymouth.ignore-serial-consoles; do
+framework_audio_blacklist=module_blacklist=snd_acp70,snd_acp_pci
+for managed_arg in quiet splash nowatchdog plymouth.ignore-serial-consoles "$framework_audio_blacklist"; do
   escaped_arg=$(printf '%s\n' "$managed_arg" | sed 's/[][\\/.^$*+?{}()|]/\\&/g')
   CMDLINE=$(printf '%s\n' "$CMDLINE" | sed -E \
     "s/(^|[[:space:]])${escaped_arg}([[:space:]]|$)/\\1\\2/g; s/[[:space:]]+/ /g; s/^ //; s/ $//")
 done
+
+system_vendor=$(cat /sys/class/dmi/id/sys_vendor 2>/dev/null || true)
+product_name=$(cat /sys/class/dmi/id/product_name 2>/dev/null || true)
+if [[ $system_vendor == Framework &&
+      $product_name == "Laptop 13 (AMD Ryzen AI 300 Series)" ]]; then
+  CMDLINE+=" $framework_audio_blacklist"
+  log "Blacklisting the phantom Framework ACP microphone from the kernel command line"
+fi
 
 CMDLINE_ESCAPED=$(printf '%s\n' "$CMDLINE" | sed 's/[&\\]/\\&/g')
 staged_limine_defaults=$(mktemp)
@@ -205,14 +214,6 @@ for required_command in cryptsetup plymouth btrfs; do
     return 1
   fi
 done
-
-framework_audio_quirk=etc/modprobe.d/framework-13-ai-300-audio.conf
-if sudo test -f "/$framework_audio_quirk" &&
-   ! grep -Fxq "$framework_audio_quirk" <<< "$initramfs_listing"; then
-  restore_last_known_limine_configuration
-  error "Final UKI does not contain the Framework audio quirk; restored the last known-working configuration"
-  return 1
-fi
 
 if [[ -f /etc/mkinitcpio.conf.d/nvidia.conf ]]; then
   for required_module in nvidia nvidia_modeset nvidia_uvm nvidia_drm; do
