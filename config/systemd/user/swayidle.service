@@ -1,5 +1,5 @@
 [Unit]
-Description=Idle lock and monitor off
+Description=Idle lock and suspend
 PartOf=graphical-session.target
 After=graphical-session.target
 Requisite=graphical-session.target
@@ -8,7 +8,7 @@ Requisite=graphical-session.target
 Type=simple
 ExecStart=/usr/bin/swayidle \
   timeout 300 "dot-lock-screen" \
-  timeout 600 "niri msg action power-off-monitors"
+  timeout 600 "dot-cmd-suspend"
 Restart=on-failure
 RestartSec=5
 
