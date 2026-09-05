@@ -1,20 +1,9 @@
-#!/bin/bash
-set -euo pipefail
+#!/usr/bin/env bash
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/niri-helpers.sh"
 
-unfocused=false
-
-for arg in "$@"; do
-  case "$arg" in
-    --unfocused)
-      unfocused=true
-      ;;
-  esac
-done
-
-if $unfocused; then
+if [[ "${1:-}" == --unfocused ]]; then
   niri_close_unfocused_on_workspace
 else
   niri_close_all_on_workspace
