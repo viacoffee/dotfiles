@@ -7,3 +7,8 @@ function mkcd() {
 function mkmv() {
   mkdir -p $2 && mv $1 $2
 }
+
+# Open a Nautilus window without keeping it attached to this shell.
+function open() {
+  uwsm-app -- nautilus -w "$@" >/dev/null 2>&1 &!
+}
