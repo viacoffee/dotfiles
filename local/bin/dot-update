@@ -2,7 +2,11 @@
 
 set -e
 
-trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m";dot-snapshot delete' ERR
+update_failed() {
+  printf '\n\e[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\e[0m\n'
+}
+
+trap update_failed ERR
 
 confirm() {
   local prompt="$1"
@@ -26,8 +30,10 @@ if ! confirm "Continue with update?"; then
 fi
 
 update_log="/tmp/dot-update.log"
-# Create snapshot before update
-dot-snapshot create || [ $? -eq 127 ]
+
+if command -v dot-snapshot >/dev/null; then
+  dot-snapshot create
+fi
 
 exec > >(tee "$update_log") 2>&1
 
