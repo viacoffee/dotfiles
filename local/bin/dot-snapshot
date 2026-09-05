@@ -1,41 +1,46 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
-COMMAND="${1:-}"
-
-if [[ -z $COMMAND ]]; then
-  echo "Usage: dot-snapshot <create|restore|delete>" >&2
+usage() {
+  echo "Usage: dot-snapshot <create|list|restore|delete>" >&2
   exit 1
-fi
+}
 
-case "$COMMAND" in
-create)
-  DESC="$(date +'%m-%d-%Y')"
+latest_snapshot() {
+  sudo snapper -c root --csvout list | awk -F, 'NR > 1 { id = $1 } END { print id }'
+}
 
-  echo -e "\e[32mCreate system snapshot\e[0m"
-
-  # Get existing snapper config names from CSV output
-  mapfile -t CONFIGS < <(sudo snapper --csvout list-configs | awk -F, 'NR>1 {print $1}')
-
-  for config in "${CONFIGS[@]}"; do
-    sudo snapper -c "$config" create -c number # -d "$DESC"
-  done
+create() {
+  printf '\e[32mCreate system snapshot\e[0m\n'
+  sudo snapper -c root create -c number
   echo
-  ;;
-restore)
+}
+
+list() {
+  printf '\e[32mroot\e[0m\n'
+  sudo snapper -c root list
+}
+
+restore() {
   sudo limine-snapper-restore
-  ;;
-delete)
-  echo -e "\e[32mDelete latest snapshot\e[0m"
+}
 
-  mapfile -t CONFIGS < <(sudo snapper --csvout list-configs | awk -F, 'NR>1 {print $1}')
+delete() {
+  printf '\e[32mDelete latest snapshot\e[0m\n'
 
-  for config in "${CONFIGS[@]}"; do
-    latest="$(sudo snapper -c "$config" --csvout list | awk -F, 'NR>1 {id=$1} END {print id}')"
-    if [[ -n "$latest" && "$latest" != "0" ]]; then
-      sudo snapper -c "$config" delete "$latest"
-    fi
-  done
+  local latest
+  latest=$(latest_snapshot)
+  if [[ -n $latest && $latest != 0 ]]; then
+    sudo snapper -c root delete "$latest"
+  fi
+
   echo
-  ;;
+}
+
+case "${1:-}" in
+  create) create ;;
+  list) list ;;
+  restore) restore ;;
+  delete) delete ;;
+  *) usage ;;
 esac
