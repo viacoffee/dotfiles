@@ -7,7 +7,7 @@ if [[ "$1" == power ]]; then
   Shutdown"
 
   case $(dot-launch-menu "" <<< "$options") in
-    *Lock*)     dot-lock-screen ;;
+    *Lock*)     dot-cmd-lock ;;
     *Suspend*)  dot-cmd-suspend ;;
     *Restart*)  dot-cmd-reboot ;;
     *Shutdown*) dot-cmd-shutdown ;;

@@ -7,8 +7,10 @@ Requisite=graphical-session.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/swayidle \
-  timeout 300 "dot-lock-screen" \
-  timeout 600 "dot-cmd-suspend"
+  timeout 300 "loginctl lock-session" \
+  timeout 600 "dot-cmd-suspend" \
+  lock "dot-launch-lock-screen" \
+  before-sleep "loginctl lock-session"
 Restart=on-failure
 RestartSec=5
 

@@ -5,7 +5,7 @@ binds {
 
   // Lock
   Mod+Shift+q {
-    spawn "dot-lock-screen"
+    spawn "dot-cmd-lock"
   }
 
   // Power menu
