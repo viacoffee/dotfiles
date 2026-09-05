@@ -110,15 +110,10 @@ if [[ $limine_config != /boot/limine.conf ]]; then
 fi
 success "Last known-working Limine configuration retained at $last_known_limine_config"
 
-# Match Snapper configs
+# Create the root Snapper configuration.
 if ! sudo snapper list-configs 2>/dev/null | grep -q "root"; then
   run_logged "Creating the root Snapper configuration" \
     sudo snapper -c root create-config /
-fi
-
-if ! sudo snapper list-configs 2>/dev/null | grep -q "home"; then
-  run_logged "Creating the home Snapper configuration" \
-    sudo snapper -c home create-config /home
 fi
 
 # Enable quota to allow space-aware algorithms to work
@@ -131,11 +126,11 @@ else
 fi
 
 # Tweak default Snapper configs
-sudo sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/{root,home}
-sudo sed -i 's/^NUMBER_LIMIT="50"/NUMBER_LIMIT="5"/' /etc/snapper/configs/{root,home}
-sudo sed -i 's/^NUMBER_LIMIT_IMPORTANT="10"/NUMBER_LIMIT_IMPORTANT="5"/' /etc/snapper/configs/{root,home}
-sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
-sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/{root,home}
+sudo sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/root
+sudo sed -i 's/^NUMBER_LIMIT="50"/NUMBER_LIMIT="5"/' /etc/snapper/configs/root
+sudo sed -i 's/^NUMBER_LIMIT_IMPORTANT="10"/NUMBER_LIMIT_IMPORTANT="5"/' /etc/snapper/configs/root
+sudo sed -i 's/^SPACE_LIMIT="0.5"/SPACE_LIMIT="0.3"/' /etc/snapper/configs/root
+sudo sed -i 's/^FREE_LIMIT="0.2"/FREE_LIMIT="0.3"/' /etc/snapper/configs/root
 
 # Blacklist hardware watchdog modules (desktop, not needed)
 step "Blacklisting hardware watchdog modules"
