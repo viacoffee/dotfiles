@@ -3,7 +3,16 @@
 
 create_installer_fixture() {
   local fixture=$1
-  mkdir -p "$fixture/install/lib" "$fixture/home"
+  mkdir -p "$fixture/bin" "$fixture/install/lib" "$fixture/home"
+  cat > "$fixture/bin/sudo" <<'EOF'
+#!/usr/bin/env bash
+case $1 in
+  -n) shift; exec "$@" ;;
+  -v) exit 0 ;;
+  *) exec "$@" ;;
+esac
+EOF
+  chmod +x "$fixture/bin/sudo"
   cp "$installer_script" "$fixture/install.sh"
   cp "$repo_root/install/lib/helpers.sh" "$fixture/install/lib/helpers.sh"
   for phase in \
@@ -12,6 +21,12 @@ create_installer_fixture() {
     50-firewall.sh; do
     printf '#!/usr/bin/env bash\n' > "$fixture/install/$phase"
   done
+  cat >> "$fixture/install/00-preflight.sh" <<'EOF'
+DOTFILES_DEFAULT_USER=$(id -un)
+DOTFILES_DEFAULT_UID=$(id -u)
+DOTFILES_USER_HOME=$HOME
+export DOTFILES_DEFAULT_USER DOTFILES_DEFAULT_UID DOTFILES_USER_HOME
+EOF
 }
 
 setup() {
@@ -216,7 +231,7 @@ EOF
   printf '#!/usr/bin/env bash\nfalse\n' > "$fixture/install/10-packages.sh"
 
   # shellcheck disable=SC2016 # positional arguments expand in the child shell
-  run env HOME="$fixture/home" bash -c 'cd "$1" && bash install.sh' _ "$fixture"
+  run env HOME="$fixture/home" PATH="$fixture/bin:$PATH" bash -c 'cd "$1" && bash install.sh' _ "$fixture"
 
   [ "$status" -ne 0 ]
   log_file=$fixture/home/.local/state/dotfiles/install.log
