@@ -7,11 +7,7 @@ USER_HOME="${HOME}"
 
 cd "$REPO_ROOT"
 
-printf 'Restowing dotfiles from %s...\n' "$REPO_ROOT"
-stow --restow home
-stow --restow --no-folding -t "$USER_HOME/.config" config
-stow --restow --no-folding -t "$USER_HOME/.local" local
-
+# Remove links to repository files that no longer exist.
 removed=0
 declare -a roots=(
   "$USER_HOME"
@@ -37,5 +33,10 @@ for root in "${roots[@]}"; do
     fi
   done < <(find "$root" "${maxdepth[@]}" -type l -print0)
 done
+
+printf 'Restowing dotfiles from %s...\n' "$REPO_ROOT"
+stow --restow home
+stow --restow --no-folding -t "$USER_HOME/.config" config
+stow --restow --no-folding -t "$USER_HOME/.local" local
 
 printf 'Migration complete: dotfiles restowed, %d orphaned symlink(s) removed.\n' "$removed"
