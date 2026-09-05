@@ -1,7 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-: "${XDG_SESSION_ID:?XDG_SESSION_ID is required}"
+XDG_SESSION_ID="${XDG_SESSION_ID:-$(loginctl show-session auto --property=Id --value)}"
+: "${XDG_SESSION_ID:?could not determine the graphical session}"
+export XDG_SESSION_ID
 
 session_locked() {
   [[ "$(loginctl show-session "$XDG_SESSION_ID" --property=LockedHint --value)" == "yes" ]]
