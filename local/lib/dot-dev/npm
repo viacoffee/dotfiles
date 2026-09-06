@@ -1,0 +1,57 @@
+#!/bin/bash
+set -euo pipefail
+
+NPM_PACKAGE=npm
+
+package_installed() {
+  pacman -Q "$1" >/dev/null 2>&1
+}
+
+npm_installed() {
+  package_installed "$NPM_PACKAGE" && command -v npm >/dev/null 2>&1
+}
+
+summary() {
+  if npm_installed; then printf 'installed\n'; else printf 'not installed\n'; fi
+}
+
+status() {
+  local state
+
+  printf 'npm environment:\n'
+  if package_installed "$NPM_PACKAGE"; then state=installed; else state=missing; fi
+  printf '  %-16s %s\n' "$NPM_PACKAGE" "$state"
+
+  if command -v npm >/dev/null 2>&1; then
+    printf '  %-16s installed (%s)\n' npm "$(npm --version 2>/dev/null || printf 'version unknown')"
+  else
+    printf '  %-16s missing\n' npm
+  fi
+}
+
+install() {
+  sudo pacman -S --needed "$NPM_PACKAGE"
+  printf '\nnpm is installed.\n'
+}
+
+remove() {
+  local answer
+
+  read -r -p 'Remove npm? Tools installed through npm may stop working. [y/N] ' answer
+  [[ $answer =~ ^[Yy]([Ee][Ss])?$ ]] || { printf 'npm removal cancelled.\n'; return 0; }
+
+  if package_installed "$NPM_PACKAGE"; then sudo pacman -Rns --noconfirm "$NPM_PACKAGE"; fi
+  printf '\nnpm was removed.\n'
+}
+
+main() {
+  case ${1:-status} in
+    summary) summary ;;
+    status) status ;;
+    install) install ;;
+    remove) remove ;;
+    *) return 2 ;;
+  esac
+}
+
+main "$@"

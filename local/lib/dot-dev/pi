@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-PI_PACKAGES=(nodejs npm glow)
+PI_PACKAGES=(glow)
 PI_NPM_PACKAGE=@earendil-works/pi-coding-agent
 
 package_installed() {
@@ -35,6 +35,11 @@ status() {
 }
 
 install() {
+  command -v npm >/dev/null 2>&1 || {
+    printf 'npm is required to install Pi. Install it with: dot-dev install npm\n' >&2
+    return 1
+  }
+
   sudo pacman -S --needed "${PI_PACKAGES[@]}"
   npm install --global --ignore-scripts --prefix "$HOME/.local" "$PI_NPM_PACKAGE"
   printf '\nPi and Glow are installed. Run pi and use /login before using Hivemind.\n'
@@ -44,7 +49,7 @@ remove() {
   local answer package
   local -a installed_packages=()
 
-  read -r -p 'Remove Pi, Glow, Node.js, and npm? [y/N] ' answer
+  read -r -p 'Remove Pi and Glow? [y/N] ' answer
   [[ $answer =~ ^[Yy]([Ee][Ss])?$ ]] || { printf 'Pi removal cancelled.\n'; return 0; }
 
   if command -v npm >/dev/null 2>&1 &&
