@@ -32,7 +32,7 @@ fi
 update_log="/tmp/dot-update.log"
 
 if command -v dot-snapshot >/dev/null; then
-  dot-snapshot create
+  dot-snapshot create pre-update
 fi
 
 exec > >(tee "$update_log") 2>&1
