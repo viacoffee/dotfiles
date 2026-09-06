@@ -2,13 +2,15 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: dot-snapshot <create|list|restore|delete> [snapshot-number]" >&2
+  echo "Usage: dot-snapshot create [description] | dot-snapshot <list|restore> | dot-snapshot delete <snapshot-number>" >&2
   exit 1
 }
 
 create() {
+  local description=${1:-manual}
+
   printf '\e[32mCreate system snapshot\e[0m\n'
-  sudo snapper -c root create -c number
+  sudo snapper -c root create -c number -d "$description"
   echo
 }
 
@@ -75,7 +77,7 @@ delete() {
 }
 
 case "${1:-}" in
-  create) create ;;
+  create) create "${2:-}" ;;
   list) list ;;
   restore) restore ;;
   delete) delete "${2:-}" ;;
