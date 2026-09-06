@@ -17,8 +17,45 @@ create() {
 }
 
 list() {
-  printf '\e[32mroot\e[0m\n'
-  sudo snapper -c root list
+  local snapshots rows total
+
+  snapshots=$(sudo snapper -c root --jsonout list --columns number,date,cleanup,used-space,description)
+  rows=$(jq -r '
+    [.. | objects | select(has("number"))]
+    | map(select(.number != 0))
+    | sort_by(.number)
+    | .[]
+    | [
+        (.number | tostring),
+        (.date // "-"),
+        (.cleanup // "-" | if . == "" then "-" else . end),
+        (."used-space" | if . == null then "-" else tostring end),
+        (.description // "" | if . == "" then "(no description)" else . end)
+      ]
+    | @tsv
+  ' <<<"$snapshots")
+
+  printf '\e[32mSnapshots\e[0m\n\n'
+  printf '%4s  %-19s %-8s %10s  %s\n' NUMBER DATE CLEANUP SIZE DESCRIPTION
+
+  if [[ -n $rows ]]; then
+    while IFS=$'\t' read -r number date cleanup used_space description; do
+      if [[ $used_space != - ]]; then
+        used_space=$(numfmt --to=iec-i --suffix=B --format='%.1f' "$used_space")
+      fi
+      printf '%4s  %-19s %-8s %10s  %s\n' \
+        "$number" "$date" "$cleanup" "$used_space" "$description"
+    done <<<"$rows"
+  fi
+
+  total=$(jq -r '
+    [.. | objects | select(has("number"))]
+    | map(select(.number != 0))
+    | map(."used-space" // 0)
+    | add // 0
+  ' <<<"$snapshots")
+
+  printf '\nTotal: %s\n' "$(numfmt --to=iec-i --suffix=B --format='%.1f' "$total")"
 }
 
 restore() {
