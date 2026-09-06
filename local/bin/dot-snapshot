@@ -57,6 +57,14 @@ list() {
 }
 
 restore() {
+  local answer
+
+  read -r -p "Restore the currently booted snapshot? [y/N] " answer
+  if [[ ! $answer =~ ^[Yy]$ ]]; then
+    echo "Restore cancelled."
+    return
+  fi
+
   sudo limine-snapper-restore
 }
 
