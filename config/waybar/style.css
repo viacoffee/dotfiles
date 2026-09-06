@@ -34,7 +34,7 @@ window#waybar {
 #custom-webcam-indicator,
 #custom-screenshare-indicator,
 #custom-dnd,
-#custom-niri-window-position {
+#custom-niri-columns {
   min-width: 36px;
   margin: 0;
   padding-left: 0;

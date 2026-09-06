@@ -22,7 +22,7 @@
     "niri/workspaces"
   ],
   "modules-right": [
-    "custom/niri-window-position",
+    "custom/niri-columns",
     "tray",
     "battery"
   ]
