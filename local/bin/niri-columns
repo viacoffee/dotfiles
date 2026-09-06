@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/lib/niri-helpers.sh"
-
 layout="horizontal"
-dot="·"
+inactive="○"
 active="●"
 hide_single=false
+output_format=json
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -16,9 +14,9 @@ while [[ $# -gt 0 ]]; do
       layout="$2"
       shift 2
       ;;
-    --dot)
+    --inactive)
       [[ $# -ge 2 ]] || { printf '%s requires a value\n' "$1" >&2; exit 2; }
-      dot="$2"
+      inactive="$2"
       shift 2
       ;;
     --active)
@@ -30,12 +28,56 @@ while [[ $# -gt 0 ]]; do
       hide_single=true
       shift
       ;;
+    --output=*)
+      output_format="${1#--output=}"
+      [[ "$output_format" =~ ^(json|plain)$ ]] || { printf 'invalid output format\n' >&2; exit 2; }
+      shift
+      ;;
     *)
       printf 'unknown option: %s\n' "$1" >&2
       exit 2
       ;;
   esac
 done
+
+# Return the ID of the focused workspace. Query workspaces rather than windows so
+# this also works when the workspace is empty.
+niri_focused_workspace_id() {
+  niri msg --json workspaces |
+    jq -r '.[] | select(.is_focused) | .id'
+}
+
+# Return non-floating windows ordered by their scrolling-layout position.
+niri_tiled_windows_on_workspace_sorted() {
+  local workspace_id="$1"
+
+  niri msg --json windows |
+    jq -c --argjson workspace_id "$workspace_id" '
+      map(select(.workspace_id == $workspace_id and (.is_floating | not)))
+      | sort_by([
+          .layout.pos_in_scrolling_layout[0],
+          .layout.pos_in_scrolling_layout[1]
+        ])
+      | .[]
+    '
+}
+
+emit() {
+  local text="$1"
+
+  case "$output_format" in
+    json)
+      jq -cn --arg text "$text" '{text: $text}'
+      ;;
+    plain)
+      printf '%s\n' "$text"
+      ;;
+    *)
+      printf 'invalid output format: %s\n' "$output_format" >&2
+      return 2
+      ;;
+  esac
+}
 
 render() {
   local workspace_id text separator window column current_column focused
@@ -44,7 +86,7 @@ render() {
 
   workspace_id="$(niri_focused_workspace_id 2>/dev/null || true)"
   if [[ -z "$workspace_id" ]]; then
-    printf '{"text":""}\n'
+    emit ""
     return
   fi
 
@@ -60,7 +102,7 @@ render() {
     IFS=$'\t' read -r current_column focused <<< "$window"
     if [[ "$current_column" != "$column" ]]; then
       column="$current_column"
-      dots+=("$dot")
+      dots+=("$inactive")
       column_index=$((column_index + 1))
     fi
 
@@ -70,7 +112,7 @@ render() {
   done
 
   if "$hide_single" && ((${#dots[@]} <= 1)); then
-    printf '{"text":""}\n'
+    emit ""
     return
   fi
 
@@ -81,7 +123,7 @@ render() {
   fi
 
   text="$(IFS="$separator"; printf '%s' "${dots[*]:-}")"
-  jq -cn --arg text "$text" '{text: $text}'
+  emit "$text"
 }
 
 render

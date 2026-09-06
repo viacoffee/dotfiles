@@ -46,7 +46,7 @@
     "show-passive-items": false
   },
   "custom/niri-columns": {
-    "exec": "niri-columns --layout vertical --dot ○ --active ● --hide-single",
+    "exec": "niri-columns --layout vertical --inactive ○ --active ● --hide-single",
     "return-type": "json"
   },
   "custom/idle-indicator": {
