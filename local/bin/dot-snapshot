@@ -2,12 +2,8 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: dot-snapshot <create|list|restore|delete>" >&2
+  echo "Usage: dot-snapshot <create|list|restore|delete> [snapshot-number]" >&2
   exit 1
-}
-
-latest_snapshot() {
-  sudo snapper -c root --csvout list | awk -F, 'NR > 1 { id = $1 } END { print id }'
 }
 
 create() {
@@ -63,21 +59,25 @@ restore() {
 }
 
 delete() {
-  printf '\e[32mDelete latest snapshot\e[0m\n'
+  local snapshot_number=${1:-}
 
-  local latest
-  latest=$(latest_snapshot)
-  if [[ -n $latest && $latest != 0 ]]; then
-    sudo snapper -c root delete "$latest"
+  if [[ ! $snapshot_number =~ ^[1-9][0-9]*$ ]]; then
+    echo "A snapshot number from 'dot-snapshot list' is required." >&2
+    exit 1
   fi
 
-  echo
+  printf '\e[32mDelete snapshot %s\e[0m\n' "$snapshot_number"
+  if ! sudo snapper -c root delete "$snapshot_number"; then
+    echo "Failed to delete snapshot $snapshot_number." >&2
+    return 1
+  fi
+  printf '\e[32mDeleted snapshot %s\e[0m\n\n' "$snapshot_number"
 }
 
 case "${1:-}" in
   create) create ;;
   list) list ;;
   restore) restore ;;
-  delete) delete ;;
+  delete) delete "${2:-}" ;;
   *) usage ;;
 esac
