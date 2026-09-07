@@ -1,4 +1,4 @@
-# :rocket: dotfiles
+# :penguin: dotfiles
 
 > **Disclaimer:** This is very much a "works for me" project. It's opinionated, occasionally held together with duct tape, and makes no guarantees about working on your machine. Use at your own risk!
 
@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | ![Desktop](/.github/assets/desktop.png) | ![Editor](/.github/assets/editor.png) |
-| ![Hyprlock](/.github/assets/hyprlock.png) | ![Plymouth](/.github/assets/plymouth.png) |
+| ![Hyprlock](/.github/assets/hyprlock.png) | ![Installer](/.github/assets/installer.png) |
 
 ## Installation
 
@@ -162,6 +162,15 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | `....` | `cd ../../..` |
 
 ## Stack
+
+### Sub-projects
+
+Two utilities I built for this system are now standalone projects.
+
+- [niri-helpers](https://github.com/viacoffee/niri-helpers)
+- [niri-windows](https://github.com/viacoffee/niri-windows)
+
+### Overview
 
 | Category | Tools |
 |---|---|
