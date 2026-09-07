@@ -139,6 +139,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 | `dot-theme-background` | Set desktop wallpaper from a file path or URL |
 | `dot-dev` | Install, inspect, or remove opt-in development tools such as Docker, Pi, Claude Code, OpenCode, and Mise |
 | `dot-update` | Update system packages and optionally reboot |
+| `dot-system` | Inspect and manage battery limits and power profiles |
 | `dot-migrate` | Restow dotfiles and remove orphaned symlinks |
 
 ## Aliases
