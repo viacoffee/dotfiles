@@ -168,7 +168,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 Two utilities I built for this system are now standalone projects.
 
 - [niri-helpers](https://github.com/viacoffee/niri-helpers)
-- [niri-windows](https://github.com/viacoffee/niri-windows)
+- [niri-columns](https://github.com/viacoffee/niri-columns)
 
 ### Overview
 
