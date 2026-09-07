@@ -165,7 +165,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 
 | Category | Tools |
 |---|---|
-| **Compositor** | [niri](https://github.com/YaLTeR/niri) — scrollable-tiling Wayland compositor |
+| **Compositor** | [niri](https://github.com/niri-wm/niri) — scrollable-tiling Wayland compositor |
 | **Session manager** | [uwsm](https://github.com/Vladimir-csp/uwsm) — Universal Wayland Session Manager |
 | **Login manager** | [greetd](https://sr.ht/~kennylevinsen/greetd/) |
 | **Terminal** | [Alacritty](https://alacritty.org/) |
