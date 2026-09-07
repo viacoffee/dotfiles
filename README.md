@@ -20,8 +20,7 @@ This is an Arch Linux setup. Start with [archinstall](https://wiki.archlinux.org
 3. **Encryption** → LUKS → set a password → select your drive/partition
 4. **Bootloader** → `limine`
 5. **UKI** → confirm (ok)
-6. **Additional packages** → add `pipewire`
-7. **Timezone** → select your region
+6. **Timezone** → select your region
 
 After archinstall finishes and the system reboots, log in and continue below.
 
