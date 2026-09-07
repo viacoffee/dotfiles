@@ -34,11 +34,7 @@ sudo pacman -S --needed curl && bash <(curl -fsSL https://raw.githubusercontent.
 
 The script clones the repository to `~/dotfiles`, shows a warning before making system changes, and then runs the installer.
 
-To install a specific branch:
-
-```bash
-sudo pacman -S --needed curl && bash <(curl -fsSL https://raw.githubusercontent.com/viacoffee/dotfiles/master/bootstrap.sh) -b back_to_arch
-```
+To install another branch, append `-b <branch>` to the command.
 
 ## Keyboard Shortcuts
 
