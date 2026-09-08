@@ -61,10 +61,9 @@ success "EFI boot mode detected"
 
 # Must have secure boot disabled
 step "Checking Secure Boot"
-if ! bootctl_status=$(bootctl status 2>&1); then
-  error "Unable to determine Secure Boot status: $bootctl_status"
-  return 1
-fi
+# bootctl may exit non-zero for an unprivileged user that cannot read the ESP,
+# even when it reports the Secure Boot state.
+bootctl_status=$(bootctl status 2>&1 || true)
 if grep -q 'Secure Boot: enabled' <<< "$bootctl_status"; then
   error "Secure boot needs to be disabled"
   return 1
