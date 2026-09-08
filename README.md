@@ -36,6 +36,82 @@ The script clones the repository to `~/dotfiles`, shows a warning before making 
 
 To install another branch, append `-b <branch>` to the command.
 
+## Stack
+
+### Related projects
+
+Two utilities I built for this system are now standalone projects.
+
+- [niri-helpers](https://github.com/viacoffee/niri-helpers)
+- [niri-columns](https://github.com/viacoffee/niri-columns)
+
+### Overview
+
+| Category | Tools |
+|---|---|
+| **Compositor** | [niri](https://github.com/niri-wm/niri) — scrollable-tiling Wayland compositor |
+| **Session manager** | [uwsm](https://github.com/Vladimir-csp/uwsm) — Universal Wayland Session Manager |
+| **Login manager** | [greetd](https://sr.ht/~kennylevinsen/greetd/) |
+| **Terminal** | [Alacritty](https://alacritty.org/) |
+| **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) prompt |
+| **Editor** | [Neovim](https://neovim.io/) ([configuration](https://github.com/viacoffee/nvim)) |
+| **Bar** | [Waybar](https://github.com/Alexays/Waybar) |
+| **Launcher** | [bemenu](https://github.com/Cloudef/bemenu) |
+| **Notifications** | [mako](https://github.com/emersion/mako) |
+| **Lock screen** | [hyprlock](https://github.com/hyprwm/hyprlock) |
+| **Wallpaper** | [swaybg](https://github.com/swaywm/swaybg) |
+| **Idle management** | [swayidle](https://github.com/swaywm/swayidle) |
+| **OSD overlays** | [swayosd](https://github.com/ErikReider/SwayOSD) |
+| **Boot splash** | [plymouth](https://gitlab.freedesktop.org/plymouth/plymouth) |
+| **Clipboard** | wl-clipboard |
+| **Screenshots** | [grim](https://sr.ht/~emersion/grim/) + [slurp](https://github.com/emersion/slurp) |
+| **Screen recording** | [gpu-screen-recorder](https://git.dec05eba.com/gpu-screen-recorder/) |
+| **File manager** | [Nautilus](https://apps.gnome.org/Nautilus/) |
+| **Media** | [mpv](https://mpv.io/) · [imv](https://sr.ht/~exec64/imv/) · [playerctl](https://github.com/altdesktop/playerctl) |
+| **Audio mixer** | [wiremix](https://github.com/nicholasgasior/wiremix) |
+| **Bluetooth** | [bluetui](https://github.com/pythops/bluetui) |
+| **Wi-Fi** | [impala](https://github.com/pythops/impala) + [iwd](https://iwd.wiki.kernel.org/) |
+| **System monitor** | [btop](https://github.com/aristocratos/btop) |
+| **File listing** | [lsd](https://github.com/lsd-rs/lsd) |
+| **Snapshots** | [snapper](https://github.com/openSUSE/snapper) + limine-snapper-sync |
+| **Bootloader** | [limine](https://limine-bootloader.org/) |
+| **Disk encryption** | LUKS via cryptsetup |
+| **Firewall** | [ufw](https://wiki.archlinux.org/title/Uncomplicated_Firewall) |
+| **AUR helper** | [yay](https://github.com/Jguer/yay) |
+| **Dotfiles management** | [GNU stow](https://www.gnu.org/software/stow/) |
+
+## Commands
+
+Scripts with no keyboard shortcut or menu entry — invoke these manually from a terminal.
+
+| Command | Description |
+|---|---|
+| `dot-wallpaper` | Set desktop wallpaper from a file path or URL |
+| `dot-dev` | Install, inspect, or remove opt-in development tools such as Docker, Pi, Claude Code, OpenCode, and Mise |
+| `dot-update` | Update system packages and optionally reboot |
+| `dot-system` | Inspect and manage battery limits, power profiles, power actions, snapshots, and updates |
+| `dot-migrate` | Restow dotfiles and remove orphaned symlinks |
+
+## Aliases
+
+| Alias | Expands to |
+|---|---|
+| `top`, `htop` | `btop` |
+| `vim` | `nvim` |
+| `l` | `lsd -a1` |
+| `la` | `lsd -la` |
+| `lr` | `lsd -R` |
+| `lra` | `lsd -RA` |
+| `lt` | `lsd --tree` |
+| `gs` | `git status` |
+| `gl` | `git log --oneline --graph --decorate` |
+| `gp` | `git push` |
+| `gd` | `git diff` |
+| `gc` | `git commit` |
+| `c` | `clear` |
+| `...` | `cd ../..` |
+| `....` | `cd ../../..` |
+
 ## Keyboard Shortcuts
 
 `Mod` is the Super/Windows key.
@@ -93,7 +169,7 @@ To install another branch, append `-b <branch>` to the command.
 
 ### Screen Recording
 
-Recordings go to `~/Videos`. `Mod+V` / `Mod+Shift+V` are toggles - the same key stops an active recording. Uses niri's dynamic cast target, so the portal picker only appears once: choose **niri Dynamic Cast Target** (not a window or monitor) and the choice is cached in `~/.config/gpu-screen-recorder/restore_token`.
+Recordings go to `~/Videos`. `Mod+V` / `Mod+Shift+V` are toggles — the same key stops an active recording. Uses niri's dynamic cast target, so the portal picker only appears once: choose **niri Dynamic Cast Target** (not a window or monitor) and the choice is cached in `~/.config/gpu-screen-recorder/restore_token`.
 
 | Shortcut | Action |
 |---|---|
@@ -129,79 +205,3 @@ The window being recorded gets a red border. If recordings ever capture the wron
 |---|---|
 | `Capslock+C` | Copy (terminal-compatible) |
 | `Capslock+V` | Paste (terminal-compatible) |
-
-## Commands
-
-Scripts with no keyboard shortcut or menu entry — invoke these manually from a terminal.
-
-| Command | Description |
-|---|---|
-| `dot-wallpaper` | Set desktop wallpaper from a file path or URL |
-| `dot-dev` | Install, inspect, or remove opt-in development tools such as Docker, Pi, Claude Code, OpenCode, and Mise |
-| `dot-update` | Update system packages and optionally reboot |
-| `dot-system` | Inspect and manage battery limits, power profiles, power actions, snapshots, and updates |
-| `dot-migrate` | Restow dotfiles and remove orphaned symlinks |
-
-## Aliases
-
-| Alias | Expands to |
-|---|---|
-| `top`, `htop` | `btop` |
-| `vim` | `nvim` |
-| `l` | `lsd -a1` |
-| `la` | `lsd -la` |
-| `lr` | `lsd -R` |
-| `lra` | `lsd -RA` |
-| `lt` | `lsd --tree` |
-| `gs` | `git status` |
-| `gl` | `git log --oneline --graph --decorate` |
-| `gp` | `git push` |
-| `gd` | `git diff` |
-| `gc` | `git commit` |
-| `c` | `clear` |
-| `...` | `cd ../..` |
-| `....` | `cd ../../..` |
-
-## Stack
-
-### Sub-projects
-
-Two utilities I built for this system are now standalone projects.
-
-- [niri-helpers](https://github.com/viacoffee/niri-helpers)
-- [niri-columns](https://github.com/viacoffee/niri-columns)
-
-### Overview
-
-| Category | Tools |
-|---|---|
-| **Compositor** | [niri](https://github.com/niri-wm/niri) — scrollable-tiling Wayland compositor |
-| **Session manager** | [uwsm](https://github.com/Vladimir-csp/uwsm) — Universal Wayland Session Manager |
-| **Login manager** | [greetd](https://sr.ht/~kennylevinsen/greetd/) |
-| **Terminal** | [Alacritty](https://alacritty.org/) |
-| **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) prompt |
-| **Editor** | [Neovim](https://neovim.io/) ([configuration](https://github.com/viacoffee/nvim)) |
-| **Bar** | [Waybar](https://github.com/Alexays/Waybar) |
-| **Launcher** | [bemenu](https://github.com/Cloudef/bemenu) |
-| **Notifications** | [mako](https://github.com/emersion/mako) |
-| **Lock screen** | [hyprlock](https://github.com/hyprwm/hyprlock) |
-| **Wallpaper** | [swaybg](https://github.com/swaywm/swaybg) |
-| **Idle management** | [swayidle](https://github.com/swaywm/swayidle) |
-| **OSD overlays** | [swayosd](https://github.com/ErikReider/SwayOSD) |
-| **Boot splash** | [plymouth](https://gitlab.freedesktop.org/plymouth/plymouth) |
-| **Clipboard** | wl-clipboard |
-| **Screenshots** | [grim](https://sr.ht/~emersion/grim/) + [slurp](https://github.com/emersion/slurp) |
-| **Screen recording** | [gpu-screen-recorder](https://git.dec05eba.com/gpu-screen-recorder/) |
-| **File manager** | [Nautilus](https://apps.gnome.org/Nautilus/) |
-| **Media** | [mpv](https://mpv.io/) · [imv](https://sr.ht/~exec64/imv/) · [playerctl](https://github.com/altdesktop/playerctl) |
-| **Audio mixer** | [wiremix](https://github.com/nicholasgasior/wiremix) |
-| **Bluetooth** | [bluetui](https://github.com/pythops/bluetui) |
-| **Wi-Fi** | [impala](https://github.com/pythops/impala) + [iwd](https://iwd.wiki.kernel.org/) |
-| **System monitor** | [btop](https://github.com/aristocratos/btop) |
-| **File listing** | [lsd](https://github.com/lsd-rs/lsd) |
-| **Snapshots** | [snapper](https://github.com/openSUSE/snapper) + limine-snapper-sync |
-| **Bootloader** | [limine](https://limine-bootloader.org/) |
-| **Disk encryption** | LUKS via cryptsetup |
-| **Firewall** | [ufw](https://wiki.archlinux.org/title/Uncomplicated_Firewall) |
-| **AUR helper** | [yay](https://github.com/Jguer/yay) |
-| **Dotfiles management** | [GNU stow](https://www.gnu.org/software/stow/) |
