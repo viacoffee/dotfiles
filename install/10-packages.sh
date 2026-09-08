@@ -24,6 +24,13 @@ if ((${#required_packages[@]} == 0)); then
   return 1
 fi
 
+# framework-system is the Framework EC interface used by dot-system to manage
+# battery charge limits. The EC's own limiter overrides the generic kernel
+# control, so it cannot be managed through cros_charge-control.
+if is_framework; then
+  required_packages+=(framework-system)
+fi
+
 preserve_original_pacman_configuration() {
   local saved_hash current_hash
 

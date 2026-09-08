@@ -325,6 +325,11 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+# Framework-specific callers use this for EC-level functionality.
+is_framework() {
+  [[ $(cat /sys/class/dmi/id/sys_vendor 2>/dev/null) == Framework ]]
+}
+
 verify_user_ownership() {
   local path unexpected_owner
 

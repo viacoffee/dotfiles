@@ -71,10 +71,8 @@ for managed_arg in quiet splash nowatchdog plymouth.ignore-serial-consoles "$fra
     "s/(^|[[:space:]])${escaped_arg}([[:space:]]|$)/\\1\\2/g; s/[[:space:]]+/ /g; s/^ //; s/ $//")
 done
 
-system_vendor=$(cat /sys/class/dmi/id/sys_vendor 2>/dev/null || true)
 product_name=$(cat /sys/class/dmi/id/product_name 2>/dev/null || true)
-if [[ $system_vendor == Framework &&
-      $product_name == "Laptop 13 (AMD Ryzen AI 300 Series)" ]]; then
+if is_framework && [[ $product_name == "Laptop 13 (AMD Ryzen AI 300 Series)" ]]; then
   CMDLINE+=" $framework_audio_blacklist"
   log "Blacklisting the phantom Framework ACP microphone from the kernel command line"
 fi

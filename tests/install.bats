@@ -561,10 +561,15 @@ EOF
   [ "$status" -eq 1 ]
 }
 
-@test "Framework 13 AI 300 blacklists its phantom ACP microphone at boot" {
+@test "Framework hardware receives EC support and its AI 300 audio workaround" {
+  grep -Fq 'is_framework()' "$repo_root/install/lib/helpers.sh"
+  grep -Fq '[[ $(cat /sys/class/dmi/id/sys_vendor 2>/dev/null) == Framework ]]' \
+    "$repo_root/install/lib/helpers.sh"
+  grep -Fq 'if is_framework; then' "$pacman_script"
+  grep -Fq 'required_packages+=(framework-system)' "$pacman_script"
   grep -Fq 'framework_audio_blacklist=module_blacklist=snd_acp70,snd_acp_pci' "$bootloader_script"
-  grep -Fq 'system_vendor=$(cat /sys/class/dmi/id/sys_vendor' "$bootloader_script"
-  grep -Fq '$product_name == "Laptop 13 (AMD Ryzen AI 300 Series)"' "$bootloader_script"
+  grep -Fq 'if is_framework && [[ $product_name == "Laptop 13 (AMD Ryzen AI 300 Series)" ]]; then' \
+    "$bootloader_script"
   grep -Fq 'CMDLINE+=" $framework_audio_blacklist"' "$bootloader_script"
   run grep -F '11-framework-audio.sh' "$installer_script"
   [ "$status" -eq 1 ]
