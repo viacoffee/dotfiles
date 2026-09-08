@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+COMMAND_DIR=${DOT_SYSTEM_COMMAND_DIR:-$SCRIPT_DIR}
+
 usage() {
   cat >&2 <<'EOF'
 Usage:
@@ -9,6 +12,11 @@ Usage:
   dot-system battery limit <25-100>
   dot-system power-profile [status]
   dot-system power-profile set <balanced|performance|power-saver>
+  dot-system suspend
+  dot-system restart
+  dot-system shutdown
+  dot-system snapshot <create|list|restore|delete> [...]
+  dot-system update
 EOF
   exit "${1:-2}"
 }
@@ -163,6 +171,27 @@ case "${1:-}" in
       set) [[ $# -eq 3 ]] || usage; power_profile_set "$3" ;;
       *) usage ;;
     esac
+    ;;
+  suspend)
+    [[ $# -eq 1 ]] || usage
+    exec "$COMMAND_DIR/dot-cmd-suspend"
+    ;;
+  restart)
+    [[ $# -eq 1 ]] || usage
+    exec "$COMMAND_DIR/dot-cmd-reboot"
+    ;;
+  shutdown)
+    [[ $# -eq 1 ]] || usage
+    exec "$COMMAND_DIR/dot-cmd-shutdown"
+    ;;
+  snapshot)
+    [[ $# -ge 2 ]] || usage
+    shift
+    exec "$COMMAND_DIR/dot-snapshot" "$@"
+    ;;
+  update)
+    [[ $# -eq 1 ]] || usage
+    exec "$COMMAND_DIR/dot-update"
     ;;
   -h|--help) usage 0 ;;
   *) usage ;;
