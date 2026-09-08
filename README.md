@@ -136,7 +136,7 @@ Scripts with no keyboard shortcut or menu entry — invoke these manually from a
 
 | Command | Description |
 |---|---|
-| `dot-theme-background` | Set desktop wallpaper from a file path or URL |
+| `dot-wallpaper` | Set desktop wallpaper from a file path or URL |
 | `dot-dev` | Install, inspect, or remove opt-in development tools such as Docker, Pi, Claude Code, OpenCode, and Mise |
 | `dot-update` | Update system packages and optionally reboot |
 | `dot-system` | Inspect and manage battery limits, power profiles, power actions, snapshots, and updates |
