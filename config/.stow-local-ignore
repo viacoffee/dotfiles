@@ -5,5 +5,3 @@
 README.*
 LICENSE.*
 
-# Theme source/build files — not runtime configs
-^theme$
