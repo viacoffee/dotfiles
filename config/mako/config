@@ -7,12 +7,12 @@ width=300
 
 # Styling
 font=Noto Sans Mono, Symbols Nerd Font Mono, monospace 10
-background-color=#2c3540ff
-text-color=#c9cfdaff
-border-color=#4d5765ff
+background-color=#000000e6
+text-color=#cfd8dcff
+border-color=#70707073
 border-size=1
-border-radius=0
-padding=15
+border-radius=6
+padding=7
 max-icon-size=32
 outer-margin=0
 margin=5
