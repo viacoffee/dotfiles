@@ -155,6 +155,7 @@ run_phase "13-bootloader.sh" "Bootloader and boot process"
 
 # Dotfiles phase - stowing dotfiles
 run_phase "20-dotfiles.sh" "Dotfiles"
+run_phase "21-builds.sh" "Project builds"
 
 # Systemd phase - starting systemd services
 run_phase "30-system-services.sh" "System services"

@@ -50,6 +50,7 @@ polkit-gnome
 power-profiles-daemon
 ripgrep
 rtkit
+rust
 slurp
 snapper
 starship
