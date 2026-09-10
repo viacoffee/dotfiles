@@ -44,6 +44,7 @@ Two utilities I built for this system are now standalone projects.
 
 - [niri-helpers](https://github.com/viacoffee/niri-helpers)
 - [niri-columns](https://github.com/viacoffee/niri-columns)
+- [niri-column-indicator](https://github.com/viacoffee/niri-column-indicator/)
 
 ### Overview
 
