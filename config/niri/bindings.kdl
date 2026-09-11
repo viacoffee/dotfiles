@@ -147,10 +147,10 @@ binds {
   }
 
   // Audio controls
-  XF86AudioRaiseVolume { spawn "swayosd-client" "--output-volume" "+3"; }
-  XF86AudioLowerVolume { spawn "swayosd-client" "--output-volume" "-3"; }
-  XF86AudioMute { spawn "swayosd-client" "--output-volume" "mute-toggle"; }
-  XF86AudioMicMute { spawn "swayosd-client" "--input-volume" "mute-toggle"; }
+  XF86AudioRaiseVolume { spawn "kara" "osd" "volume" "up"; }
+  XF86AudioLowerVolume { spawn "kara" "osd" "volume" "down"; }
+  XF86AudioMute { spawn "kara" "osd" "volume" "mute-toggle"; }
+  XF86AudioMicMute { spawn "kara" "osd" "input-volume" "mute-toggle"; }
 
   // Media controls
   XF86AudioPlay { spawn "playerctl" "play-pause"; }
@@ -159,6 +159,6 @@ binds {
   XF86AudioPrev { spawn "playerctl" "previous"; }
 
   // Brightness controls
-  XF86MonBrightnessUp { spawn "swayosd-client" "--brightness" "+5"; }
-  XF86MonBrightnessDown { spawn "swayosd-client" "--brightness" "-5"; }
+  XF86MonBrightnessUp { spawn "kara" "osd" "brightness" "up"; }
+  XF86MonBrightnessDown { spawn "kara" "osd" "brightness" "down"; }
 }

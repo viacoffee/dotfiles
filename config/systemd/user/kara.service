@@ -1,0 +1,13 @@
+[Unit]
+Description=Kara shell
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+ExecStart=%h/projects/kara/target/release/kara-core %h/.config/kara/config.kdl
+Restart=on-failure
+KillMode=control-group
+
+[Install]
+WantedBy=graphical-session.target
