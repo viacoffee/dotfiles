@@ -1,0 +1,79 @@
+style "style.css"
+
+components {
+    wallpaper
+    bar
+    notify
+    osd
+}
+
+wallpaper {
+    path "~/background.jpg"
+    mode "stretch"
+}
+
+osd {
+    position "bottom-center"
+    timeout 1
+    display-percentage
+
+    volume { increment 3; }
+    brightness { increment 5; }
+}
+
+notify {
+    position "top-right"
+    timeout 5
+    lines 3
+    sticky-critical
+}
+
+bar {
+    orientation "vertical"
+    thickness 36
+
+    module "idle" {
+        mode "refresh"
+        command "~/.config/waybar/indicators/idle.sh"
+        signal 2
+    }
+
+    module "niri-column-indicator" {
+        mode "stream"
+        restart-on-failure
+        command "niri-column-indicator" "--layout" "vertical" "--inactive" "○" "--active" "●" "--hide-single"
+    }
+
+    module "niri-workspaces" {
+        mode "stream"
+        restart-on-failure
+        format "kara-segments-json"
+        command "~/projects/kara/target/release/kara-module-niri-workspaces"
+    }
+
+    left {
+        clock {
+            format "%H\n%M\n%d"
+            format-alt "%m\n%d\n%y"
+        }
+
+        item "idle" {
+            module "idle"
+            kind "text"
+        }
+    }
+
+    center {
+        item "workspaces" {
+            module "niri-workspaces"
+            kind "segments"
+        }
+    }
+
+    right {
+        item "column-indicator" {
+            module "niri-column-indicator"
+            kind "text"
+        }
+    }
+}

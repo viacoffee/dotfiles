@@ -1,0 +1,47 @@
+bar {
+  background-color: #1b212a;
+  color: #98a2b0;
+  font-family: Noto Sans Mono;
+  font-size: 15px;
+}
+
+bar-item.idle {
+    font-size: 12px; padding: 10px 0px;
+}
+bar-item.clock { line-height: 22px; }
+bar-item.workspaces { font-size: 14px; line-height: 24px; }
+bar-item.workspaces bar-segment.focused { color: #d9a86c; }
+bar-item.workspaces bar-segment.active { color: #d9a86c; }
+bar-item.workspaces bar-segment.empty { color: #5a6265; }
+bar-item.workspaces bar-segment.focused-empty { color: #7a644b; }
+bar-item.workspaces bar-segment.urgent {
+    background-color: #d9a86c;
+    color: #12161c;
+    padding: 4px 0px;
+}
+
+notify {
+  width: 300px;
+  background-color: #050607e6;
+  border-color: #50555773;
+  border-width: 1px;
+  padding: 7px;
+  margin: 5px;
+  outer-margin: 5px;
+  max-icon-size: 32px;
+  color: #d5dcde;
+  font-family: Noto Sans Mono;
+  font-size: 13px;
+}
+
+notify.critical { color: #d77c73; }
+
+osd {
+  background-color: #050607e6;
+  border-color: #50555773;
+  border-width: 1px;
+  color: #d5dcde;
+  font-family: Noto Sans Mono;
+  font-size: 14px;
+  outer-margin: 40px;
+}

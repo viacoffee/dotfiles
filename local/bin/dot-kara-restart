@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+
+PROJECT="$HOME/projects/kara"
+BIN="$PROJECT/target/release/kara"
+
+cargo build --release --workspace --manifest-path "$PROJECT/Cargo.toml"
+"$BIN" config check
+systemctl --user restart kara.service
