@@ -6,21 +6,33 @@ bar {
 }
 
 bar-item.idle {
-    font-size: 12px; padding: 10px 0px;
+    font-size: 12px;
+    padding: 10px;
 }
-bar-item.clock { line-height: 22px; }
-bar-item.workspaces { font-size: 14px; line-height: 24px; }
-bar-item.workspaces bar-segment.focused { color: #d9a86c; }
-bar-item.workspaces bar-segment.active { color: #d9a86c; }
-bar-item.workspaces bar-segment.empty { color: #5a6265; }
-bar-item.workspaces bar-segment.focused-empty { color: #7a644b; }
-bar-item.workspaces bar-segment.urgent {
-    background-color: #d9a86c;
-    color: #12161c;
-    padding: 4px 0px;
+bar-item.clock {
+    padding: 6px;
+    line-height: 22px;
 }
-bar-item.battery bar-segment.warning { color: #d9a86c; }
-bar-item.battery bar-segment.critical { color: #d77c73; }
+bar-item.workspaces {
+    font-size: 14px;
+    line-height: 24px;
+
+    bar-segment.active { color: #d9a86c; }
+    bar-segment.empty { color: #5a6265; }
+    bar-segment.focused-empty { color: #7a644b; }
+    bar-segment.focused { color: #d9a86c; }
+    bar-segment.urgent {
+        background-color: #d9a86c;
+        color: #12161c;
+        padding: 4px 0px;
+    }
+}
+bar-item.battery {
+    padding: 0px 0px 6px;
+
+    bar-segment.warning { color: #d9a86c; }
+    bar-segment.critical { color: #d77c73; }
+}
 
 notify {
   width: 300px;
