@@ -24,7 +24,7 @@ notify {
   width: 300px;
   background-color: #050607e6;
   border-color: #50555773;
-  border-width: 1px;
+  border-width: 0px;
   padding: 7px;
   margin: 5px;
   outer-margin: 5px;
@@ -38,8 +38,9 @@ notify.critical { color: #d77c73; }
 
 osd {
   background-color: #050607e6;
+  progress-background-color: #303a49;
   border-color: #50555773;
-  border-width: 1px;
+  border-width: 0px;
   color: #d5dcde;
   font-family: Noto Sans Mono;
   font-size: 14px;

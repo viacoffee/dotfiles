@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if makoctl mode | grep -q '^dnd$'; then
+if kara notify mute status | jq -e '.data.value == true' >/dev/null; then
   echo '{"text": "󰜺", "tooltip": "Disable dnd", "class": "active"}'
 else
   echo '{"text": ""}'

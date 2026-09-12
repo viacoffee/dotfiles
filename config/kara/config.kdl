@@ -1,4 +1,5 @@
 style "style.css"
+hot-reload
 
 components {
     wallpaper
@@ -9,7 +10,6 @@ components {
 
 wallpaper {
     path "~/background.jpg"
-    mode "stretch"
 }
 
 osd {
@@ -25,6 +25,7 @@ notify {
     position "top-right"
     timeout 5
     lines 3
+    hide-actions
     sticky-critical
 }
 
@@ -34,8 +35,14 @@ bar {
 
     module "idle" {
         mode "refresh"
+        signal 1
         command "~/.config/waybar/indicators/idle.sh"
+    }
+
+    module "dnd" {
+        mode "refresh"
         signal 2
+        command "~/.config/waybar/indicators/dnd.sh"
     }
 
     module "niri-column-indicator" {
@@ -47,18 +54,25 @@ bar {
     module "niri-workspaces" {
         mode "stream"
         restart-on-failure
-        format "kara-segments-json"
         command "~/projects/kara/target/release/kara-module-niri-workspaces"
     }
 
+    module "battery" {
+        mode "stream"
+        restart-on-failure
+        command "~/projects/kara/target/release/kara-module-battery"
+    }
+
     left {
-        clock {
-            format "%H\n%M\n%d"
-            format-alt "%m\n%d\n%y"
-        }
+        clock { format "%H\n%M\n%d"; }
 
         item "idle" {
             module "idle"
+            kind "text"
+        }
+
+        item "dnd" {
+            module "dnd"
             kind "text"
         }
     }
@@ -71,6 +85,12 @@ bar {
     }
 
     right {
+        item "battery" {
+            module "battery"
+            kind "text"
+            on-click "dot-menu" "power"
+        }
+
         item "column-indicator" {
             module "niri-column-indicator"
             kind "text"
