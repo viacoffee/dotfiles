@@ -9,4 +9,4 @@ else
   systemctl --user start "$SERVICE"
 fi
 
-kara module refresh idle
+pkill -RTMIN+1 -x kara-core
