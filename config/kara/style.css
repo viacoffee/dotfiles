@@ -2,7 +2,7 @@ bar {
   background-color: #1b212a;
   color: #98a2b0;
   font-family: Noto Sans Mono;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 bar-item.idle {
@@ -19,6 +19,8 @@ bar-item.workspaces bar-segment.urgent {
     color: #12161c;
     padding: 4px 0px;
 }
+bar-item.battery bar-segment.warning { color: #d9a86c; }
+bar-item.battery bar-segment.critical { color: #d77c73; }
 
 notify {
   width: 300px;
@@ -30,7 +32,6 @@ notify {
   outer-margin: 5px;
   max-icon-size: 32px;
   color: #d5dcde;
-  font-family: Noto Sans Mono;
   font-size: 13px;
 }
 
@@ -42,7 +43,6 @@ osd {
   border-color: #50555773;
   border-width: 0px;
   color: #d5dcde;
-  font-family: Noto Sans Mono;
   font-size: 14px;
   outer-margin: 40px;
 }

@@ -60,7 +60,7 @@ bar {
     module "battery" {
         mode "stream"
         restart-on-failure
-        command "~/projects/kara/target/release/kara-module-battery"
+        command "~/projects/kara/target/release/kara-module-battery" "--warning" "20" "--critical" "10"
     }
 
     left {
