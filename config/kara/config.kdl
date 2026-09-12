@@ -48,7 +48,7 @@ bar {
     module "niri-column-indicator" {
         mode "stream"
         restart-on-failure
-        command "niri-column-indicator" "--layout" "vertical" "--inactive" "○" "--active" "●" "--hide-single"
+        command "niri-column-indicator" layout="vertical" inactive="○" active="●" hide-single=true
     }
 
     module "niri-workspaces" {
@@ -60,11 +60,12 @@ bar {
     module "battery" {
         mode "stream"
         restart-on-failure
-        command "~/projects/kara/target/release/kara-module-battery" "--warning" "20" "--critical" "10"
+        command "~/projects/kara/target/release/kara-module-battery" warning=20 critical=10 notify-critical=true
     }
 
     left {
-        clock { format "%H\n%M\n%d"; }
+        time { format "%H\n%M"; }
+        date { format "%d"; }
 
         item "idle" {
             module "idle"
