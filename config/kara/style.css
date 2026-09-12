@@ -6,12 +6,16 @@ bar {
 }
 
 bar-item.idle {
+    padding: 10px 0px 10px;
     font-size: 12px;
-    padding: 10px;
 }
-bar-item.clock {
+bar-item.time {
+    font-size: 15px;
+    padding: 6px 0px 0px;
+}
+bar-item.date {
+    color: #5a6265;
     padding: 6px;
-    line-height: 22px;
 }
 bar-item.workspaces {
     font-size: 14px;
@@ -32,6 +36,9 @@ bar-item.battery {
 
     bar-segment.warning { color: #d9a86c; }
     bar-segment.critical { color: #d77c73; }
+}
+bar-item.column-indicator {
+    padding: 6px 0px;
 }
 
 notify {
