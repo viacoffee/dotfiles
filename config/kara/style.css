@@ -23,8 +23,8 @@ bar-item.workspaces {
 
     bar-segment.active { color: #d9a86c; }
     bar-segment.empty { color: #5a6265; }
-    bar-segment.focused-empty { color: #7a644b; }
     bar-segment.focused { color: #d9a86c; }
+    bar-segment.focused-empty { color: #7a644b; }
     bar-segment.urgent {
         background-color: #d9a86c;
         color: #12161c;
