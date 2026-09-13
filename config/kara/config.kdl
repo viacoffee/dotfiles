@@ -60,7 +60,25 @@ bar {
     module "battery" {
         mode "stream"
         restart-on-failure
-        command "~/projects/kara/target/release/kara-module-battery" warning=20 critical=10 notify-critical=true
+        command "~/projects/kara/target/release/kara-module-battery"
+
+        config {
+            warning 20
+            critical 10
+            notify-critical true
+
+            format {
+                discharging "{icon}"
+                charging "{icon}"
+                plugged ""
+                full "󰂅"
+            }
+
+            icons {
+                default "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"
+                charging "󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅"
+            }
+        }
     }
 
     left {
