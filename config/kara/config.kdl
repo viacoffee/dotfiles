@@ -10,6 +10,7 @@ components {
 
 wallpaper {
     path "~/background.jpg"
+    mode "fill"
 }
 
 osd {
@@ -25,6 +26,7 @@ notify {
     position "top-right"
     timeout 5
     lines 3
+    history 5
     hide-actions
     sticky-critical
 }
