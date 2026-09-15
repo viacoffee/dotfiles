@@ -1,16 +1,18 @@
 bar {
   background-color: #1b212a;
   color: #98a2b0;
-  font-family: Noto Sans Mono;
-  font-size: 14px;
+  font-family: RobotoMono Nerd Font Mono;
+  font-size: 15px;
 }
 
 bar-item.idle {
-    padding: 10px 0px 10px;
-    font-size: 12px;
+    padding: 10px 0px;
+    font-size: 13px;
+}
+bar-item.dnd {
+    font-size: 17px;
 }
 bar-item.time {
-    font-size: 15px;
     padding: 6px 0px 0px;
 }
 bar-item.date {
@@ -19,7 +21,7 @@ bar-item.date {
 }
 bar-item.workspaces {
     font-size: 14px;
-    line-height: 24px;
+    line-height: 25px;
 
     bar-segment.active { color: #d9a86c; }
     bar-segment.empty { color: #5a6265; }
@@ -28,7 +30,6 @@ bar-item.workspaces {
     bar-segment.urgent {
         background-color: #d9a86c;
         color: #12161c;
-        padding: 4px 0px;
     }
 }
 bar-item.battery {
@@ -38,6 +39,8 @@ bar-item.battery {
     bar-segment.critical { color: #d77c73; }
 }
 bar-item.column-indicator {
+    font-size: 11px;
+    line-height: 18px;
     padding: 6px 0px;
 }
 
@@ -62,6 +65,7 @@ osd {
   border-color: #50555773;
   border-width: 0px;
   color: #d5dcde;
+  font-family: RobotoMono Nerd Font Mono;
   font-size: 14px;
   outer-margin: 60px;
 }
