@@ -8,5 +8,6 @@ XDG_SESSION_ID="${XDG_SESSION_ID:-$(loginctl show-session auto --property=Id --v
 : "${XDG_SESSION_ID:?could not determine the graphical session}"
 
 systemctl --user start swayidle.service
-signal_waybar "10" # signal waybar that swayidle is running
+# signal kara for bar update
+pkill -RTMIN+1 -x kara-core
 loginctl lock-session "$XDG_SESSION_ID"
