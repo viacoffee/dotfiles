@@ -1,7 +1,7 @@
 // Laptop overrides — uncomment include in config.kdl to activate
 
 window-rule {
-  match app-id="Alacritty"
+  match app-id="foot"
 
   open-maximized-to-edges true
 }
