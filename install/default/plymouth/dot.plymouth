@@ -6,3 +6,4 @@ ModuleName=script
 [script]
 ImageDir=/usr/share/plymouth/themes/dot/images
 ScriptFile=/usr/share/plymouth/themes/dot/images/dot.script
+ConsoleLogBackgroundColor=0x0b0f11ff
