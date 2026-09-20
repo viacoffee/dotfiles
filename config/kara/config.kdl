@@ -27,7 +27,6 @@ notify {
     timeout 5
     lines 3
     history 5
-    hide-actions
     sticky-critical
 }
 
@@ -49,19 +48,19 @@ bar {
 
     module "niri-column-indicator" {
         mode "stream"
-        restart-on-failure
+        restart "on-failure"
         command "niri-column-indicator" layout="vertical" inactive="○" active="●" hide-single=true
     }
 
     module "niri-workspaces" {
         mode "stream"
-        restart-on-failure
+        restart "on-failure"
         command "~/projects/kara/target/release/kara-module-niri-workspaces"
     }
 
     module "battery" {
         mode "stream"
-        restart-on-failure
+        restart "on-failure"
         command "~/projects/kara/target/release/kara-module-battery"
 
         config {
