@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if kara notify mute status | jq -e '.data.value == true' >/dev/null; then
+if [ "$(kara notify mute status)" = "true" ]; then
   echo '{"text": "󰜺", "tooltip": "Disable dnd", "class": "active"}'
 else
   echo '{"text": ""}'
