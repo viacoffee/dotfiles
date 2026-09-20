@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-
 if rfkill list bluetooth | grep -q "Soft blocked: yes"; then
   rfkill unblock bluetooth
 else

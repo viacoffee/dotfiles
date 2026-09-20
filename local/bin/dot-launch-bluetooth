@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-
 # Attempts to unblock the bluetooth service first.
 rfkill unblock bluetooth
 dot-launch-term-float bluetui
