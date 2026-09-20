@@ -52,7 +52,7 @@ Two utilities I built for this system are now standalone projects.
 | **Compositor** | [niri](https://github.com/niri-wm/niri) — scrollable-tiling Wayland compositor |
 | **Session manager** | [uwsm](https://github.com/Vladimir-csp/uwsm) — Universal Wayland Session Manager |
 | **Login manager** | [greetd](https://sr.ht/~kennylevinsen/greetd/) |
-| **Terminal** | [Alacritty](https://alacritty.org/) |
+| **Terminal** | [Foot](https://codeberg.org/dnkl/foot) |
 | **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) prompt |
 | **Editor** | [Neovim](https://neovim.io/) ([configuration](https://github.com/viacoffee/nvim)) |
 | **Bar** | [Waybar](https://github.com/Alexays/Waybar) |
