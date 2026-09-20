@@ -312,7 +312,7 @@ EOF
   run env XDG_CONFIG_HOME="$clean_home/.config" \
     xdg-mime query default x-scheme-handler/terminal
   [ "$status" -eq 0 ]
-  [ "$output" = Alacritty.desktop ]
+  [ "$output" = foot.desktop ]
 
   run env XDG_CONFIG_HOME="$clean_home/.config" \
     xdg-mime query default inode/directory
@@ -356,10 +356,7 @@ EOF
     grep -Fxq 'Hidden=true' "$application_overrides/$desktop_id"
   done
 
-  grep -Fxq 'X-TerminalArgExec=-e' "$application_overrides/Alacritty.desktop"
-  grep -Fxq 'X-TerminalArgAppId=--class' "$application_overrides/Alacritty.desktop"
-  [ ! -e "$repo_root/local/share/applications/Alacritty.desktop" ]
-  [ "$(find "$application_overrides" -maxdepth 1 -type f -name '*.desktop' | wc -l)" -eq "$(( ${#hidden_overrides[@]} + 1 ))" ]
+  [ "$(find "$application_overrides" -maxdepth 1 -type f -name '*.desktop' | wc -l)" -eq "${#hidden_overrides[@]}" ]
   if command -v desktop-file-validate >/dev/null 2>&1; then
     run desktop-file-validate "$application_overrides"/*.desktop
     [ "$status" -eq 0 ]
