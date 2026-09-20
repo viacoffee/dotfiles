@@ -6,8 +6,8 @@
 
 | | |
 |---|---|
-| ![Desktop](/.github/assets/desktop.png) | ![Editor](/.github/assets/editor.png) |
-| ![Hyprlock](/.github/assets/hyprlock.png) | ![Installer](/.github/assets/installer.png) |
+| <img width="2256" height="1504" alt="Screenshot from 2026-09-18 19-43-50" src="https://github.com/user-attachments/assets/fba583a6-9c9b-46eb-95be-581db1224d04" /> | <img width="2256" height="1504" alt="Screenshot from 2026-09-18 19-42-33" src="https://github.com/user-attachments/assets/c5336974-4d30-40d0-acbb-10a148cabfe2" /> |
+| ![Installer](/.github/assets/installer.png) | |
 
 ## Installation
 
@@ -52,7 +52,7 @@ Two utilities I built for this system are now standalone projects.
 | **Compositor** | [niri](https://github.com/niri-wm/niri) — scrollable-tiling Wayland compositor |
 | **Session manager** | [uwsm](https://github.com/Vladimir-csp/uwsm) — Universal Wayland Session Manager |
 | **Login manager** | [greetd](https://sr.ht/~kennylevinsen/greetd/) |
-| **Terminal** | [Alacritty](https://alacritty.org/) |
+| **Terminal** | [Foot](https://codeberg.org/dnkl/foot) |
 | **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) prompt |
 | **Editor** | [Neovim](https://neovim.io/) ([configuration](https://github.com/viacoffee/nvim)) |
 | **Bar** | Kara |

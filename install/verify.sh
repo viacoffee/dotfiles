@@ -348,7 +348,7 @@ main() {
   done
 
   check_command "terminal MIME handler uses the installed desktop ID" \
-    mime_default_is x-scheme-handler/terminal Alacritty.desktop
+    mime_default_is x-scheme-handler/terminal foot.desktop
   check_command "directory MIME handler uses the installed desktop ID" \
     mime_default_is inode/directory org.gnome.Nautilus.desktop
   check_command "browser MIME handler is declarative" \

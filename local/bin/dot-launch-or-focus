@@ -9,7 +9,7 @@ if [[ $# -lt 1 ]]; then
   echo
   echo "Examples:"
   echo "  $(basename "$0") firefox"
-  echo "  $(basename "$0") alacritty"
+  echo "  $(basename "$0") foot"
   echo "  $(basename "$0") slack slack --enable-features=UseOzonePlatform --ozone-platform=wayland"
   exit 1
 fi

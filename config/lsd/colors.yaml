@@ -1,4 +1,4 @@
-# ANSI slots 0-15 only, so lsd inherits the alacritty palette.
+# ANSI slots 0-15 only, so lsd inherits the terminal palette.
 user: 3
 group: 8
 permission:
