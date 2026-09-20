@@ -34,7 +34,6 @@ limine-mkinitcpio-hook
 limine-snapper-sync
 lsd
 lsof
-mako
 mpv
 nautilus
 neovim
@@ -56,9 +55,7 @@ slurp
 snapper
 starship
 stow
-swaybg
 swayidle
-swayosd
 tmux
 ttf-dejavu
 ttf-liberation
@@ -68,7 +65,6 @@ ttf-space-mono-nerd
 ufw
 unzip
 uwsm
-waybar
 whois
 wireless-regdb
 wiremix

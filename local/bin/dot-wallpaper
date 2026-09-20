@@ -6,7 +6,7 @@
 #   dot-wallpaper <url-or-path>
 #
 # Copies or downloads the image to ~/background.jpg (always .jpg),
-# then restarts swaybg. Hyprlock picks it up automatically on next lock.
+# Hyprlock picks the file up automatically on the next lock.
 
 set -euo pipefail
 
@@ -28,14 +28,6 @@ else
   [[ ! -f "$src" ]] && { echo "Error: File not found: $src" >&2; exit 1; }
   cp "$src" "$TARGET"
   echo "Copied $src → $TARGET"
-fi
-
-# Restart swaybg to pick up the new wallpaper
-if systemctl --user is-active swaybg.service &>/dev/null; then
-  systemctl --user restart swaybg.service
-  echo "swaybg restarted."
-else
-  echo "Note: swaybg.service is not running."
 fi
 
 echo "Done. Wallpaper updates!"

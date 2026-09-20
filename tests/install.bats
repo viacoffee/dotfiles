@@ -46,7 +46,6 @@ setup() {
   build_phase_script=$repo_root/install/21-builds.sh
   build_library=$repo_root/install/builds/lib.sh
   indicator_build_definition=$repo_root/install/builds/niri-column-indicator.sh
-  swayosd_style=$repo_root/config/swayosd/style.css
 }
 
 @test "installer rejects root before creating installation state" {
@@ -711,9 +710,4 @@ EOF
 @test "successful installation offers an optional reboot" {
   grep -Fq 'Reboot now? [y/N]' "$repo_root/install.sh"
   grep -Fq 'run_logged "Requesting system reboot" sudo systemctl reboot' "$repo_root/install.sh"
-}
-
-@test "SwayOSD CSS declarations contain separators" {
-  run grep -nE '^ *[a-zA-Z-]+ +[^:;]+;' "$swayosd_style"
-  [ "$status" -eq 1 ]
 }

@@ -37,13 +37,13 @@ bar {
     module "idle" {
         mode "refresh"
         signal 1
-        command "~/.config/waybar/indicators/idle.sh"
+        command "~/.config/kara/indicators/idle.sh"
     }
 
     module "dnd" {
         mode "refresh"
         signal 2
-        command "~/.config/waybar/indicators/dnd.sh"
+        command "~/.config/kara/indicators/dnd.sh"
     }
 
     module "niri-column-indicator" {

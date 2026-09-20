@@ -14,11 +14,8 @@ mkdir -p "$HOME/.cache/zsh"
 
 # Enable session services
 enable_user_services \
-  waybar \
-  mako \
-  swaybg \
   swayidle \
-  swayosd
+  kara
 
 step "Configuring GTK appearance"
 gsettings set org.gnome.desktop.interface color-scheme prefer-dark

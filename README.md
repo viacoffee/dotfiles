@@ -55,13 +55,13 @@ Two utilities I built for this system are now standalone projects.
 | **Terminal** | [Alacritty](https://alacritty.org/) |
 | **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) prompt |
 | **Editor** | [Neovim](https://neovim.io/) ([configuration](https://github.com/viacoffee/nvim)) |
-| **Bar** | [Waybar](https://github.com/Alexays/Waybar) |
+| **Bar** | Kara |
 | **Launcher** | [bemenu](https://github.com/Cloudef/bemenu) |
-| **Notifications** | [mako](https://github.com/emersion/mako) |
 | **Lock screen** | [hyprlock](https://github.com/hyprwm/hyprlock) |
-| **Wallpaper** | [swaybg](https://github.com/swaywm/swaybg) |
+| **Notifications** | Kara |
 | **Idle management** | [swayidle](https://github.com/swaywm/swayidle) |
-| **OSD overlays** | [swayosd](https://github.com/ErikReider/SwayOSD) |
+| **Wallpaper** | Kara |
+| **OSD overlays** | Kara |
 | **Boot splash** | [plymouth](https://gitlab.freedesktop.org/plymouth/plymouth) |
 | **Clipboard** | wl-clipboard |
 | **Screenshots** | [grim](https://sr.ht/~emersion/grim/) + [slurp](https://github.com/emersion/slurp) |
