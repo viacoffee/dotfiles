@@ -6,10 +6,11 @@ bar {
 }
 
 bar-item.idle {
-    padding: 10px 0px;
+    padding: 2px;
     font-size: 13px;
 }
 bar-item.dnd {
+    padding: 2px;
     font-size: 17px;
 }
 bar-item.time {
@@ -17,9 +18,10 @@ bar-item.time {
 }
 bar-item.date {
     color: #5a6265;
-    padding: 6px;
+    padding: 6px 0px 8px;
 }
 bar-item.screenrecord {
+    padding: 2px;
     color: #d77c73;
 }
 bar-item.workspaces {
