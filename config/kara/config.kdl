@@ -25,7 +25,7 @@ osd {
 notify {
     position "top-right"
     timeout 5
-    lines 3
+    lines 4
     history 5
     sticky-critical
 }
@@ -44,6 +44,12 @@ bar {
         mode "refresh"
         signal 2
         command "~/.config/kara/indicators/dnd.sh"
+    }
+
+    module "screenrecord" {
+        mode "refresh"
+        signal 3
+        command "~/.config/kara/indicators/screenrecord.sh"
     }
 
     module "niri-column-indicator" {
@@ -93,6 +99,11 @@ bar {
 
         item "dnd" {
             module "dnd"
+            kind "text"
+        }
+
+        item "screenrecord" {
+            module "screenrecord"
             kind "text"
         }
     }

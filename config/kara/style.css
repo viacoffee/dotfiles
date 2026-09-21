@@ -19,6 +19,9 @@ bar-item.date {
     color: #5a6265;
     padding: 6px;
 }
+bar-item.screenrecord {
+    color: #d77c73;
+}
 bar-item.workspaces {
     font-size: 14px;
     line-height: 25px;
