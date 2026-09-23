@@ -28,12 +28,12 @@ bar-item.workspaces {
     font-size: 14px;
     line-height: 25px;
 
-    bar-segment.active { color: #d9a86c; }
+    bar-segment.active { color: #b887c0; }
     bar-segment.empty { color: #5a6265; }
-    bar-segment.focused { color: #d9a86c; }
-    bar-segment.focused-empty { color: #7a644b; }
+    bar-segment.focused { color: #b887c0; }
+    bar-segment.focused-empty { color: #80488973; }
     bar-segment.urgent {
-        background-color: #d9a86c;
+        background-color: #d77c73;
         color: #12161c;
     }
 }
