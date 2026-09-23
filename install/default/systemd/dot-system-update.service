@@ -1,0 +1,10 @@
+[Unit]
+Description=dot-system package update
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/dot-system/update-helper
+UMask=0022
+TimeoutStartSec=infinity

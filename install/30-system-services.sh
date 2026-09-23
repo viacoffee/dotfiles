@@ -2,6 +2,14 @@
 
 step "Configuring networking and system services"
 
+# Install the fixed-scope system update service helper.
+rm -f "$HOME/.local/bin/update-authorize" "$HOME/.local/bin/update-auth-client"
+run_logged "Installing dot-system update helper" \
+  sudo install -Dm755 "$HOME/.local/bin/update-helper" /usr/libexec/dot-system/update-helper
+run_logged "Installing dot-system update service" \
+  sudo install -Dm644 "$DOTFILES_INSTALL_DEFAULTS_PATH/systemd/dot-system-update.service" /etc/systemd/system/dot-system-update.service
+run_logged "Reloading systemd manager" sudo systemctl daemon-reload
+
 # Bluetooth
 if ! systemctl is-enabled --quiet bluetooth.service; then
   run_logged "Enable bluetooth service" \
