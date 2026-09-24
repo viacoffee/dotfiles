@@ -1,5 +1,5 @@
 style "style.css"
-hot-reload
+// hot-reload
 
 components {
     // wallpaper
