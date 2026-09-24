@@ -2,7 +2,7 @@ style "style.css"
 hot-reload
 
 components {
-    wallpaper
+    // wallpaper
     bar
     notify
     osd
