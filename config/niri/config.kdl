@@ -105,7 +105,7 @@ output "HDMI-A-1" {
 // Layout
 layout {
   always-center-single-column
-  background-color "#1e2229"
+  background-color "#12161c"
   gaps 0
 
   focus-ring {
