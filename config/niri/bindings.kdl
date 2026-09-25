@@ -23,9 +23,6 @@ binds {
     spawn "dot-menu"
   }
 
-  // Open input prompt for the Hivemind
-  Mod+Shift+Space { spawn "dot-hivemind"; }
-
   // Capslock layer: Copy/Paste (terminal)
   ISO_Level5_Shift+c { spawn "wtype" "-M" "ctrl" "-k" "Insert"; }
   ISO_Level5_Shift+v { spawn "wtype" "-M" "shift" "-k" "Insert"; }
