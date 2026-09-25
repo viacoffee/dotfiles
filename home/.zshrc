@@ -8,6 +8,9 @@ source ~/.zshrc.functions
 # Starship prompt
 eval "$(starship init zsh)"
 
+# fzf
+eval "$(fzf --zsh)"
+
 # Completion
 autoload -Uz compinit
 zmodload zsh/complist
