@@ -6,10 +6,9 @@ alias htop='btop'
 alias vim='nvim'
 
 # Directory listings
-alias l='lsd -a1'
+alias l='lsd -1'
 alias la='lsd -la'
 alias lr='lsd -R'
-alias lra='lsd -RA'
 alias lt='lsd --tree'
 
 # Git
