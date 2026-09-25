@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | <img width="2256" height="1504" alt="Screenshot from 2026-09-18 19-43-50" src="https://github.com/user-attachments/assets/fba583a6-9c9b-46eb-95be-581db1224d04" /> | <img width="2256" height="1504" alt="Screenshot from 2026-09-18 19-42-33" src="https://github.com/user-attachments/assets/c5336974-4d30-40d0-acbb-10a148cabfe2" /> |
-| ![Installer](/.github/assets/installer.png) | |
+| <img width="1041" height="661" alt="installer" src="https://github.com/user-attachments/assets/ef80fe5b-956c-4ec8-b26f-f2d350ef4532" /> | |
 
 ## Installation
 
