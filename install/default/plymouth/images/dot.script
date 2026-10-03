@@ -1,10 +1,11 @@
 # Dot Plymouth theme - quiet terminal-style boot screen
 
-Window.SetBackgroundTopColor(0.035, 0.047, 0.051);
-Window.SetBackgroundBottomColor(0.035, 0.047, 0.051);
+Window.SetBackgroundTopColor(0.106, 0.129, 0.165);
+Window.SetBackgroundBottomColor(0.106, 0.129, 0.165);
 
-foreground = 0.78;
-bright = 0.91;
+foreground_red = 0.533;
+foreground_green = 0.573;
+foreground_blue = 0.624;
 cursor_on = 1;
 cursor_ticks = 0;
 progress_phase = 0;
@@ -27,10 +28,10 @@ message_sprites[0] = Sprite();
 message_sprites[1] = Sprite();
 message_sprites[2] = Sprite();
 message_sprites[3] = Sprite();
-message_images[0] = Image.Text("", foreground, foreground, foreground);
-message_images[1] = Image.Text("", foreground, foreground, foreground);
-message_images[2] = Image.Text("", foreground, foreground, foreground);
-message_images[3] = Image.Text("", foreground, foreground, foreground);
+message_images[0] = Image.Text("", foreground_red, foreground_green, foreground_blue);
+message_images[1] = Image.Text("", foreground_red, foreground_green, foreground_blue);
+message_images[2] = Image.Text("", foreground_red, foreground_green, foreground_blue);
+message_images[3] = Image.Text("", foreground_red, foreground_green, foreground_blue);
 for (index = 0; index < 4; index++)
   {
     message_sprites[index].SetPosition(message_x,
@@ -44,7 +45,7 @@ fun draw_messages ()
       {
         if (message_lines[index] != "")
           {
-            message_images[index] = Image.Text(message_lines[index], foreground, foreground, foreground);
+            message_images[index] = Image.Text(message_lines[index], foreground_red, foreground_green, foreground_blue);
             message_sprites[index].SetImage(message_images[index]);
             message_sprites[index].SetX(message_x);
             message_sprites[index].SetY(status_y + index * 28);
@@ -70,7 +71,7 @@ password_sprite.SetOpacity(0);
 
 fun update_prompt (text, bullets)
   {
-    prompt_image = Image.Text("passphrase:", foreground, foreground, foreground);
+    prompt_image = Image.Text("passphrase:", foreground_red, foreground_green, foreground_blue);
     prompt_sprite.SetImage(prompt_image);
     prompt_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - prompt_image.GetWidth() / 2);
 
@@ -79,7 +80,7 @@ fun update_prompt (text, bullets)
       {
         password += "*";
       }
-    password_image = Image.Text(password, bright, bright, bright);
+    password_image = Image.Text(password, foreground_red, foreground_green, foreground_blue);
     password_sprite.SetImage(password_image);
     password_sprite.SetPosition(Window.GetX() + Window.GetWidth() / 2 + prompt_image.GetWidth() / 2 + 8,
                                 Window.GetY() + Window.GetHeight() * 0.63,
