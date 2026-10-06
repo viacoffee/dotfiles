@@ -5,6 +5,9 @@ export VISUAL="$EDITOR"
 # Suppress uwsm console output during session start
 export UWSM_SILENT_START=1
 
+# Force bemenu backend
+export BEMENU_BACKEND=wayland
+
 # Add ~/.local/bin to PATH
 if [ -d "$HOME/.local/bin" ]; then
   case ":$PATH:" in
