@@ -1,0 +1,109 @@
+{
+    "components": [
+        "wallpaper",
+        "bar",
+        "notify",
+        "osd"
+    ],
+
+    "wallpaper": {
+        "path": "~/background.jpg",
+        "mode": "fill"
+    },
+
+    "osd": {
+        "position": "bottom-center",
+        "timeout": 1,
+        "display-percentage": true,
+        "volume": { "increment": 3 },
+        "brightness": { "increment": 5 }
+    },
+
+    "notify": {
+        "position": "top-right",
+        "timeout": 5,
+        "lines": 4,
+        "history": 5,
+        "sticky-critical": true
+    },
+
+    "bar": {
+        "orientation": "vertical",
+        "thickness": 36,
+
+        "modules": {
+            "idle": {
+                "mode": "refresh",
+                "signal": 1,
+                "command": "~/.config/kara/indicators/idle.sh"
+            },
+            "dnd": {
+                "mode": "refresh",
+                "signal": 2,
+                "command": "~/.config/kara/indicators/dnd.sh"
+            },
+            "screenrecord": {
+                "mode": "refresh",
+                "signal": 3,
+                "command": "~/.config/kara/indicators/screenrecord.sh"
+            },
+            "niri-column-indicator": {
+                "mode": "stream",
+                "restart": "on-failure",
+                "command": [
+                    "niri-column-indicator",
+                    "--layout", "vertical",
+                    "--inactive", "○",
+                    "--active", "●",
+                    "--hide-single"
+                ]
+            },
+            "niri-workspaces": {
+                "mode": "stream",
+                "restart": "on-failure",
+                "command": "~/projects/kara/target/release/kara-module-niri-workspaces"
+            },
+            "battery": {
+                "mode": "stream",
+                "restart": "on-failure",
+                "command": "~/projects/kara/target/release/kara-module-battery",
+                "config": {
+                    "warning": 20,
+                    "critical": 10,
+                    "notify-critical": true,
+                    "format": {
+                        "discharging": "{icon}",
+                        "charging": "{icon}",
+                        "plugged": "",
+                        "full": "󰂅"
+                    },
+                    "icons": {
+                        "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+                        "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+                    }
+                }
+            }
+        },
+
+        "left": [
+            { "builtin": "time", "format": "%H\n%M" },
+            { "builtin": "date", "format": "%d" },
+            { "module": "idle", "kind": "text" },
+            { "module": "dnd", "kind": "text" },
+            { "module": "screenrecord", "kind": "text" }
+        ],
+
+        "center": [
+            { "id": "workspaces", "module": "niri-workspaces", "kind": "segments" }
+        ],
+
+        "right": [
+            {
+                "module": "battery",
+                "kind": "text",
+                "on-click": ["dot-menu", "power"]
+            },
+            { "id": "column-indicator", "module": "niri-column-indicator", "kind": "text" }
+        ]
+    }
+}

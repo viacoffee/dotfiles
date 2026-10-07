@@ -5,7 +5,7 @@ After=graphical-session.target
 Requisite=graphical-session.target
 
 [Service]
-ExecStart=%h/projects/kara/target/release/kara-core %h/.config/kara/config.kdl
+ExecStart=%h/projects/kara/target/release/kara-core
 Restart=on-failure
 KillMode=control-group
 
