@@ -1,6 +1,6 @@
 {
     "components": [
-        "wallpaper",
+        // "wallpaper",
         "bar",
         "notify",
         "osd"
@@ -94,7 +94,11 @@
         ],
 
         "center": [
-            { "id": "workspaces", "module": "niri-workspaces", "kind": "segments" }
+            {
+                "id": "workspaces",
+                "module": "niri-workspaces",
+                "kind": "segments"
+            }
         ],
 
         "right": [
@@ -103,7 +107,11 @@
                 "kind": "text",
                 "on-click": ["dot-menu", "power"]
             },
-            { "id": "column-indicator", "module": "niri-column-indicator", "kind": "text" }
+            {
+                "id": "column-indicator",
+                "module": "niri-column-indicator",
+                "kind": "text"
+            }
         ]
     }
 }
