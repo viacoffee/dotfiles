@@ -39,6 +39,15 @@ for desktop_override in "$DOTFILES_INSTALL_DEFAULTS_PATH/applications/"*.desktop
     "$APPLICATION_OVERRIDES_DIR/${desktop_override##*/}"
 done
 
+# Suppress optional desktop notifications without disabling snapshot sync.
+step "Installing desktop autostart overrides"
+AUTOSTART_OVERRIDES_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/autostart"
+mkdir -p "$AUTOSTART_OVERRIDES_DIR"
+for desktop_override in "$DOTFILES_INSTALL_DEFAULTS_PATH/autostart/"*.desktop; do
+  install -m 0644 -- "$desktop_override" \
+    "$AUTOSTART_OVERRIDES_DIR/${desktop_override##*/}"
+done
+
 # Install the repository default wallpaper without stowing it. Keep an
 # existing local override.
 DEFAULT_BACKGROUND="$DOTFILES_INSTALL_DEFAULTS_PATH/background.jpg"
@@ -50,6 +59,7 @@ fi
 verify_user_ownership \
   "$HOME/.cache/zsh" \
   "$APPLICATION_OVERRIDES_DIR" \
+  "$AUTOSTART_OVERRIDES_DIR" \
   "$HOME/notes" \
   "$HOME/projects" \
   "$HOME/work"
