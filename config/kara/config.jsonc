@@ -53,8 +53,8 @@
                 "command": [
                     "niri-column-indicator",
                     "--layout", "vertical",
-                    "--inactive", "○",
-                    "--active", "●",
+                    "--inactive", "\uf10c",
+                    "--active", "\uf111",
                     "--hide-single"
                 ]
             },
