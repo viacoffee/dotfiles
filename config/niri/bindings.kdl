@@ -29,7 +29,7 @@ binds {
 
   // File browser
   Mod+Shift+f {
-    spawn "uwsm-app" "--" "nautilus"
+    spawn "dot-launch-term-cwd" "qf"
   }
 
   // Btop
