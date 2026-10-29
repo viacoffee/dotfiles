@@ -5,61 +5,51 @@ bar {
   font-size: 15px;
 }
 
-bar-item.idle {
-    padding: 2px;
-    font-size: 13px;
-}
-bar-item.dnd {
-    padding: 2px;
-    font-size: 17px;
-}
-bar-item.time {
-    padding: 6px 0px 0px;
-}
-bar-item.date {
-    color: #5a6265;
-    padding: 6px 0px 8px;
-}
-bar-item.screenrecord {
-    padding: 2px;
-    color: #d77c73;
-}
-bar-item.workspaces-niri {
-    font-size: 14px;
-    line-height: 25px;
+bar-segment { background-color: #1b212a; }
 
-    bar-segment.active { color: #b887c0; }
-    bar-segment.empty { color: #5a6265; }
-    bar-segment.focused { color: #b887c0; }
-    bar-segment.focused-empty { color: #80488973; }
-    bar-segment.urgent {
-        background-color: #d77c73;
-        color: #12161c;
+bar-item {
+    .idle, .dnd, .screenrecord { padding: 2px; }
+    .idle { font-size: 13px; }
+    .dnd { font-size: 17px; }
+    .screenrecord { color: #d77c73; }
+
+    .time { padding: 6px 0px 0px; }
+
+    .date {
+        color: #5a6265;
+        padding: 6px 0px 8px;
     }
-}
-bar-item.workspaces-hyprland {
-    font-size: 14px;
-    line-height: 25px;
 
-    bar-segment.active { color: #b887c0; }
-    bar-segment.empty { color: #5a6265; }
-    bar-segment.focused { color: #b887c0; }
-    bar-segment.focused-empty { color: #80488973; }
-    bar-segment.urgent {
-        background-color: #d77c73;
-        color: #12161c;
+    .workspaces-niri,
+    .workspaces-hyprland {
+        font-size: 14px;
+        line-height: 25px;
+
+        bar-segment {
+            .active, .focused { color: #b887c0; }
+            .empty { color: #5a6265; }
+            .focused-empty { color: #80488973; }
+            .urgent {
+                background-color: #d77c73;
+                color: #12161c;
+            }
+        }
     }
-}
-bar-item.battery {
-    padding: 0px 0px 6px;
 
-    bar-segment.warning { color: #d9a86c; }
-    bar-segment.critical { color: #d77c73; }
-}
-bar-item.column-indicator {
-    font-size: 11px;
-    line-height: 18px;
-    padding: 6px 0px;
+    .battery {
+        padding: 0px 0px 6px;
+
+        bar-segment {
+            .warning { color: #d9a86c; }
+            .critical { color: #d77c73; }
+        }
+    }
+
+    .column-indicator {
+        font-size: 11px;
+        line-height: 18px;
+        padding: 6px 0px;
+    }
 }
 
 notify {
@@ -72,9 +62,9 @@ notify {
   max-icon-size: 32px;
   color: #d5dcde;
   font-size: 13px;
-}
 
-notify.critical { color: #d77c73; }
+  .critical { color: #d77c73; }
+}
 
 osd {
   background-color: #050607e6;
