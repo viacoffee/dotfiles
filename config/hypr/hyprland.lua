@@ -5,6 +5,10 @@ hl.on("hyprland.start", function()
 end)
 
 hl.config({
+  animations = { enabled = false },
+})
+
+hl.config({
   input = {
     repeat_delay = 300,
     repeat_rate = 50,
@@ -18,6 +22,9 @@ hl.monitor({ output = "HDMI-A-1", mode = "3440x1440@59.973", position = "auto", 
 
 -- Terminal
 hl.bind(mod .. " + Return", hl.dsp.exec_cmd("dot-launch-term-cwd"))
+
+-- App launcher
+hl.bind(mod .. " + space", hl.dsp.exec_cmd("dot-menu-apps"))
 
 -- Window focus
 hl.bind(mod .. " + h", hl.dsp.focus({ direction = "left" }))
