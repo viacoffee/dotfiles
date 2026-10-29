@@ -1,4 +1,6 @@
 {
+    "session": "niri",
+
     "components": [
         // "wallpaper",
         "bar",
@@ -48,6 +50,7 @@
                 "command": "~/.config/kara/indicators/screenrecord.sh"
             },
             "niri-column-indicator": {
+                "session": "niri",
                 "mode": "stream",
                 "restart": "on-failure",
                 "command": [
@@ -59,9 +62,16 @@
                 ]
             },
             "niri-workspaces": {
+                "session": "niri",
                 "mode": "stream",
                 "restart": "on-failure",
                 "command": "kara-module-niri-workspaces"
+            },
+            "hyprland-workspaces": {
+                "session": "hyprland",
+                "mode": "stream",
+                "restart": "on-failure",
+                "command": "kara-module-hyprland-workspaces"
             }
         },
 
@@ -75,9 +85,15 @@
 
         "center": [
             {
-                "id": "workspaces",
+                "id": "workspaces-niri",
                 "module": "niri-workspaces",
                 "kind": "segments"
+            },
+            {
+                "id": "workspaces-hyprland",
+                "module": "hyprland-workspaces",
+                "kind": "segments",
+                "on-click": ["kara-module-hyprland-workspaces", "--activate", "{segment_id}"]
             }
         ],
 
