@@ -17,6 +17,9 @@ focus_follows_mouse no
 # Terminals
 bindsym $mod+Return exec dot-launch-term-cwd
 
+# App launcher
+bindsym $mod+space exec dot-menu-apps
+
 # Window focus
 bindsym $mod+h focus left
 bindsym $mod+j focus down
