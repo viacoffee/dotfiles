@@ -2,7 +2,7 @@
 
 exec j4-dmenu-desktop \
   --dmenu="dot-launch-menu" \
-  --wrapper="uwsm-app --" \
+  --wrapper="dot-app --" \
   --term-mode=custom \
   --term="xdg-terminal-exec --title={name} -- {cmdline@}" \
   --no-generic \

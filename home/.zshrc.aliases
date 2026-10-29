@@ -27,7 +27,7 @@ alias ....='cd ../../..'
 
 # Quick open
 ## Firefox
-alias ff='uwsm-app -- firefox --new-window'
+alias ff='dot-app -- firefox --new-window'
 
 # Tmux
 alias t='tmux-sessionizer "$PWD"'

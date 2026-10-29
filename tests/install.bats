@@ -335,7 +335,7 @@ EOF
   grep -Fxq j4-dmenu-desktop "$packages_file"
   grep -Fq 'exec j4-dmenu-desktop' "$app_launcher"
   grep -Fq -- '--dmenu="dot-launch-menu"' "$app_launcher"
-  grep -Fq -- '--wrapper="uwsm-app --"' "$app_launcher"
+  grep -Fq -- '--wrapper="dot-app --"' "$app_launcher"
   grep -Fq -- '--term="xdg-terminal-exec --title={name} -- {cmdline@}"' "$app_launcher"
 
   hidden_overrides=(

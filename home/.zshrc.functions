@@ -10,5 +10,5 @@ function mkmv() {
 
 # Open a Nautilus window without keeping it attached to this shell.
 function open() {
-  uwsm-app -- nautilus -w "$@" >/dev/null 2>&1 &!
+  dot-app -- nautilus -w "$@" >/dev/null 2>&1 &!
 }
