@@ -62,26 +62,6 @@
                 "mode": "stream",
                 "restart": "on-failure",
                 "command": "~/projects/kara/target/release/kara-module-niri-workspaces"
-            },
-            "battery": {
-                "mode": "stream",
-                "restart": "on-failure",
-                "command": "~/projects/kara/target/release/kara-module-battery",
-                "config": {
-                    "warning": 20,
-                    "critical": 10,
-                    "notify-critical": true,
-                    "format": {
-                        "discharging": "{icon}",
-                        "charging": "{icon}",
-                        "plugged": "",
-                        "full": "󰂅"
-                    },
-                    "icons": {
-                        "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-                        "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
-                    }
-                }
             }
         },
 
@@ -103,9 +83,23 @@
 
         "right": [
             {
-                "module": "battery",
-                "kind": "text",
-                "on-click": ["dot-menu", "power"]
+                "builtin": "battery",
+                "on-click": ["dot-menu", "power"],
+                "config": {
+                    "warning": 20,
+                    "critical": 10,
+                    "notify-critical": true,
+                    "format": {
+                        "discharging": "{icon}",
+                        "charging": "{icon}",
+                        "plugged": "",
+                        "full": "󰂅"
+                    },
+                    "icons": {
+                        "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+                        "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+                    }
+                }
             },
             {
                 "id": "column-indicator",
