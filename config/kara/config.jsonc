@@ -61,7 +61,7 @@
             "niri-workspaces": {
                 "mode": "stream",
                 "restart": "on-failure",
-                "command": "~/projects/kara/target/release/kara-module-niri-workspaces"
+                "command": "kara-module-niri-workspaces"
             }
         },
 
