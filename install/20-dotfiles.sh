@@ -21,6 +21,7 @@ remove_regular_stow_conflict() {
 }
 
 remove_regular_stow_conflict "$HOME/.bashrc"
+remove_regular_stow_conflict "$HOME/.bash_profile"
 
 step "Stowing home files"
 run_logged "Stowing home files" stow -t "$HOME" home
@@ -41,5 +42,5 @@ mkdir -p "$HOME/.local"
 run_logged "Stowing local executables" \
   stow --no-folding -t "$HOME/.local" local
 
-verify_user_ownership "$HOME/.config" "$HOME/.local" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.zshrc"
+verify_user_ownership "$HOME/.config" "$HOME/.local" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile"
 success "Dotfiles stowed"

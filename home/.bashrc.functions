@@ -1,14 +1,14 @@
 # Make a directory and then cd to it
 function mkcd() {
-  mkdir -p $1 && cd $1
+  mkdir -p "$1" && cd "$1" || return
 }
 
 # Make a directory and move file to it
 function mkmv() {
-  mkdir -p $2 && mv $1 $2
+  mkdir -p "$2" && mv "$1" "$2"
 }
 
 # Open a Nautilus window without keeping it attached to this shell.
 function open() {
-  dot-app -- nautilus -w "$@" >/dev/null 2>&1 &!
+  dot-app -- nautilus -w "$@" >/dev/null 2>&1 & disown
 }
