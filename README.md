@@ -53,7 +53,7 @@ Two utilities I built for this system are now standalone projects.
 | **Session manager** | [uwsm](https://github.com/Vladimir-csp/uwsm) — Universal Wayland Session Manager |
 | **Login manager** | [greetd](https://sr.ht/~kennylevinsen/greetd/) |
 | **Terminal** | [Foot](https://codeberg.org/dnkl/foot) |
-| **Shell** | [Zsh](https://www.zsh.org/) + [Starship](https://starship.rs/) prompt |
+| **Shell** | [Bash](https://www.gnu.org/software/bash/) + [Starship](https://starship.rs/) prompt |
 | **Editor** | [Neovim](https://neovim.io/) ([configuration](https://github.com/viacoffee/nvim)) |
 | **Bar** | [Waybar](https://github.com/Alexays/Waybar) |
 | **Launcher** | [bemenu](https://github.com/Cloudef/bemenu) |

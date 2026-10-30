@@ -8,10 +8,6 @@ enable_user_services() {
   done
 }
 
-# Create zsh cache
-step "Creating the Zsh cache"
-mkdir -p "$HOME/.cache/zsh"
-
 # Enable session services
 enable_user_services \
   waybar \
@@ -60,14 +56,10 @@ if [[ ! -e $HOME/background.jpg && ! -L $HOME/background.jpg ]]; then
 fi
 
 verify_user_ownership \
-  "$HOME/.cache/zsh" \
   "$APPLICATION_OVERRIDES_DIR" \
   "$AUTOSTART_OVERRIDES_DIR" \
   "$HOME/notes" \
   "$HOME/projects" \
   "$HOME/work"
 
-# Set shell
-step "Changing the default shell"
-sudo usermod -s /bin/zsh "$DOTFILES_DEFAULT_USER"
 success "Post-install user setup complete"

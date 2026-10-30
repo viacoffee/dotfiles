@@ -1,5 +1,6 @@
 base
 base-devel
+bash-completion
 bat
 bemenu-wayland
 bluetui
@@ -80,4 +81,3 @@ xdg-terminal-exec
 xdg-utils
 xwayland-satellite
 yay
-zsh
