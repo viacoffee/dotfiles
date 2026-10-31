@@ -1,7 +1,12 @@
+root {
+    font-family: RobotoMono Nerd Font Mono;
+    font-size: 14px;
+    color: #d5dcde;
+}
+
 bar {
   background-color: #1b212a;
   color: #98a2b0;
-  font-family: RobotoMono Nerd Font Mono;
   font-size: 15px;
 }
 
@@ -60,7 +65,6 @@ notify {
   margin: 5px;
   outer-margin: 5px;
   max-icon-size: 32px;
-  color: #d5dcde;
   font-size: 13px;
 
   .critical { color: #d77c73; }
@@ -70,8 +74,5 @@ osd {
   background-color: #050607e6;
   progress-background-color: #303a49;
   border-width: 0px;
-  color: #d5dcde;
-  font-family: RobotoMono Nerd Font Mono;
-  font-size: 14px;
   outer-margin: 60px;
 }
