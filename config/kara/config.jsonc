@@ -61,6 +61,7 @@
             },
 
             "workspaces-niri": {
+                "class": "workspaces",
                 "session": "niri",
                 "mode": "stream",
                 "kind": "segments",
@@ -68,6 +69,7 @@
                 "command": "kara-module-niri-workspaces"
             },
             "workspaces-hyprland": {
+                "class": "workspaces",
                 "session": "hyprland",
                 "mode": "stream",
                 "kind": "segments",

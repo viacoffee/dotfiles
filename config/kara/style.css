@@ -1,60 +1,56 @@
+@bg:      #1b212a;
+@muted:   #5a6265;
+@accent:  #b887c0;
+@danger:  #d77c73;
+@warning: #d9a86c;
+
 root {
-    font-family: RobotoMono Nerd Font Mono;
-    font-size: 14px;
-    color: #d5dcde;
+  font-family: RobotoMono Nerd Font Mono;
+  font-size: 14px;
+  color: #d5dcde;
 }
 
 bar {
-  background-color: #1b212a;
+  background-color: @bg;
   color: #98a2b0;
   font-size: 15px;
-}
 
-bar-segment { background-color: #1b212a; }
+  #idle, #dnd, #screenrecord { padding: 2px; }
+  #idle { font-size: 13px; }
+  #dnd { font-size: 17px; }
+  #screenrecord { color: @danger; }
 
-bar-item {
-    .idle, .dnd, .screenrecord { padding: 2px; }
-    .idle { font-size: 13px; }
-    .dnd { font-size: 17px; }
-    .screenrecord { color: #d77c73; }
+  #time { padding: 6px 0px 0px; }
+  #date {
+    color: @muted;
+    padding: 6px 0px 8px;
+  }
 
-    .time { padding: 6px 0px 0px; }
+  .workspaces {
+    font-size: 14px;
+    line-height: 25px;
 
-    .date {
-        color: #5a6265;
-        padding: 6px 0px 8px;
+    .active, .focused { color: @accent; }
+    .empty { color: @muted; }
+    .focused-empty { color: #80488973; }
+    .urgent {
+      background-color: @danger;
+      color: #12161c;
     }
+  }
 
-    .workspaces-niri,
-    .workspaces-hyprland {
-        font-size: 14px;
-        line-height: 25px;
+  #battery {
+    padding: 0px 0px 6px;
 
-        bar-segment {
-            .active, .focused { color: #b887c0; }
-            .empty { color: #5a6265; }
-            .focused-empty { color: #80488973; }
-            .urgent {
-                background-color: #d77c73;
-                color: #12161c;
-            }
-        }
-    }
+    .warning { color: @warning; }
+    .critical { color: @danger; }
+  }
 
-    .battery {
-        padding: 0px 0px 6px;
-
-        bar-segment {
-            .warning { color: #d9a86c; }
-            .critical { color: #d77c73; }
-        }
-    }
-
-    .column-indicator {
-        font-size: 11px;
-        line-height: 18px;
-        padding: 6px 0px;
-    }
+  #column-indicator {
+    font-size: 11px;
+    line-height: 18px;
+    padding: 6px 0px;
+  }
 }
 
 notify {
@@ -67,7 +63,7 @@ notify {
   max-icon-size: 32px;
   font-size: 13px;
 
-  .critical { color: #d77c73; }
+  &.critical { color: @danger; }
 }
 
 osd {
