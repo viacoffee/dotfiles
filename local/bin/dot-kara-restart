@@ -4,6 +4,6 @@ set -euo pipefail
 PROJECT="$HOME/projects/kara"
 BIN="$PROJECT/target/release/kara"
 
-cargo build --release --workspace --manifest-path "$PROJECT/Cargo.toml"
-"$BIN" config check
+cargo build --release --manifest-path "$PROJECT/Cargo.toml"
+"$BIN" validate
 systemctl --user restart kara.service
