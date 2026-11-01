@@ -8,5 +8,5 @@ XDG_SESSION_ID="${XDG_SESSION_ID:-$(loginctl show-session auto --property=Id --v
 
 systemctl --user start swayidle.service
 # signal kara for bar update
-pkill -RTMIN+1 -x kara-core
+pkill -RTMIN+1 -x kara
 loginctl lock-session "$XDG_SESSION_ID"

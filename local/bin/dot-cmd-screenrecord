@@ -21,7 +21,7 @@ for arg in "$@"; do
 done
 
 update_screenrecord_indicator() {
-  pkill -RTMIN+3 -x kara-core
+  pkill -RTMIN+3 -x kara
 }
 
 start_screenrecording() {

@@ -1,4 +1,4 @@
 #!/bin/bash
 
 kara notify mute toggle
-pkill -RTMIN+2 -x kara-core
+pkill -RTMIN+2 -x kara
