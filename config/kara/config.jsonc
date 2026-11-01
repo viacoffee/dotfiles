@@ -33,25 +33,52 @@
         "orientation": "vertical",
         "thickness": 36,
 
-        "modules": {
+        "left": ["time", "date", "idle", "dnd", "screenrecord"],
+        "center": ["workspaces-niri", "workspaces-hyprland"],
+        "right": ["battery", "column-indicator"],
+
+        "items": {
+            "time": { "type": "clock", "format": "%H\n%M" },
+            "date": { "type": "clock", "format": "%d" },
+
             "idle": {
                 "mode": "refresh",
+                "kind": "text",
                 "signal": 1,
                 "command": "~/.config/kara/indicators/idle.sh"
             },
             "dnd": {
                 "mode": "refresh",
+                "kind": "text",
                 "signal": 2,
                 "command": "~/.config/kara/indicators/dnd.sh"
             },
             "screenrecord": {
                 "mode": "refresh",
+                "kind": "text",
                 "signal": 3,
                 "command": "~/.config/kara/indicators/screenrecord.sh"
             },
-            "niri-column-indicator": {
+
+            "workspaces-niri": {
                 "session": "niri",
                 "mode": "stream",
+                "kind": "segments",
+                "restart": "on-failure",
+                "command": "kara-module-niri-workspaces"
+            },
+            "workspaces-hyprland": {
+                "session": "hyprland",
+                "mode": "stream",
+                "kind": "segments",
+                "restart": "on-failure",
+                "command": "kara-module-hyprland-workspaces",
+                "on-click": ["kara-module-hyprland-workspaces", "--activate", "{segment_id}"]
+            },
+            "column-indicator": {
+                "session": "niri",
+                "mode": "stream",
+                "kind": "text",
                 "restart": "on-failure",
                 "command": [
                     "niri-column-indicator",
@@ -61,67 +88,23 @@
                     "--hide-single"
                 ]
             },
-            "niri-workspaces": {
-                "session": "niri",
-                "mode": "stream",
-                "restart": "on-failure",
-                "command": "kara-module-niri-workspaces"
-            },
-            "hyprland-workspaces": {
-                "session": "hyprland",
-                "mode": "stream",
-                "restart": "on-failure",
-                "command": "kara-module-hyprland-workspaces"
-            }
-        },
 
-        "left": [
-            { "builtin": "time", "format": "%H\n%M" },
-            { "builtin": "date", "format": "%d" },
-            { "module": "idle", "kind": "text" },
-            { "module": "dnd", "kind": "text" },
-            { "module": "screenrecord", "kind": "text" }
-        ],
-
-        "center": [
-            {
-                "id": "workspaces-niri",
-                "module": "niri-workspaces",
-                "kind": "segments"
-            },
-            {
-                "id": "workspaces-hyprland",
-                "module": "hyprland-workspaces",
-                "kind": "segments",
-                "on-click": ["kara-module-hyprland-workspaces", "--activate", "{segment_id}"]
-            }
-        ],
-
-        "right": [
-            {
-                "builtin": "battery",
+            "battery": {
                 "on-click": ["dot-menu", "power"],
-                "config": {
-                    "warning": 20,
-                    "critical": 10,
-                    "notify-critical": true,
-                    "format": {
-                        "discharging": "{icon}",
-                        "charging": "{icon}",
-                        "plugged": "",
-                        "full": "󰂅"
-                    },
-                    "icons": {
-                        "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-                        "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
-                    }
+                "warning": 20,
+                "critical": 10,
+                "notify-critical": true,
+                "format": {
+                    "discharging": "{icon}",
+                    "charging": "{icon}",
+                    "plugged": "",
+                    "full": "󰂅"
+                },
+                "icons": {
+                    "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+                    "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
                 }
-            },
-            {
-                "id": "column-indicator",
-                "module": "niri-column-indicator",
-                "kind": "text"
             }
-        ]
+        }
     }
 }
