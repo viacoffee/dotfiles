@@ -21,6 +21,6 @@ options="Sound
 
 case $(dot-launch-menu "" <<< "$options") in
   *Sound*)            dot-launch-term-float wiremix ;;
-  *Wifi*)             dot-launch-wifi ;;
-  *Bluetooth*)        dot-launch-bluetooth ;;
+  *Wifi*)             dot-radio wifi launch ;;
+  *Bluetooth*)        dot-radio bluetooth launch ;;
 esac
