@@ -99,7 +99,7 @@
                 "format": {
                     "discharging": "{icon}",
                     "charging": "{icon}",
-                    "plugged": "",
+                    "plugged": "󰚥",
                     "full": "󰂅"
                 },
                 "icons": {
