@@ -2,16 +2,10 @@
     "session": "niri",
 
     "components": [
-        // "wallpaper",
         "bar",
         "notify",
         "osd"
     ],
-
-    "wallpaper": {
-        "path": "~/background.jpg",
-        "mode": "fill"
-    },
 
     "osd": {
         "position": "bottom-center",
