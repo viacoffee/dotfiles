@@ -60,7 +60,6 @@ Two utilities I built for this system are now standalone projects.
 | **Lock screen** | [hyprlock](https://github.com/hyprwm/hyprlock) |
 | **Notifications** | Kara |
 | **Idle management** | [swayidle](https://github.com/swaywm/swayidle) |
-| **Wallpaper** | Kara |
 | **OSD overlays** | Kara |
 | **Boot splash** | [plymouth](https://gitlab.freedesktop.org/plymouth/plymouth) |
 | **Clipboard** | wl-clipboard |
