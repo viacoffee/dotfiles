@@ -6,29 +6,31 @@
 
 root {
   font-family: RobotoMono Nerd Font Mono;
-  font-size: 14px;
+  font-size: 13px;
   color: #d5dcde;
 }
 
 bar {
   background-color: @bg;
   color: #98a2b0;
-  font-size: 15px;
 
   #idle, #dnd, #screenrecord { padding: 2px; }
   #idle { font-size: 13px; }
   #dnd { font-size: 17px; }
   #screenrecord { color: @danger; }
 
-  #time { padding: 6px 0px 0px; }
+  #time {
+    padding: 6px 0px 0px;
+    font-size: 14px;
+  }
   #date {
     color: @muted;
-    padding: 6px 0px 8px;
+    padding: 6px 0px 6px;
+    font-size: 14px;
   }
 
   .workspaces {
-    font-size: 14px;
-    line-height: 25px;
+    line-height: 24px;
 
     .active, .focused { color: @accent; }
     .empty { color: @muted; }
@@ -61,7 +63,7 @@ notify {
   margin: 5px;
   outer-margin: 5px;
   max-icon-size: 32px;
-  font-size: 13px;
+  font-size: 12px;
 
   &.critical { color: @danger; }
 }

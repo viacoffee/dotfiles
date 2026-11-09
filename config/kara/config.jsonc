@@ -25,7 +25,7 @@
 
     "bar": {
         "orientation": "vertical",
-        "thickness": 36,
+        "thickness": 35,
 
         "left": ["time", "date", "idle", "dnd", "screenrecord"],
         "center": ["workspaces-niri", "workspaces-hyprland"],
