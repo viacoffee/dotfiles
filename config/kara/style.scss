@@ -1,9 +1,11 @@
-$bg:      #1b212a;
-$muted:   #5a6265;
-$muted-text: #cccccc;
-$accent:  #b887c0;
-$danger:  #d77c73;
-$warning: #d9a86c;
+$bar-bg:      #1b212a;
+$layer-bg:    #050607e6;
+$muted:       #5a6265;
+$muted-text:  #aaaab2;
+$accent:      #b887c0;
+$dim-accent:  #804889;
+$danger:      #d77c73;
+$warning:     #d9a86c;
 
 global {
     font-family: RobotoMono Nerd Font Mono;
@@ -13,8 +15,8 @@ global {
 
 bar {
     width: 36px;
-    background-color: $bg;
-    color: #98a2b0;
+    background-color: $bar-bg;
+    color: $muted-text;
 
     #idle, #dnd, #screenrecord { padding: 2px; }
     #dnd { font-size: 17px; }
@@ -35,10 +37,10 @@ bar {
 
         .active, .focused { color: $accent; }
         .empty { color: $muted; }
-        .focused-empty { color: #80488973; }
+        .focused-empty { color: $dim-accent; }
         .urgent {
             background-color: $danger;
-            color: #12161c;
+            color: $layer-bg;
         }
     }
 
@@ -61,7 +63,7 @@ notify {
     width: 300px;
 
     .card {
-        background-color: #050607e6;
+        background-color: $layer-bg;
         border-width: 0;
         border-radius: 5px;
         padding: 10px;
@@ -85,7 +87,7 @@ notify {
 }
 
 osd {
-    background-color: #050607e6;
+    background-color: $layer-bg;
     width: 200px;
     border-width: 0;
     border-radius: 5px;
