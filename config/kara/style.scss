@@ -6,11 +6,12 @@ $accent:      #b887c0;
 $dim-accent:  #804889;
 $danger:      #d77c73;
 $warning:     #d9a86c;
+$white:       #d5dcde;
 
 global {
     font-family: RobotoMono Nerd Font Mono;
     font-size: 13px;
-    color: #d5dcde;
+    color: $white;
 }
 
 bar {
@@ -92,9 +93,12 @@ osd {
     border-width: 0;
     border-radius: 5px;
     padding: 5px 15px;
-    margin: 40px;
+    margin: 35px;
+    font-size: 14px;
 
     .progress-bar {
+        border-radius: 5px;
+        fill-color: $white;
         background-color: #303a49;
     }
 }

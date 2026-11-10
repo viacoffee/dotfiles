@@ -17,7 +17,7 @@
 
     "notify": {
         "timeout": 5,
-        "lines": 4,
+        "lines": 3,
         "history": 5,
         "sticky-critical": true
     },
