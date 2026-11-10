@@ -1,5 +1,6 @@
 {
     "session": "niri",
+    "hot-reload": true,
 
     "components": [
         "bar",
@@ -8,15 +9,13 @@
     ],
 
     "osd": {
-        "position": "bottom-center",
         "timeout": 1,
-        "display-percentage": true,
+        "status": "inline",
         "volume": { "increment": 3 },
         "brightness": { "increment": 5 }
     },
 
     "notify": {
-        "position": "top-right",
         "timeout": 5,
         "lines": 4,
         "history": 5,
@@ -24,8 +23,7 @@
     },
 
     "bar": {
-        "orientation": "vertical",
-        "thickness": 35,
+        "position": "left",
 
         "left": ["time", "date", "idle", "dnd", "screenrecord"],
         "center": ["workspaces-niri", "workspaces-hyprland"],

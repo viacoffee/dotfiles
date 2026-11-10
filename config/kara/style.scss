@@ -1,0 +1,98 @@
+$bg:      #1b212a;
+$muted:   #5a6265;
+$muted-text: #cccccc;
+$accent:  #b887c0;
+$danger:  #d77c73;
+$warning: #d9a86c;
+
+global {
+    font-family: RobotoMono Nerd Font Mono;
+    font-size: 13px;
+    color: #d5dcde;
+}
+
+bar {
+    width: 36px;
+    background-color: $bg;
+    color: #98a2b0;
+
+    #idle, #dnd, #screenrecord { padding: 2px; }
+    #dnd { font-size: 17px; }
+    #screenrecord { color: $danger; }
+
+    #time {
+        padding: 6px 0 0;
+        font-size: 14px;
+    }
+    #date {
+        color: $muted;
+        padding: 6px 0 6px;
+        font-size: 14px;
+    }
+
+    .workspaces {
+        line-height: 24px;
+
+        .active, .focused { color: $accent; }
+        .empty { color: $muted; }
+        .focused-empty { color: #80488973; }
+        .urgent {
+            background-color: $danger;
+            color: #12161c;
+        }
+    }
+
+    #battery {
+        padding: 0 0 6px;
+
+        .warning { color: $warning; }
+        .critical { color: $danger; }
+    }
+
+    #column-indicator {
+        font-size: 11px;
+        line-height: 18px;
+        padding: 6px 0;
+    }
+}
+
+notify {
+    margin: 5px;
+    width: 300px;
+
+    .card {
+        background-color: #050607e6;
+        border-width: 0;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 5px;
+        max-icon-size: 32px;
+        font-size: 13px;
+
+        .summary {
+            font-weight: bold;
+        }
+
+        .body {
+            margin: 2px 0 0;
+            font-size: 12px;
+            font-style: normal;
+            color: $muted-text;
+        }
+
+        &.critical { color: $danger; }
+    }
+}
+
+osd {
+    background-color: #050607e6;
+    width: 200px;
+    border-width: 0;
+    border-radius: 5px;
+    padding: 5px 15px;
+    margin: 40px;
+
+    .progress-bar {
+        background-color: #303a49;
+    }
+}
