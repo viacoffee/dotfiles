@@ -66,7 +66,7 @@ notify {
     .card {
         background-color: $layer-bg;
         border-width: 0;
-        border-radius: 5px;
+        border-radius: 6px;
         padding: 10px;
         margin: 5px;
         max-icon-size: 32px;
@@ -91,13 +91,13 @@ osd {
     background-color: $layer-bg;
     width: 200px;
     border-width: 0;
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 5px 15px;
     margin: 35px;
     font-size: 14px;
 
     .progress-bar {
-        border-radius: 5px;
+        border-radius: 3px;
         fill-color: $white;
         background-color: #303a49;
     }
